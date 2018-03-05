@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -eu -o pipefail
+
+if ! [ -d 'venv' ]; then
+  tput setaf 3
+  printf 'No venv 😭\n'
+  tput sgr0
+  printf 'Create one with '
+  tput setaf 2
+  printf 'bin/setup'
+  tput sgr0
+  printf '\n'
+  exit 1
+fi

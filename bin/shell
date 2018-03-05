@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e -o pipefail
+
+bin/check_venv
+venv/bin/ipython
