@@ -1,3 +1,5 @@
+click==6.7
+
 ipython==6.2.1
 mypy==0.570
 pytest==3.4.1
