@@ -1,6 +1,7 @@
 venv
 
 __pycache__
+.ttam-buddy.egg*
 .pytest_cache
 .ropeproject
 .coverage

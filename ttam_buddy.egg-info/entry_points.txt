@@ -1,0 +1,3 @@
+[console_scripts]
+ttam-buddy = ttam_buddy.cli:run
+

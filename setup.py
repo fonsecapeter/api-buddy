@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(
-    name='TTAM Buddy',
+    name='ttam-buddy',
     version='0.1.0',
     author='Peter Fonseca',
     author_email='peter.nfonseca@gmail.com',
@@ -10,7 +10,9 @@ setup(
     license='MIT',
     description='',
     long_description='',
-    install_requires=[''],
+    install_requires=[
+        'click == 6.7',
+    ],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
