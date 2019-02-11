@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Helper
 set -eu -o pipefail
 
 if ! [ -d 'venv' ]; then

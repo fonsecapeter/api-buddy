@@ -2,16 +2,19 @@ from os import path
 import yaml
 from typing import Dict, Union
 
-EXAMPLE_PREFS = '''---
+DEFAULT_API_URL = 'https://api.23andme.com/3/'
+EXAMPLE_PREFS = f'''---
 client_id: your_client_id
 client_secret: your_client_secret
 profile_id: your_profile_id
 account_id: your_account_id
+api_url: {DEFAULT_API_URL}
 '''
 
 DEFAULT_PREFS: Dict[str, object] = {
     'profile_id': 'demo_profile_id',
     'account_id': 'demo_account_id',
+    'api_url': DEFAULT_API_URL,
 }
 
 

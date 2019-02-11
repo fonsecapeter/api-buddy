@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Reset venv
 set -e -o pipefail
 
 rm -rf venv

@@ -11,7 +11,9 @@ setup(
     description='',
     long_description='',
     install_requires=[
-        'click == 6.7',
+        'click == 7.0',
+        'PyYAML == 3.13',
+        'requests-oauthlib == 1.2.0',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

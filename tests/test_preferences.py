@@ -1,7 +1,11 @@
 from os import path
 from pytest import raises
 from unittest import TestCase
-from ttam_buddy.preferences import load_prefs, EXAMPLE_PREFS
+from ttam_buddy.preferences import (
+    DEFAULT_PREFS,
+    EXAMPLE_PREFS,
+    load_prefs,
+)
 from ttam_buddy.constants import ROOT_DIR
 
 
@@ -18,8 +22,7 @@ class TestPreferences(TestCase):
 
     def test_has_defaults(self) -> None:
         prefs = load_prefs()
-        assert prefs['account_id'] == 'demo_account_id'
-        assert prefs['profile_id'] == 'demo_profile_id'
+        assert prefs == DEFAULT_PREFS
 
     def test_has_examples(self) -> None:
         assert 'client_id' in EXAMPLE_PREFS

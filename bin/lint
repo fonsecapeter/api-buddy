@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
+# Run mypy
 set -e -o pipefail
 
 bin/check_venv
-venv/bin/mypy ttam_buddy tests --ignore-missing-imports --strict
+venv/bin/mypy ttam_buddy --ignore-missing-imports --strict
