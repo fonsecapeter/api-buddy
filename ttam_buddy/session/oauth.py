@@ -1,8 +1,10 @@
 import webbrowser
 from os import environ
-from typing import Iterable, Optional
+from typing import Optional
 from urllib.parse import urljoin
 from requests_oauthlib import OAuth2Session
+
+from ..preferences import Preferences, save_prefs
 
 
 def _get_authorization_response_url() -> str:
@@ -27,7 +29,7 @@ def _authenticate(
         kwargs={'select_profile': 'true'},
     )
     print(
-        f'Opening browser to visit:\n\n{authorization_url}\n'
+        f'Opening browser to visit:\n\n{authorization_url}\n\n'
         'Sign in and go through the DSA, then copy the url.\n'
     )
     webbrowser.open(authorization_url)
@@ -37,36 +39,32 @@ def _authenticate(
         urljoin(api_url, 'token'),
         authorization_response=authorization_response,
         client_secret=client_secret,
+        include_client_id=True,
     )
     return str(token['access_token'])
 
 
-def get_oauth_session(
-            client_id: str,
-            client_secret: str,
-            scopes: Iterable[str],
-            api_url: str,
-            redirect_uri: str,
-            state: Optional[str],
-            access_token: str,
-            auth_test_path: str,  # endpoint to test if token is expired
-            auth_fail_status: int = 401,  # status code if expired
-        ) -> OAuth2Session:
-    """Initialize OAuth2 session, reauthorizing if needed"""
+def get_oauth_session(prefs: Preferences, prefs_file_name: str) -> OAuth2Session:
+    """Initialize OAuth2 session, reauthorizing if needed
+
+    Notes:
+        - Saves new token to preferences if re-authenticating
+    """
     sesh = OAuth2Session(
-        client_id=client_id,
-        redirect_uri=redirect_uri,
-        scope=' '.join(scopes),
-        token={'access_token': access_token},
+        client_id=prefs['client_id'],
+        redirect_uri=prefs['redirect_uri'],
+        scope=' '.join(prefs['scopes']),
+        token={'access_token': prefs['access_token']},
     )
-    resp = sesh.get(urljoin(api_url, auth_test_path))
-    if resp.status_code == auth_fail_status:
+    resp = sesh.get(urljoin(prefs['api_url'], prefs['auth_test_path']))
+    if resp.status_code == prefs['auth_test_status']:
         access_token = _authenticate(
             sesh,
-            client_secret=client_secret,
-            api_url=api_url,
-            redirect_uri=redirect_uri,
-            state=state,
+            client_secret=prefs['client_secret'],
+            api_url=prefs['api_url'],
+            redirect_uri=prefs['redirect_uri'],
+            state=prefs['state'],
         )
-        print(f'access_token: {access_token}')
+        prefs['access_token'] = access_token
+        save_prefs(prefs, prefs_file_name)
     return sesh

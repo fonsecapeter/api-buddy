@@ -2,6 +2,6 @@
 # Initialize venv
 set -eu -o pipefail
 
-python3.8 -m venv venv
+python3.7 -m venv venv
 venv/bin/pip install -r requirements.txt
 venv/bin/pip install --editable .

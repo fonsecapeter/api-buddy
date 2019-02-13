@@ -1,6 +1,8 @@
 import click
+from urllib.parse import urljoin
 from .constants import VERSION, PREFS_FILE
 from .preferences import load_prefs
+from .session.oauth import get_oauth_session
 
 
 @click.command()
@@ -13,8 +15,10 @@ def run(version: bool) -> None:
     if version:
         click.echo(VERSION)
         return
-    load_prefs(PREFS_FILE)
-    click.echo(':p')
+    prefs = load_prefs(PREFS_FILE)
+    sesh = get_oauth_session(prefs, PREFS_FILE)
+    resp = sesh.get(urljoin(prefs['api_url'], '3/account'))
+    click.echo(resp.json())
 
 
 if __name__ == '__main__':

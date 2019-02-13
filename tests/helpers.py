@@ -19,12 +19,12 @@ def _mock_api_method(method: str = 'get') -> Callable[..., Any]:
             def wrapper(
                         *args: Optional[Any],
                         **kwargs: Optional[Any]
-                    ) -> Callable:
+                    ) -> Any:
                 with mock.patch(f'requests_oauthlib.OAuth2Session.{method}') as mock_api_call:
                     resp = Response()
                     resp.request = mock.MagicMock()
                     resp.status_code = status_code
-                    resp._content = str.encode(content)
+                    resp._content = str.encode(content)  # type: ignore
                     mock_api_call.return_value = resp
                     return func(*args, **kwargs)
             return wrapper
