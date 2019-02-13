@@ -3,4 +3,4 @@
 set -e -o pipefail
 
 rm -rf venv
-rm -rf ttam-buddy.egg-info
+rm -rf api-buddy.egg-info

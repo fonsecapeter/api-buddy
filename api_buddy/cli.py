@@ -10,7 +10,7 @@ from .session.oauth import get_oauth_session
 def run(version: bool) -> None:
     """Explore the 23andMe API from your terminal
 
-    Check out https://github.com/fonsecapeter/ttam-buddy for more info
+    Check out https://github.com/fonsecapeter/api-buddy for more info
     """
     if version:
         click.echo(VERSION)

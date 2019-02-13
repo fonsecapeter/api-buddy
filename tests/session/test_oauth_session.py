@@ -3,8 +3,8 @@ from copy import deepcopy
 from requests_oauthlib import OAuth2Session
 from unittest import TestCase
 
-from ttam_buddy.session.oauth import get_oauth_session
-from ttam_buddy.preferences import Preferences, load_prefs
+from api_buddy.session.oauth import get_oauth_session
+from api_buddy.preferences import Preferences, load_prefs
 
 from ..test_preferences import TEMP_FILE, clean_temp_yml_file
 from ..helpers import explode, mock_get, mock_post
@@ -39,7 +39,7 @@ class TestGetOauthSession(TestCase):
         assert type(sesh) == OAuth2Session
 
     @mock_get()
-    @mock.patch('ttam_buddy.session.oauth._authenticate')
+    @mock.patch('api_buddy.session.oauth._authenticate')
     def test_skips_authentication_if_token_is_valid(self, mock_authenticate):
         mock_authenticate.side_effect = explode  # should not get called
         sesh = get_oauth_session(deepcopy(TEST_PREFERENCES), TEMP_FILE)
@@ -48,7 +48,7 @@ class TestGetOauthSession(TestCase):
     @mock_get(status_code=401)  # expired token check
     @mock_post(content=f'{{"access_token": "{NEW_ACCESS_TOKEN}"}}')  # within Oauth2.fetch_token
     @mock.patch('webbrowser.open')
-    @mock.patch('ttam_buddy.session.oauth._get_authorization_response_url')
+    @mock.patch('api_buddy.session.oauth._get_authorization_response_url')
     def test_re_authenticates_if_token_is_expired(self, mock_auth_resp_url, mock_open):
         mock_auth_resp_url.return_value = f'{FAKE_API_URL}/?code=banana&state={FAKE_STATE}'
         sesh = get_oauth_session(deepcopy(TEST_PREFERENCES), TEMP_FILE)
@@ -57,7 +57,7 @@ class TestGetOauthSession(TestCase):
     @mock_get(status_code=401)  # expired token check
     @mock_post(content=f'{{"access_token": "{NEW_ACCESS_TOKEN}"}}')  # within Oauth2.fetch_token
     @mock.patch('webbrowser.open')
-    @mock.patch('ttam_buddy.session.oauth._get_authorization_response_url')
+    @mock.patch('api_buddy.session.oauth._get_authorization_response_url')
     def test_writes_new_token_if_re_authenticating(self, mock_auth_resp_url, mock_open):
         mock_auth_resp_url.return_value = f'{FAKE_API_URL}/?code=banana&state={FAKE_STATE}'
         get_oauth_session(deepcopy(TEST_PREFERENCES), TEMP_FILE)

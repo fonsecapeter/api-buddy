@@ -2,7 +2,7 @@ import yaml
 from os import path, remove
 from pytest import raises
 from unittest import TestCase
-from ttam_buddy.preferences import (
+from api_buddy.preferences import (
     DEFAULT_PREFS,
     EXAMPLE_PREFS,
     DEFAULT_KEYS_TO_KEEP,
@@ -10,7 +10,7 @@ from ttam_buddy.preferences import (
     load_prefs,
     save_prefs,
 )
-from ttam_buddy.constants import ROOT_DIR
+from api_buddy.constants import ROOT_DIR
 
 FIXTURES_DIR = path.join(ROOT_DIR, 'tests', 'fixtures')
 TEMP_FILE = path.join(FIXTURES_DIR, 'temp.yml')

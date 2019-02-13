@@ -3,4 +3,4 @@
 set -e -o pipefail
 
 bin/check_venv
-venv/bin/mypy ttam_buddy --ignore-missing-imports --strict
+venv/bin/mypy api_buddy --ignore-missing-imports --strict
