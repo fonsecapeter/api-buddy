@@ -13,7 +13,7 @@ setup(
     long_description='',
     install_requires=[
         'Click == 7.0',
-        'PyYAML == 3.13',
+        'PyYAML == 4.2b1',
         'requests-oauthlib == 1.2.0',
     ],
     classifiers=[
