@@ -1,8 +1,13 @@
-click==6.7
+# Dependencies
+Click==7.0
+PyYAML==3.13
+requests-oauthlib==1.2.0
 
-ipython==6.2.1
-mypy==0.570
-pytest==3.4.1
-pytest-cov==2.5.1
+# Dev Dependencies
+colorama==0.4.1
+ipython==7.2.0
+mock==2.0.0
+mypy==0.670
+pytest==4.2.0
+pytest-cov==2.6.1
 pytest-pspec==0.0.3
-PyYaml==3.12

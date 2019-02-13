@@ -1,4 +1,7 @@
 ---
-banana: True
-something: yass queen
-number: 7
+api_url: https://seinfeld-quotes.herokuapp.com/
+scopes:
+   - quotes
+   - episodes
+state: null
+auth_test_status: 403

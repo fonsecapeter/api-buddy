@@ -1,17 +1,20 @@
 from distutils.core import setup
+from api_buddy.constants import VERSION
 
 setup(
-    name='ttam-buddy',
-    version='0.1.0',
+    name='api-buddy',
+    version=VERSION,
     author='Peter Fonseca',
     author_email='peter.nfonseca@gmail.com',
-    packages=['ttam_buddy'],
-    url='http://pypi.org/pypi/ttam_buddy/',
+    packages=['api_buddy'],
+    url='http://pypi.org/pypi/api_buddy/',
     license='MIT',
     description='',
     long_description='',
     install_requires=[
-        'click == 6.7',
+        'Click == 7.0',
+        'PyYAML == 3.13',
+        'requests-oauthlib == 1.2.0',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -21,11 +24,11 @@ setup(
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     entry_points={
         'console_scripts': [
-            'ttam-buddy = ttam_buddy.cli:run',
+            'api-buddy = api_buddy.cli:run',
         ],
     }
 )

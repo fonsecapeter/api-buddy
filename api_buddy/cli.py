@@ -1,6 +1,8 @@
 import click
+from urllib.parse import urljoin
 from .constants import VERSION, PREFS_FILE
 from .preferences import load_prefs
+from .session.oauth import get_oauth_session
 
 
 @click.command()
@@ -8,13 +10,15 @@ from .preferences import load_prefs
 def run(version: bool) -> None:
     """Explore the 23andMe API from your terminal
 
-    Check out https://github.com/fonsecapeter/ttam-buddy for more info
+    Check out https://github.com/fonsecapeter/api-buddy for more info
     """
     if version:
         click.echo(VERSION)
         return
-    load_prefs(PREFS_FILE)
-    click.echo(':p')
+    prefs = load_prefs(PREFS_FILE)
+    sesh = get_oauth_session(prefs, PREFS_FILE)
+    resp = sesh.get(urljoin(prefs['api_url'], '3/account'))
+    click.echo(resp.json())
 
 
 if __name__ == '__main__':

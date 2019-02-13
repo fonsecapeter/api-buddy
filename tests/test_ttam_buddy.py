@@ -1,8 +1,8 @@
 from unittest import TestCase
-from ttam_buddy.constants import VERSION
+from api_buddy.constants import VERSION
 
 
-class TestTTAMBuddy(TestCase):
+class TestAPIBuddy(TestCase):
     def test_has_a_version(self) -> None:
         versions = VERSION.split('.')
         assert len(versions) == 3

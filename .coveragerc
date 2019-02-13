@@ -1,6 +1,6 @@
 [report]
-  include = ttam_buddy/*
+  include = api_buddy/*
   omit =
     *tests*
     *__init__.py
-    ttam_buddy/cli.py
+    api_buddy/cli.py

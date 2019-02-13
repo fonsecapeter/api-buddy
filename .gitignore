@@ -1,7 +1,7 @@
 venv
 
 __pycache__
-ttam_buddy.egg*
+api_buddy.egg*
 .pytest_cache
 .ropeproject
 .coverage
