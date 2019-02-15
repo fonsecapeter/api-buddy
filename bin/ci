@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+mypy api_buddy --ignore-missing-imports --strict
+pytest --cov --pspec tests
