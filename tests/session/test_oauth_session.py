@@ -3,10 +3,11 @@ from copy import deepcopy
 from requests_oauthlib import OAuth2Session
 from unittest import TestCase
 
-from api_buddy.session.oauth import get_oauth_session
-from api_buddy.preferences import Preferences, load_prefs
+from api_buddy.session.oauth import get_oauth_session, APPLICATION_JSON
+from api_buddy.typing import Preferences
+from api_buddy.config.preferences import load_prefs
 
-from ..test_preferences import TEMP_FILE, clean_temp_yml_file
+from ..config.test_preferences import TEMP_FILE, clean_temp_yml_file
 from ..helpers import explode, mock_get, mock_post
 
 FAKE_API_URL = 'https://fake.api.com'
@@ -17,7 +18,7 @@ TEST_PREFERENCES: Preferences = {
     'api_url': FAKE_API_URL,
     'client_id': 'client_id',
     'client_secret': 'client_secret',
-    'scopes': ('a_scope', 'another_scope'),
+    'scopes': ['a_scope', 'another_scope'],
     'redirect_uri': 'http://localhost:8080/',
     'access_token': FAKE_ACCESS_TOKEN,
     'auth_test_path': 'endpoint',
@@ -37,6 +38,13 @@ class TestGetOauthSession(TestCase):
     def test_returns_a_session(self):
         sesh = get_oauth_session(deepcopy(TEST_PREFERENCES), TEMP_FILE)
         assert type(sesh) == OAuth2Session
+
+    @mock_get()
+    def test_adds_headers(self):
+        sesh = get_oauth_session(deepcopy(TEST_PREFERENCES), TEMP_FILE)
+        headers = sesh.headers
+        assert headers['Accept'] == APPLICATION_JSON
+        assert headers['Content-Type'] == APPLICATION_JSON
 
     @mock_get()
     @mock.patch('api_buddy.session.oauth._authenticate')

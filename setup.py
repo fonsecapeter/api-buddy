@@ -16,6 +16,7 @@ setup(
         'docopt == 0.6.2',
         'PyYAML == 4.2b1',
         'requests-oauthlib == 1.2.0',
+        'schema == 0.6.8',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

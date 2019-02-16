@@ -4,7 +4,14 @@ from typing import Optional
 from urllib.parse import urljoin
 from requests_oauthlib import OAuth2Session
 
-from ..preferences import Preferences, save_prefs
+from ..typing import Preferences
+from ..config.preferences import save_prefs
+
+APPLICATION_JSON = 'application/json'
+HEADERS = {
+    'Accept': APPLICATION_JSON,
+    'Content-Type': APPLICATION_JSON,
+}
 
 
 def _get_authorization_response_url() -> str:
@@ -67,4 +74,5 @@ def get_oauth_session(prefs: Preferences, prefs_file_name: str) -> OAuth2Session
         )
         prefs['access_token'] = access_token
         save_prefs(prefs, prefs_file_name)
+    sesh.headers.update(HEADERS)
     return sesh

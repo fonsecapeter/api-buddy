@@ -1,29 +1,12 @@
 import yaml
-from copy import deepcopy
 from os import path
-from typing import Any, Iterable, Optional
-from mypy_extensions import TypedDict
+from copy import deepcopy
+from typing import Any
 
-from .exceptions import APIBuddyException
+from ..exceptions import APIBuddyException
+from ..typing import Preferences
+from ..validation.preferences import DEFAULT_PREFS, validate_preferences
 
-
-Preferences = TypedDict('Preferences', {
-    'api_url': str,
-    'client_id': str,
-    'client_secret': str,
-    'scopes': Iterable[str],
-    'redirect_uri': str,  # Optional
-    'auth_test_path': str,
-    'auth_test_status': int,  # Optional
-    'access_token': str,
-    'state': Optional[str],  # Optional, can be None
-}, total=False)
-DEFAULT_PREFS: Preferences = {
-    'redirect_uri': 'http://localhost:8080/',
-    'access_token': 'your_access_token',
-    'state': None,
-    'auth_test_status': 401,
-}
 EXAMPLE_PREFS: Preferences = {
     'api_url': 'https://jsonplaceholder.typicode.com/',
     'client_id': 'your_client_id',
@@ -32,16 +15,14 @@ EXAMPLE_PREFS: Preferences = {
     'redirect_uri': DEFAULT_PREFS['redirect_uri'],
     'auth_test_path': 'endpoint_that_requires_token',
 }
-DEFAULT_KEYS_TO_KEEP = ('redirect_uri',)
 
 
 def _remove_defaults(prefs: Preferences) -> Preferences:
     """Remove defaults if they haven't been changed"""
     filtered_prefs = deepcopy(prefs)
     for key, default_val in DEFAULT_PREFS.items():
-        if key not in DEFAULT_KEYS_TO_KEEP:
-            if filtered_prefs[key] == default_val:  # type: ignore
-                del filtered_prefs[key]             # type: ignore
+        if filtered_prefs[key] == default_val:  # type: ignore
+            del filtered_prefs[key]             # type: ignore
     return filtered_prefs
 
 
@@ -82,7 +63,7 @@ def _extract_yaml_from_file(file_name: str) -> Any:
 
 
 def load_prefs(
-            file_name: Optional[str] = None,
+            file_name: str,
         ) -> Preferences:
     """Load preferences from a yaml file
 
@@ -91,16 +72,13 @@ def load_prefs(
         - Creates a preferences file if it doesn't exist
         - Merges with defaults
     """
-    if file_name is None:
-        return DEFAULT_PREFS
     expanded_file_name = path.expanduser(file_name)
-    user_prefs = _extract_yaml_from_file(expanded_file_name)
-    prefs = deepcopy(DEFAULT_PREFS)
-    if user_prefs is None:
-        prefs.update(EXAMPLE_PREFS)
+    raw_prefs = _extract_yaml_from_file(expanded_file_name)
+    if raw_prefs is None:
+        prefs = validate_preferences(EXAMPLE_PREFS)
         save_prefs(prefs, expanded_file_name)
     else:
-        prefs.update(user_prefs)
+        prefs = validate_preferences(raw_prefs)
     return prefs
 
 

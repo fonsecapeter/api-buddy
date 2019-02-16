@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
+echo 'Checking types...'
 mypy api_buddy --ignore-missing-imports --strict
+echo '😄'
 pytest --cov --pspec tests

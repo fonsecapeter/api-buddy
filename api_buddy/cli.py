@@ -10,16 +10,16 @@ Options:
   -h, --help     Show this help message
 """
 import json
-from docopt import docopt
 from urllib.parse import urljoin
 from .constants import VERSION, PREFS_FILE
 from .exceptions import APIBuddyException, exit_with_exception
-from .preferences import load_prefs
+from .config.preferences import load_prefs
+from .config.options import load_options
 from .session.oauth import get_oauth_session
 
 
 def run() -> None:
-    opts = docopt(__doc__)
+    opts = load_options(__doc__)
     if opts['--version']:
         print(VERSION)
         return
