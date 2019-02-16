@@ -1,6 +1,5 @@
 import yaml
 from os import path, remove
-from pytest import raises
 from unittest import TestCase
 from api_buddy.preferences import (
     DEFAULT_PREFS,
@@ -11,6 +10,8 @@ from api_buddy.preferences import (
     save_prefs,
 )
 from api_buddy.constants import ROOT_DIR
+from api_buddy.exceptions import APIBuddyException
+
 
 FIXTURES_DIR = path.join(ROOT_DIR, 'tests', 'fixtures')
 TEMP_FILE = path.join(FIXTURES_DIR, 'temp.yml')
@@ -68,13 +69,25 @@ class TestLoadPreferences(TestCase):
         for key, example_val in EXAMPLE_PREFS.items():
             assert prefs[key] == example_val
 
-    def test_when_yaml_is_invalid_it_will_exit(self):
-        with raises(SystemExit) as pytest_wrapped_e:
+    def test_file_must_contain_valid_yaml(self):
+        try:
             load_prefs(
                 path.join(FIXTURES_DIR, 'bad.yml')
             )
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 1
+        except APIBuddyException as err:
+            assert 'valid yaml' in err.message
+        else:
+            assert False
+
+    def test_file_cant_be_empty(self):
+        try:
+            load_prefs(
+                path.join(FIXTURES_DIR, 'empty.yml')
+            )
+        except APIBuddyException as err:
+            assert 'preferences are empty' in err.title
+        else:
+            assert False
 
 
 class TestSavePreferences(TestCase):

@@ -4,6 +4,8 @@ from os import path
 from typing import Any, Iterable, Optional
 from mypy_extensions import TypedDict
 
+from .exceptions import APIBuddyException
+
 
 Preferences = TypedDict('Preferences', {
     'api_url': str,
@@ -50,9 +52,10 @@ def _extract_yaml_from_file(file_name: str) -> Any:
         - None if file doesn't exist
         - The python-native data if it does
 
-    Exits:
-        - If file contents are not valid yaml
-        - If user preferences are None
+    Raises:
+        APIBuddyException if:
+            - file contents are not valid yaml
+            - user preferences are None
     """
     if not path.isfile(file_name):
         return None
@@ -60,12 +63,21 @@ def _extract_yaml_from_file(file_name: str) -> Any:
         try:
             user_prefs = yaml.load(prefs_file)
         except yaml.YAMLError as exc:
-            print(
-                f'There was a problem reading {file_name} 😭\n'
-                'Please make sure it\'s valid yaml: http://www.yaml.org/start.html'
+            raise APIBuddyException(
+                title=f'There was a problem reading {file_name}',
+                message=(
+                    'Please make sure it\'s valid yaml: '
+                    'http://www.yaml.org/start.html'
+                ),
             )
-            exit(1)
-    assert user_prefs is not None
+    if user_prefs is None:
+        raise APIBuddyException(
+            title='It looks like your preferences are empty',
+            message=(
+                f'You should put them in {file_name}\n'
+                f'For example:\n\n{yaml.dump(EXAMPLE_PREFS)}'
+            )
+        )
     return user_prefs
 
 
