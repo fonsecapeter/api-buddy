@@ -1,6 +1,25 @@
+from os import path, remove
 from requests import Response
-from unittest import mock
-from typing import Any, Callable, Dict, NoReturn, Optional
+from unittest import mock, TestCase
+from typing import Any, Callable, NoReturn, Optional
+from api_buddy.constants import ROOT_DIR
+
+FIXTURES_DIR = path.join(ROOT_DIR, 'tests', 'fixtures')
+TEMP_FILE = path.join(FIXTURES_DIR, 'temp.yml')
+FAKE_API_URL = 'https://fake.api.com'
+FAKE_ACCESS_TOKEN = 'banana'
+FAKE_STATE = 'california'
+TEST_PREFERENCES = {
+    'api_url': FAKE_API_URL,
+    'client_id': 'client_id',
+    'client_secret': 'client_secret',
+    'scopes': ['a_scope', 'another_scope'],
+    'redirect_uri': 'http://localhost:8080/',
+    'access_token': FAKE_ACCESS_TOKEN,
+    'auth_test_path': 'endpoint',
+    'auth_test_status': 401,
+    'state': FAKE_STATE,
+}
 
 
 def explode(*args: Optional[Any], **kwargs: Optional[Any]) -> NoReturn:
@@ -20,7 +39,9 @@ def _mock_api_method(method: str = 'get') -> Callable[..., Any]:
                         *args: Optional[Any],
                         **kwargs: Optional[Any]
                     ) -> Any:
-                with mock.patch(f'requests_oauthlib.OAuth2Session.{method}') as mock_api_call:
+                with mock.patch(
+                            f'requests_oauthlib.OAuth2Session.{method}'
+                        ) as mock_api_call:
                     resp = Response()
                     resp.request = mock.MagicMock()
                     resp.status_code = status_code
@@ -35,3 +56,16 @@ def _mock_api_method(method: str = 'get') -> Callable[..., Any]:
 # Use these
 mock_get = _mock_api_method('get')
 mock_post = _mock_api_method('post')
+
+
+def clean_temp_yml_file() -> None:
+    if path.isfile(TEMP_FILE):
+        remove(TEMP_FILE)
+
+
+class TempYAMLTestCase(TestCase):
+    def setUp(self):
+        clean_temp_yml_file()
+
+    def tearDown(self):
+        clean_temp_yml_file()

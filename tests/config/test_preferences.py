@@ -1,7 +1,5 @@
 import yaml
-from os import path, remove
-from unittest import TestCase
-from api_buddy.constants import ROOT_DIR
+from os import path
 from api_buddy.exceptions import APIBuddyException
 from api_buddy.typing import Preferences
 from api_buddy.validation.preferences import DEFAULT_PREFS
@@ -10,11 +8,14 @@ from api_buddy.config.preferences import (
     load_prefs,
     save_prefs,
 )
+from ..helpers import (
+    FIXTURES_DIR,
+    TEMP_FILE,
+    TempYAMLTestCase,
+)
 
 
 CAT_FACTS_API_URL = 'https://alexwohlbruck.github.io/cat-facts'
-FIXTURES_DIR = path.join(ROOT_DIR, 'tests', 'fixtures')
-TEMP_FILE = path.join(FIXTURES_DIR, 'temp.yml')
 NEW_PREFS: Preferences = {
     'api_url': 'https://thecatapi.com',
     'client_id': 'mittens',
@@ -28,19 +29,7 @@ NEW_PREFS: Preferences = {
 }
 
 
-def clean_temp_yml_file() -> None:
-    if path.isfile(TEMP_FILE):
-        remove(TEMP_FILE)
-
-
-class TestLoadPreferences(TestCase):
-
-    def setUp(self):
-        clean_temp_yml_file()
-
-    def tearDown(self):
-        clean_temp_yml_file()
-
+class TestLoadPreferences(TempYAMLTestCase):
     def test_can_load_from_a_yaml_file(self):
         prefs = load_prefs(
             path.join(FIXTURES_DIR, 'test.yml')
@@ -125,6 +114,7 @@ class TestLoadPreferences(TestCase):
             )
         except APIBuddyException as err:
             assert 'query parameters' in err.title
+            # helpful suggestion
             assert CAT_FACTS_API_URL in err.message
         else:
             assert False
@@ -136,19 +126,13 @@ class TestLoadPreferences(TestCase):
             )
         except APIBuddyException as err:
             assert 'hash fragments' in err.title
+            # helpful suggestion
             assert CAT_FACTS_API_URL in err.message
         else:
             assert False
 
 
-class TestSavePreferences(TestCase):
-
-    def setUp(self):
-        clean_temp_yml_file()
-
-    def tearDown(self):
-        clean_temp_yml_file()
-
+class TestSavePreferences(TempYAMLTestCase):
     def test_can_save_to_a_new_file(self):
         assert not path.isfile(TEMP_FILE)
         save_prefs(NEW_PREFS, TEMP_FILE)

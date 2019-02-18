@@ -1,39 +1,25 @@
 import mock
 from copy import deepcopy
 from requests_oauthlib import OAuth2Session
-from unittest import TestCase
 
 from api_buddy.session.oauth import get_oauth_session, APPLICATION_JSON
-from api_buddy.typing import Preferences
 from api_buddy.config.preferences import load_prefs
+from ..helpers import (
+    FAKE_API_URL,
+    FAKE_ACCESS_TOKEN,
+    FAKE_STATE,
+    TEST_PREFERENCES,
+    TEMP_FILE,
+    TempYAMLTestCase,
+    explode,
+    mock_get,
+    mock_post,
+)
 
-from ..config.test_preferences import TEMP_FILE, clean_temp_yml_file
-from ..helpers import explode, mock_get, mock_post
-
-FAKE_API_URL = 'https://fake.api.com'
-FAKE_ACCESS_TOKEN = 'banana'
 NEW_ACCESS_TOKEN = 'mint-chip'
-FAKE_STATE = 'california'
-TEST_PREFERENCES: Preferences = {
-    'api_url': FAKE_API_URL,
-    'client_id': 'client_id',
-    'client_secret': 'client_secret',
-    'scopes': ['a_scope', 'another_scope'],
-    'redirect_uri': 'http://localhost:8080/',
-    'access_token': FAKE_ACCESS_TOKEN,
-    'auth_test_path': 'endpoint',
-    'auth_test_status': 401,
-    'state': FAKE_STATE,
-}
 
 
-class TestGetOauthSession(TestCase):
-    def setUp(self):
-        clean_temp_yml_file()
-
-    def tearDown(self):
-        clean_temp_yml_file()
-
+class TestGetOauthSession(TempYAMLTestCase):
     @mock_get()
     def test_returns_a_session(self):
         sesh = get_oauth_session(deepcopy(TEST_PREFERENCES), TEMP_FILE)

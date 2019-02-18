@@ -16,9 +16,9 @@ from .constants import VERSION, PREFS_FILE
 from .exceptions import APIBuddyException, exit_with_exception
 from .config.preferences import load_prefs
 from .config.options import load_options
-from .request import send_request
-from .response import print_response
 from .session.oauth import get_oauth_session
+from .session.request import send_request
+from .session.response import format_response
 
 
 def run() -> None:
@@ -33,7 +33,8 @@ def run() -> None:
         return
     sesh = get_oauth_session(prefs, PREFS_FILE)
     resp = send_request(sesh, prefs, opts)
-    print_response(resp)
+    print(f'=> {resp.status_code}')
+    print(format_response(resp))
 
 
 if __name__ == '__main__':

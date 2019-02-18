@@ -28,12 +28,11 @@ def _strip_html(content: str) -> str:
     return '\n'.join(lines)
 
 
-def print_response(resp: Response) -> None:
-    print(f'=> {resp.status_code}')
+def format_response(resp: Response) -> None:
     try:
-        print(json.dumps(resp.json(), indent=INDENT))
-    except json.decoder.JSONDecodeError:
-        text = resp.text
-        if '<!DOCTYPE html>' in text:
-            text = _strip_html(text)
-        print(text)
+        formatted = json.dumps(resp.json(), indent=INDENT)
+    except (json.decoder.JSONDecodeError, TypeError):
+        formatted = resp.text
+        if '<!DOCTYPE html>' in formatted:
+            formatted = _strip_html(formatted)
+    return formatted
