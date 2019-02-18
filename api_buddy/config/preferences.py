@@ -8,7 +8,7 @@ from ..typing import Preferences
 from ..validation.preferences import DEFAULT_PREFS, validate_preferences
 
 EXAMPLE_PREFS: Preferences = {
-    'api_url': 'https://jsonplaceholder.typicode.com/',
+    'api_url': 'https://jsonplaceholder.typicode.com',
     'client_id': 'your_client_id',
     'client_secret': 'your_client_secret',
     'scopes': ['one_scope', 'another_scope'],

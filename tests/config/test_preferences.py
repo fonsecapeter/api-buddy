@@ -1,7 +1,5 @@
 import yaml
-from os import path, remove
-from unittest import TestCase
-from api_buddy.constants import ROOT_DIR
+from os import path
 from api_buddy.exceptions import APIBuddyException
 from api_buddy.typing import Preferences
 from api_buddy.validation.preferences import DEFAULT_PREFS
@@ -10,12 +8,16 @@ from api_buddy.config.preferences import (
     load_prefs,
     save_prefs,
 )
+from ..helpers import (
+    FIXTURES_DIR,
+    TEMP_FILE,
+    TempYAMLTestCase,
+)
 
 
-FIXTURES_DIR = path.join(ROOT_DIR, 'tests', 'fixtures')
-TEMP_FILE = path.join(FIXTURES_DIR, 'temp.yml')
+CAT_FACTS_API_URL = 'https://alexwohlbruck.github.io/cat-facts'
 NEW_PREFS: Preferences = {
-    'api_url': 'https://thecatapi.com/',
+    'api_url': 'https://thecatapi.com',
     'client_id': 'mittens',
     'client_secret': 'whiskers',
     'scopes': ['fails', 'stuck_in_boxes'],
@@ -27,24 +29,12 @@ NEW_PREFS: Preferences = {
 }
 
 
-def clean_temp_yml_file() -> None:
-    if path.isfile(TEMP_FILE):
-        remove(TEMP_FILE)
-
-
-class TestLoadPreferences(TestCase):
-
-    def setUp(self):
-        clean_temp_yml_file()
-
-    def tearDown(self):
-        clean_temp_yml_file()
-
+class TestLoadPreferences(TempYAMLTestCase):
     def test_can_load_from_a_yaml_file(self):
         prefs = load_prefs(
             path.join(FIXTURES_DIR, 'test.yml')
         )
-        assert prefs['api_url'] == 'https://seinfeld-quotes.herokuapp.com/'
+        assert prefs['api_url'] == 'https://seinfeld-quotes.herokuapp.com'
         assert prefs['client_id'] == 'my_favorite_client_id'
         assert prefs['client_secret'] == 'my_favorite_client_secret'
         assert prefs['scopes'] == ['quotes', 'episodes']
@@ -111,15 +101,38 @@ class TestLoadPreferences(TestCase):
         else:
             assert False
 
+    def test_adds_default_api_url_scheme_if_missing(self):
+        prefs = load_prefs(
+            path.join(FIXTURES_DIR, 'api_url_without_scheme.yml')
+        )
+        assert prefs['api_url'] == CAT_FACTS_API_URL
 
-class TestSavePreferences(TestCase):
+    def test_doesnt_allow_query_string_in_api_url(self):
+        try:
+            load_prefs(
+                path.join(FIXTURES_DIR, 'api_url_with_query_string.yml')
+            )
+        except APIBuddyException as err:
+            assert 'query parameters' in err.title
+            # helpful suggestion
+            assert CAT_FACTS_API_URL in err.message
+        else:
+            assert False
 
-    def setUp(self):
-        clean_temp_yml_file()
+    def test_doesnt_allow_hash_fragments_in_api_url(self):
+        try:
+            load_prefs(
+                path.join(FIXTURES_DIR, 'api_url_with_hash_fragment.yml')
+            )
+        except APIBuddyException as err:
+            assert 'hash fragments' in err.title
+            # helpful suggestion
+            assert CAT_FACTS_API_URL in err.message
+        else:
+            assert False
 
-    def tearDown(self):
-        clean_temp_yml_file()
 
+class TestSavePreferences(TempYAMLTestCase):
     def test_can_save_to_a_new_file(self):
         assert not path.isfile(TEMP_FILE)
         save_prefs(NEW_PREFS, TEMP_FILE)

@@ -1,0 +1,8 @@
+---
+api_url: https://alexwohlbruck.github.io/cat-facts/?my_cats_name=mittens
+client_id: my_favorite_client_id
+client_secret: my_favorite_client_secret
+scopes: [meows, kibbles]
+state: null
+auth_test_path: /cat
+auth_test_status: 403

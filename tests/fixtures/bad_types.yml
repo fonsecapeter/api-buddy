@@ -1,5 +1,5 @@
 ---
-api_url: https://seinfeld-quotes.herokuapp.com/
+api_url: https://seinfeld-quotes.herokuapp.com
 client_id: 42
 client_secret: my_favorite_client_secret
 scopes:

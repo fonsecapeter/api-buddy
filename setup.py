@@ -13,6 +13,7 @@ setup(
     long_description='',
     python_requires='>3.7',
     install_requires=[
+        'beautifulsoup4 == 4.7.1',
         'docopt == 0.6.2',
         'PyYAML == 4.2b1',
         'requests-oauthlib == 1.2.0',

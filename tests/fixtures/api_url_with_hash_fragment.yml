@@ -1,10 +1,8 @@
 ---
-api_url: https://seinfeld-quotes.herokuapp.com
+api_url: https://alexwohlbruck.github.io/cat-facts/#features
 client_id: my_favorite_client_id
 client_secret: my_favorite_client_secret
-scopes:
-   - quotes
-   - episodes
+scopes: [meows, kibbles]
 state: null
-auth_test_path: /cosmo_kramer
+auth_test_path: /cat
 auth_test_status: 403
