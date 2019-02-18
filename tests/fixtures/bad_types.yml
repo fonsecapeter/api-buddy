@@ -1,10 +1,9 @@
 ---
 api_url: https://seinfeld-quotes.herokuapp.com
-client_id: my_favorite_client_id
+client_id: 42
 client_secret: my_favorite_client_secret
 scopes:
-   - quotes
-   - episodes
+  - 7
 state: null
 auth_test_path: /cosmo_kramer
 auth_test_status: 403
