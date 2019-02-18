@@ -28,7 +28,7 @@ def _strip_html(content: str) -> str:
     return '\n'.join(lines)
 
 
-def format_response(resp: Response) -> None:
+def format_response(resp: Response) -> str:
     try:
         formatted = json.dumps(resp.json(), indent=INDENT)
     except (json.decoder.JSONDecodeError, TypeError):

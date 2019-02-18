@@ -7,6 +7,7 @@ schema==0.6.8
 
 # Dev Dependencies
 colorama==0.4.1
+flake8==3.7.5
 ipython==7.2.0
 mock==2.0.0
 mypy==0.670

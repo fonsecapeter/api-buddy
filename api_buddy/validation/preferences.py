@@ -1,5 +1,4 @@
 from schema import (
-    And,
     Schema,
     SchemaError,
     Optional,

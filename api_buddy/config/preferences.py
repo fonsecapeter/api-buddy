@@ -43,7 +43,7 @@ def _extract_yaml_from_file(file_name: str) -> Any:
     with open(file_name, 'r') as prefs_file:
         try:
             user_prefs = yaml.load(prefs_file)
-        except yaml.YAMLError as exc:
+        except yaml.YAMLError:
             raise APIBuddyException(
                 title=f'There was a problem reading {file_name}',
                 message=(

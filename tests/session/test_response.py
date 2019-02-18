@@ -4,6 +4,7 @@ from api_buddy.session.response import format_response
 
 TEXT_TO_KEEP = 'This text should stay'
 
+
 class TestFormatResponse(TestCase):
     def test_when_json_it_can_expand_and_indent(self):
         resp = MagicMock()
