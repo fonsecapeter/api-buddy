@@ -1,12 +1,27 @@
 """Explore OAuth2 APIs from your console
 
+You can edit your preferences in ~/.api-buddy.yml:
+  api_url: https://base.api.url.com
+  client_id: your_client_id
+  client_secret: your_client_secret
+  scopes:
+    - one_scope
+    - another_scope
+  redirect_uri: http://localhost:8080/
+  auth_test_path: /endpoint_that_requires_token
+  auth_fail_path: 401
+
+These last 2 are used to determine if you need a new token
 Check out https://github.com/fonsecapeter/api-buddy for more info
 
+Query Params should be in key=val format, ex:
+$ api get my/favorite/endpoint first_name=cosmo last_name=kramer
+
 Usage:
-  api-buddy <endpoint>
-  api-buddy get <endpoint>
-  api-buddy (-h | --help)
-  api-buddy (-v | --version)
+  api <endpoint> [<params>...]
+  api get <endpoint> [<params>...]
+  api (-h | --help)
+  api (-v | --version)
 
 Options:
   -v, --version  Show installed version

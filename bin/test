@@ -4,4 +4,4 @@ set -e -o pipefail
 
 bin/check_venv
 bin/lint
-venv/bin/pytest --cov --pspec tests
+venv/bin/pytest --cov --cov-report term-missing --pspec tests
