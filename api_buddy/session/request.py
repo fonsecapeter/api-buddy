@@ -7,7 +7,7 @@ from ..exceptions import APIBuddyException
 def send_request(sesh: Session, prefs: Preferences, opts: Options) -> Response:
     url = urljoin(prefs['api_url'], opts['<endpoint>'])
     if opts['get']:
-        return sesh.get(url)
+        return sesh.get(url, params=opts['<params>'])
     else:
         raise APIBuddyException(
             title='Something went wrong',

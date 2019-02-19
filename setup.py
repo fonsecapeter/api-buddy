@@ -31,7 +31,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'api-buddy = api_buddy.cli:run',
+            'api = api_buddy.cli:run',
         ],
     }
 )

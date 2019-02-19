@@ -1,5 +1,5 @@
 from mypy_extensions import TypedDict
-from typing import Iterable, Optional
+from typing import Dict, Iterable, List, Optional, Union
 
 Preferences = TypedDict('Preferences', {
     'api_url': str,
@@ -18,4 +18,5 @@ Options = TypedDict('Options', {
     '--version': bool,
     '<endpoint>': str,
     'get': Optional[bool],
+    '<params>': Dict[str, Union[str, List[str]]],
 })
