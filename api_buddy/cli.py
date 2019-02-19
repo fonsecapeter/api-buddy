@@ -18,8 +18,8 @@ Query Params should be in key=val format, ex:
 $ api get my/favorite/endpoint first_name=cosmo last_name=kramer
 
 Usage:
-  api <endpoint> [<params>...]
-  api get <endpoint> [<params>...]
+  api get <endpoint> [<params> ...]
+  api <endpoint> [<params> ...]
   api (-h | --help)
   api (-v | --version)
 
@@ -43,13 +43,13 @@ def run() -> None:
         return
     try:
         prefs = load_prefs(PREFS_FILE)
+        sesh = get_oauth_session(prefs, PREFS_FILE)
+        resp = send_request(sesh, prefs, opts)
+        print(f'=> {resp.status_code}')
+        print(format_response(resp))
     except APIBuddyException as err:
         exit_with_exception(err)
         return
-    sesh = get_oauth_session(prefs, PREFS_FILE)
-    resp = send_request(sesh, prefs, opts)
-    print(f'=> {resp.status_code}')
-    print(format_response(resp))
 
 
 if __name__ == '__main__':
