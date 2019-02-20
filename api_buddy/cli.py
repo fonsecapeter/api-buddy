@@ -26,7 +26,7 @@ Options:
   -v, --version  Show installed version
   -h, --help     Show this help message
 """
-from .constants import VERSION, PREFS_FILE
+from .utils import VERSION, PREFS_FILE
 from .exceptions import APIBuddyException, exit_with_exception
 from .config.preferences import load_prefs
 from .config.options import load_options

@@ -1,5 +1,5 @@
 from unittest import TestCase
-from api_buddy.constants import VERSION
+from api_buddy.utils import VERSION
 
 
 class TestAPIBuddy(TestCase):

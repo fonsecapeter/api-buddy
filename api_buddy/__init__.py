@@ -1,2 +1,2 @@
-from .constants import VERSION
+from .utils import VERSION
 __version__ = VERSION

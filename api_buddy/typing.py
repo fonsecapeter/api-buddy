@@ -8,6 +8,7 @@ Preferences = TypedDict('Preferences', {
     'scopes': Iterable[str],
     'redirect_uri': str,  # Optional
     'auth_test_status': int,  # Optional
+    'api_version': Optional[str],  # Optional
     'access_token': str,
     'state': Optional[str],  # Optional, can be None
     'absolute_path': str,
