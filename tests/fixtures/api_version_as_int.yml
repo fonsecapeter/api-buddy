@@ -1,0 +1,10 @@
+---
+api_url: https://seinfeld-quotes.herokuapp.com
+client_id: my_favorite_client_id
+client_secret: my_favorite_client_secret
+scopes:
+   - quotes
+   - episodes
+state: null
+auth_test_status: 403
+api_version: 3

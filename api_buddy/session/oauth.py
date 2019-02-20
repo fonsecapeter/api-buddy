@@ -4,6 +4,7 @@ from typing import Optional
 from urllib.parse import urljoin
 from requests_oauthlib import OAuth2Session
 
+from ..utils import api_url_join
 from ..typing import Preferences, Options
 from ..config.preferences import save_prefs
 
@@ -67,7 +68,11 @@ def get_oauth_session(
         scope=' '.join(prefs['scopes']),
         token={'access_token': prefs['access_token']},
     )
-    resp = sesh.get(urljoin(prefs['api_url'], opts['<endpoint>']))
+    resp = sesh.get(api_url_join(
+        prefs['api_url'],
+        prefs['api_version'],
+        opts['<endpoint>'],
+    ))
     if resp.status_code == prefs['auth_test_status']:
         access_token = _authenticate(
             sesh,

@@ -1,5 +1,5 @@
 from distutils.core import setup
-from api_buddy.constants import VERSION
+from api_buddy.utils import VERSION
 
 setup(
     name='api-buddy',

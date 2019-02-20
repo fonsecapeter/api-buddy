@@ -6,3 +6,5 @@ api_buddy.egg*
 .ropeproject
 .coverage
 .mypy*
+
+tests/fixtures/temp.yml

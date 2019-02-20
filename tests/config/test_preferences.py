@@ -25,14 +25,19 @@ NEW_PREFS: Preferences = {
     'access_token': 'feline_token',
     'state': None,
     'auth_test_status': 401,
+    'api_version': None,
 }
+
+
+def _fixture_path(file_name):
+    abs_path = path.join(FIXTURES_DIR, file_name)
+    assert path.isfile(abs_path)
+    return abs_path
 
 
 class TestLoadPreferences(TempYAMLTestCase):
     def test_can_load_from_a_yaml_file(self):
-        prefs = load_prefs(
-            path.join(FIXTURES_DIR, 'test.yml')
-        )
+        prefs = load_prefs(_fixture_path('test.yml'))
         assert prefs['api_url'] == 'https://seinfeld-quotes.herokuapp.com'
         assert prefs['client_id'] == 'my_favorite_client_id'
         assert prefs['client_secret'] == 'my_favorite_client_secret'
@@ -41,11 +46,10 @@ class TestLoadPreferences(TempYAMLTestCase):
         assert prefs['auth_test_status'] == 403
 
     def test_merges_yaml_with_defaults(self):
-        prefs = load_prefs(
-            path.join(FIXTURES_DIR, 'test.yml')
-        )
+        prefs = load_prefs(_fixture_path('test.yml'))
         assert prefs['client_id'] == 'my_favorite_client_id'     # retains non-default
         assert prefs['redirect_uri'] == DEFAULT_PREFS['redirect_uri']  # not specified
+        assert prefs['api_version'] == DEFAULT_PREFS['api_version']  # not specified
         assert prefs['auth_test_status'] == 403                  # overwritten default
 
     def test_when_file_doesnt_exist_it_writes_example_prefs(self):
@@ -57,9 +61,7 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     def test_file_must_contain_valid_yaml(self):
         try:
-            load_prefs(
-                path.join(FIXTURES_DIR, 'bad.yml')
-            )
+            load_prefs(_fixture_path('bad.yml'))
         except APIBuddyException as err:
             assert 'problem reading' in err.title
             assert 'valid yaml' in err.message
@@ -68,9 +70,7 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     def test_file_cant_be_empty(self):
         try:
-            load_prefs(
-                path.join(FIXTURES_DIR, 'empty.yml')
-            )
+            load_prefs(_fixture_path('empty.yml'))
         except APIBuddyException as err:
             assert 'preferences are empty' in err.title
             assert f'client_id: {EXAMPLE_PREFS["client_id"]}' in err.message
@@ -79,9 +79,7 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     def test_validates_field_types(self):
         try:
-            load_prefs(
-                path.join(FIXTURES_DIR, 'bad_types.yml')
-            )
+            load_prefs(_fixture_path('bad_types.yml'))
         except APIBuddyException as err:
             assert 'preferences are funky' in err.title
             assert 'client_id' in err.message
@@ -90,9 +88,7 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     def test_validates_required_fields(self):
         try:
-            load_prefs(
-                path.join(FIXTURES_DIR, 'missing_fields.yml')
-            )
+            load_prefs(_fixture_path('missing_fields.yml'))
         except APIBuddyException as err:
             assert 'preferences are funky' in err.title
             assert 'api_url' in err.message
@@ -101,16 +97,12 @@ class TestLoadPreferences(TempYAMLTestCase):
             assert False
 
     def test_adds_default_api_url_scheme_if_missing(self):
-        prefs = load_prefs(
-            path.join(FIXTURES_DIR, 'api_url_without_scheme.yml')
-        )
+        prefs = load_prefs(_fixture_path('api_url_without_scheme.yml'))
         assert prefs['api_url'] == CAT_FACTS_API_URL
 
     def test_doesnt_allow_query_string_in_api_url(self):
         try:
-            load_prefs(
-                path.join(FIXTURES_DIR, 'api_url_with_query_string.yml')
-            )
+            load_prefs(_fixture_path('api_url_with_query_string.yml'))
         except APIBuddyException as err:
             assert 'query parameters' in err.title
             # helpful suggestion
@@ -120,15 +112,21 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     def test_doesnt_allow_hash_fragments_in_api_url(self):
         try:
-            load_prefs(
-                path.join(FIXTURES_DIR, 'api_url_with_hash_fragment.yml')
-            )
+            load_prefs(_fixture_path('api_url_with_hash_fragment.yml'))
         except APIBuddyException as err:
             assert 'hash fragments' in err.title
             # helpful suggestion
             assert CAT_FACTS_API_URL in err.message
         else:
             assert False
+
+    def test_supports_string_api_versions(self):
+        prefs = load_prefs(_fixture_path('api_version_as_str.yml'))
+        assert prefs['api_version'] == 'three'
+
+    def test_when_api_version_is_not_none_it_coerces_to_str(self):
+        prefs = load_prefs(_fixture_path('api_version_as_int.yml'))
+        assert prefs['api_version'] == '3'
 
 
 class TestSavePreferences(TempYAMLTestCase):

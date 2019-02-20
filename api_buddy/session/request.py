@@ -1,11 +1,19 @@
 from requests import Response, Session
-from urllib.parse import urljoin
+from ..utils import api_url_join
 from ..typing import Preferences, Options
 from ..exceptions import APIBuddyException
 
 
-def send_request(sesh: Session, prefs: Preferences, opts: Options) -> Response:
-    url = urljoin(prefs['api_url'], opts['<endpoint>'])
+def send_request(
+            sesh: Session,
+            prefs: Preferences,
+            opts: Options
+        ) -> Response:
+    url = api_url_join(
+        prefs['api_url'],
+        prefs['api_version'],
+        opts['<endpoint>'],
+    )
     if opts['get']:
         return sesh.get(url, params=opts['<params>'])
     else:
