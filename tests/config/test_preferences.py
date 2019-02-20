@@ -22,7 +22,6 @@ NEW_PREFS: Preferences = {
     'client_secret': 'whiskers',
     'scopes': ['fails', 'stuck_in_boxes'],
     'redirect_uri': 'http://localhost:8080/',
-    'auth_test_path': '/secret_cats',
     'access_token': 'feline_token',
     'state': None,
     'auth_test_status': 401,

@@ -13,7 +13,6 @@ EXAMPLE_PREFS: Preferences = {
     'client_secret': 'your_client_secret',
     'scopes': ['one_scope', 'another_scope'],
     'redirect_uri': DEFAULT_PREFS['redirect_uri'],
-    'auth_test_path': 'endpoint_that_requires_token',
 }
 
 

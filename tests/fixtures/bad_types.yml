@@ -5,5 +5,4 @@ client_secret: my_favorite_client_secret
 scopes:
   - 7
 state: null
-auth_test_path: /cosmo_kramer
 auth_test_status: 403

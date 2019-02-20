@@ -30,7 +30,6 @@ prefs_schema = Schema({
             'state',
             default=DEFAULT_PREFS['state'],
         ): Or(str, None),
-    'auth_test_path': str,
     Optional(
             'auth_test_status',
             default=DEFAULT_PREFS['auth_test_status'],

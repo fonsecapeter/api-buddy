@@ -7,10 +7,10 @@ Preferences = TypedDict('Preferences', {
     'client_secret': str,
     'scopes': Iterable[str],
     'redirect_uri': str,  # Optional
-    'auth_test_path': str,
     'auth_test_status': int,  # Optional
     'access_token': str,
     'state': Optional[str],  # Optional, can be None
+    'absolute_path': str,
 }, total=False)
 
 Options = TypedDict('Options', {

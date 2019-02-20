@@ -8,7 +8,6 @@ You can edit your preferences in ~/.api-buddy.yml:
     - one_scope
     - another_scope
   redirect_uri: http://localhost:8080/
-  auth_test_path: /endpoint_that_requires_token
   auth_fail_path: 401
 
 These last 2 are used to determine if you need a new token
@@ -43,7 +42,7 @@ def run() -> None:
         return
     try:
         prefs = load_prefs(PREFS_FILE)
-        sesh = get_oauth_session(prefs, PREFS_FILE)
+        sesh = get_oauth_session(opts, prefs, PREFS_FILE)
         resp = send_request(sesh, prefs, opts)
         print(f'=> {resp.status_code}')
         print(format_response(resp))

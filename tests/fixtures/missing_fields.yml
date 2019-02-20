@@ -4,5 +4,4 @@ scopes:
    - quotes
    - episodes
 state: null
-auth_test_path: /cosmo_kramer
 auth_test_status: 403
