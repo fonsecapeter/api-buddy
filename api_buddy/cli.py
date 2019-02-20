@@ -1,16 +1,28 @@
 """Explore OAuth2 APIs from your console
 
-You can edit your preferences in ~/.api-buddy.yml:
+You can edit your preferences in ~/.api-buddy.yml
+You'll have to specify these (with examples shown):
   api_url: https://base.api.url.com
+    # (str) The base api url you'll be using
   client_id: your_client_id
+    # (str) Part of your api provider dev account
   client_secret: your_client_secret
+    # (str) Part of your api provider dev account (PROTECT THIS, ITS SECRET 🙊)
   scopes:
+    # (List[str]) Specify which resources you want to access
     - one_scope
     - another_scope
-  redirect_uri: http://localhost:8080/
-  auth_fail_path: 401
 
-These last 2 are used to determine if you need a new token
+You can optionally specify these (with defaults shown):
+  redirect_uri: http://localhost:8080/
+    # (str) Part of your api provider dev account, needs to be on localhost
+  auth_fail_path: 401
+    # (int) Response status code that means "you need to re-authorize"
+  api_version: 1
+    # (Any) If your api uses versioning, you can specify this and
+    #       not have to type it all the time.
+    #       Would be https://an.api.com/<version>/my-fav-endpoint
+
 Check out https://github.com/fonsecapeter/api-buddy for more info
 
 Query Params should be in key=val format, ex:
