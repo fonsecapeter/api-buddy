@@ -4,7 +4,7 @@ from typing import Optional
 from urllib.parse import urljoin
 from requests_oauthlib import OAuth2Session
 
-from ..typing import Preferences
+from ..typing import Preferences, Options
 from ..config.preferences import save_prefs
 
 APPLICATION_JSON = 'application/json'
@@ -51,7 +51,11 @@ def _authenticate(
     return str(token['access_token'])
 
 
-def get_oauth_session(prefs: Preferences, prefs_file_name: str) -> OAuth2Session:
+def get_oauth_session(
+            opts: Options,
+            prefs: Preferences,
+            prefs_file_name: str,
+        ) -> OAuth2Session:
     """Initialize OAuth2 session, reauthorizing if needed
 
     Notes:
@@ -63,7 +67,7 @@ def get_oauth_session(prefs: Preferences, prefs_file_name: str) -> OAuth2Session
         scope=' '.join(prefs['scopes']),
         token={'access_token': prefs['access_token']},
     )
-    resp = sesh.get(urljoin(prefs['api_url'], prefs['auth_test_path']))
+    resp = sesh.get(urljoin(prefs['api_url'], opts['<endpoint>']))
     if resp.status_code == prefs['auth_test_status']:
         access_token = _authenticate(
             sesh,

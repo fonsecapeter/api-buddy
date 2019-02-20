@@ -33,7 +33,7 @@ class TestSendRequest(TempYAMLTestCase):
             '--help': False,
             '--version': False,
         }
-        sesh = get_oauth_session(prefs, TEMP_FILE)
+        sesh = get_oauth_session(opts, prefs, TEMP_FILE)
         resp = send_request(sesh, prefs, opts)
         assert resp.status_code == 200
 
@@ -47,7 +47,7 @@ class TestSendRequest(TempYAMLTestCase):
             '--help': False,
             '--version': False,
         }
-        sesh = get_oauth_session(prefs, TEMP_FILE)
+        sesh = get_oauth_session(opts, prefs, TEMP_FILE)
         try:
             send_request(sesh, prefs, opts)
         except APIBuddyException as err:
@@ -67,6 +67,6 @@ class TestSendRequest(TempYAMLTestCase):
             '--help': False,
             '--version': False,
         }
-        sesh = get_oauth_session(prefs, TEMP_FILE)
+        sesh = get_oauth_session(opts, prefs, TEMP_FILE)
         mock_resp = send_request(sesh, prefs, opts)
         assert mock_resp.params == params

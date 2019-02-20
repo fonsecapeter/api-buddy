@@ -4,3 +4,6 @@ set -e -o pipefail
 
 rm -rf venv
 rm -rf api-buddy.egg-info
+find . \
+  -type f -name '*.pyc' -delete \
+  -o -type d -name __pycache__ -delete

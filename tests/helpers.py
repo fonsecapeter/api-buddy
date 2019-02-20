@@ -3,22 +3,29 @@ from requests import Response
 from unittest import mock, TestCase
 from typing import Any, Callable, NoReturn, Optional
 from api_buddy.constants import ROOT_DIR
+from api_buddy.typing import Preferences, Options
 
 FIXTURES_DIR = path.join(ROOT_DIR, 'tests', 'fixtures')
 TEMP_FILE = path.join(FIXTURES_DIR, 'temp.yml')
 FAKE_API_URL = 'https://fake.api.com'
 FAKE_ACCESS_TOKEN = 'banana'
 FAKE_STATE = 'california'
-TEST_PREFERENCES = {
+TEST_PREFERENCES: Preferences = {
     'api_url': FAKE_API_URL,
     'client_id': 'client_id',
     'client_secret': 'client_secret',
     'scopes': ['a_scope', 'another_scope'],
     'redirect_uri': 'http://localhost:8080/',
     'access_token': FAKE_ACCESS_TOKEN,
-    'auth_test_path': 'endpoint',
     'auth_test_status': 401,
     'state': FAKE_STATE,
+}
+TEST_OPTIONS: Options = {
+    '<endpoint>': 'cats',
+    '<params>': [],
+    'get': True,
+    '--help': False,
+    '--version': False,
 }
 
 
