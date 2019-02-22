@@ -5,6 +5,7 @@ from urllib.parse import urljoin
 VERSION = '0.1.0'
 PREFS_FILE = '~/.api-buddy.yml'
 ROOT_DIR = path.dirname(path.dirname(__file__))
+REQUEST_TIMEOUT = 5  # seconds
 
 
 def api_url_join(

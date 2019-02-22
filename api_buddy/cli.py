@@ -7,23 +7,23 @@ You'll have to specify these (with examples shown):
   client_id: your_client_id
     # (str) Part of your api provider dev account
   client_secret: your_client_secret
-    # (str) Part of your api provider dev account (PROTECT THIS, ITS SECRET 🙊)
-  scopes:
-    # (List[str]) Specify which resources you want to access
-    - one_scope
-    - another_scope
+    # (str) Part of your api provider dev account
+    #       (PROTECT THIS, ITS SECRET 🙊)
+  scopes: [one_scope, another_scope]
+    # (List[str]) Specify which resources you want to
+    #             access
 
 You can optionally specify these (with defaults shown):
   redirect_uri: http://localhost:8080/
-    # (str) Part of your api provider dev account, needs to be on localhost
+    # (str) Part of your api provider dev account, needs to
+    #       be on localhost
   auth_fail_path: 401
-    # (int) Response status code that means "you need to re-authorize"
+    # (int) Response status code that means you need to
+    #       re-authorize
   api_version: 1
-    # (Any) If your api uses versioning, you can specify this and
-    #       not have to type it all the time.
-    #       Would be https://an.api.com/<version>/my-fav-endpoint
-
-Check out https://github.com/fonsecapeter/api-buddy for more info
+    # (Any) If your api uses versioning, you can specify
+    #       this and not have to type it all the time.
+    #       https://an.api.com/<version>/my-fav-endpoint
 
 Query Params should be in key=val format, ex:
 $ api get my/favorite/endpoint first_name=cosmo last_name=kramer
@@ -37,6 +37,9 @@ Usage:
 Options:
   -v, --version  Show installed version
   -h, --help     Show this help message
+
+Check out GitHub for more info
+https://github.com/fonsecapeter/api-buddy
 """
 from .utils import VERSION, PREFS_FILE
 from .exceptions import APIBuddyException, exit_with_exception
@@ -55,7 +58,7 @@ def run() -> None:
     try:
         prefs = load_prefs(PREFS_FILE)
         sesh = get_oauth_session(opts, prefs, PREFS_FILE)
-        resp = send_request(sesh, prefs, opts)
+        resp = send_request(sesh, prefs, opts, PREFS_FILE)
         print(f'=> {resp.status_code}')
         print(format_response(resp))
     except APIBuddyException as err:

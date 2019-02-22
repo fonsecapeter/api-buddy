@@ -1,13 +1,16 @@
 import webbrowser
+import requests
 from os import environ
 from typing import Optional
 from urllib.parse import urljoin
 from requests_oauthlib import OAuth2Session
 
-from ..utils import api_url_join
+from ..exceptions import APIBuddyException
 from ..typing import Preferences, Options
+from ..utils import REQUEST_TIMEOUT
 from ..config.preferences import save_prefs
 
+DNS = 'http://1.1.1.1'
 APPLICATION_JSON = 'application/json'
 HEADERS = {
     'Accept': APPLICATION_JSON,
@@ -17,6 +20,16 @@ HEADERS = {
 
 def _get_authorization_response_url() -> str:
     return input('Enter the full url: ')  # pragma: no cover
+
+
+def _check_interwebs_connection() -> None:
+    try:
+        requests.get(DNS, timeout=REQUEST_TIMEOUT)
+    except requests.exceptions.ConnectionError:
+        raise APIBuddyException(
+            title='There was a problem connecting to the internet',
+            message='Are you on WiFi?'
+        )
 
 
 def _authenticate(
@@ -57,31 +70,31 @@ def get_oauth_session(
             prefs: Preferences,
             prefs_file_name: str,
         ) -> OAuth2Session:
-    """Initialize OAuth2 session, reauthorizing if needed
-
-    Notes:
-        - Saves new token to preferences if re-authenticating
-    """
+    """Initialize OAuth2 session"""
+    _check_interwebs_connection()
     sesh = OAuth2Session(
         client_id=prefs['client_id'],
         redirect_uri=prefs['redirect_uri'],
         scope=' '.join(prefs['scopes']),
         token={'access_token': prefs['access_token']},
     )
-    resp = sesh.get(api_url_join(
-        prefs['api_url'],
-        prefs['api_version'],
-        opts['<endpoint>'],
-    ))
-    if resp.status_code == prefs['auth_test_status']:
-        access_token = _authenticate(
-            sesh,
-            client_secret=prefs['client_secret'],
-            api_url=prefs['api_url'],
-            redirect_uri=prefs['redirect_uri'],
-            state=prefs['state'],
-        )
-        prefs['access_token'] = access_token
-        save_prefs(prefs, prefs_file_name)
     sesh.headers.update(HEADERS)
+    return sesh
+
+
+def reauthenticate(
+            sesh: OAuth2Session,
+            prefs: Preferences,
+            prefs_file: str,
+        ) -> OAuth2Session:
+    """Get a new oauth token for an existing session and save it to preferences"""
+    access_token = _authenticate(
+        sesh,
+        client_secret=prefs['client_secret'],
+        api_url=prefs['api_url'],
+        redirect_uri=prefs['redirect_uri'],
+        state=prefs['state'],
+    )
+    prefs['access_token'] = access_token
+    save_prefs(prefs, prefs_file)
     return sesh
