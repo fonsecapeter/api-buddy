@@ -32,8 +32,10 @@ TEST_OPTIONS: Options = {
 }
 
 
-def explode(*args: Optional[Any], **kwargs: Optional[Any]) -> NoReturn:
-    raise Exception('💣💥')
+def explode(err: Exception = Exception) -> Callable[..., Any]:
+    def wrapper(*args: Optional[Any], **kwargs: Optional[Any]) -> NoReturn:
+        raise err('💣💥')
+    return wrapper
 
 
 def _mock_api_method(method: str = 'get') -> Callable[..., Any]:

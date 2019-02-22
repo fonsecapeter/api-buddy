@@ -24,5 +24,5 @@ def exit_with_exception(err: APIBuddyException) -> NoReturn:
         'Crikey',
         'Dang',
     ))
-    print(f'{pleasantry}! {err.title} {emoji}\n\n{err.message}')
+    print(f'{pleasantry}!\n{err.title} {emoji}\n{err.message}')
     exit(1)
