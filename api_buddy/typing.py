@@ -17,7 +17,7 @@ Preferences = TypedDict('Preferences', {
 Options = TypedDict('Options', {
     '--help': bool,
     '--version': bool,
+    'method': str,
     '<endpoint>': str,
-    'get': Optional[bool],
     '<params>': Dict[str, Union[str, List[str]]],
 })

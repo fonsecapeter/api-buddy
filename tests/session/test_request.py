@@ -6,6 +6,7 @@ from api_buddy.config.preferences import load_prefs
 from api_buddy.exceptions import APIBuddyException
 from api_buddy.session.oauth import get_oauth_session
 from api_buddy.session.request import send_request
+from api_buddy.utils import HTTP_METHODS
 from ..helpers import (
     FAKE_ACCESS_TOKEN,
     FAKE_API_URL,
@@ -18,6 +19,9 @@ from ..helpers import (
     explode,
     mock_get,
     mock_post,
+    mock_patch,
+    mock_put,
+    mock_delete,
     mock_get_side_effect,
     TempYAMLTestCase,
 )
@@ -48,19 +52,34 @@ def _mock_url_catcher(
 class TestSendRequest(TempYAMLTestCase):
     @mock_get()
     @patch('requests.get')
-    def test_returns_a_resopnse(self, mock_get):
+    def test_returns_a_response(self, mock_get):
         prefs = deepcopy(TEST_PREFERENCES)
         opts = deepcopy(TEST_OPTIONS)
         sesh = get_oauth_session(opts, prefs, TEMP_FILE)
         mock_resp = send_request(sesh, prefs, opts, TEMP_FILE)
         assert mock_resp.status_code == 200
 
-    @mock_get()
     @patch('requests.get')
+    @mock_get('{"get": true}')
+    @mock_post('{"post": true}')
+    @mock_patch('{"patch": true}')
+    @mock_put('{"put": true}')
+    @mock_delete('{"delete": true}')
     def test_checks_method(self, mock_get):
         prefs = deepcopy(TEST_PREFERENCES)
         opts = deepcopy(TEST_OPTIONS)
-        opts['get'] = False
+        for method in HTTP_METHODS:
+            opts['method'] = method
+            sesh = get_oauth_session(opts, prefs, TEMP_FILE)
+            resp = send_request(sesh, prefs, opts, TEMP_FILE)
+            assert resp.json()[method] is True
+
+    @mock_get()
+    @patch('requests.get')
+    def test_if_method_isnt_off_it_blows_up(self, mock_get):
+        prefs = deepcopy(TEST_PREFERENCES)
+        opts = deepcopy(TEST_OPTIONS)
+        opts['method'] = 'banana'
         sesh = get_oauth_session(opts, prefs, TEMP_FILE)
         try:
             send_request(sesh, prefs, opts, TEMP_FILE)

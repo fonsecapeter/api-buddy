@@ -1,5 +1,14 @@
 """Explore OAuth2 APIs from your console
 
+HTTP Method defaults to get
+api get-this-endpoint
+
+Query Params should be in key=val format, ex:
+api get \
+  my/favorite/endpoint \
+  first_name=cosmo \
+  last_name=kramer
+
 You can edit your preferences in ~/.api-buddy.yml
 You'll have to specify these (with examples shown):
   api_url: https://base.api.url.com
@@ -8,7 +17,7 @@ You'll have to specify these (with examples shown):
     # (str) Part of your api provider dev account
   client_secret: your_client_secret
     # (str) Part of your api provider dev account
-    #       (PROTECT THIS, ITS SECRET 🙊)
+    #       (PROTECT THIS, IT'S SECRET) 🙊
   scopes: [one_scope, another_scope]
     # (List[str]) Specify which resources you want to
     #             access
@@ -25,11 +34,12 @@ You can optionally specify these (with defaults shown):
     #       this and not have to type it all the time.
     #       https://an.api.com/<version>/my-fav-endpoint
 
-Query Params should be in key=val format, ex:
-$ api get my/favorite/endpoint first_name=cosmo last_name=kramer
-
 Usage:
   api get <endpoint> [<params> ...]
+  api post <endpoint> [<params> ...]
+  api patch <endpoint> [<params> ...]
+  api put <endpoint> [<params> ...]
+  api delete <endpoint> [<params> ...]
   api <endpoint> [<params> ...]
   api (-h | --help)
   api (-v | --version)
@@ -51,11 +61,11 @@ from .session.response import format_response
 
 
 def run() -> None:
-    opts = load_options(__doc__)
-    if opts['--version']:
-        print(VERSION)
-        return
     try:
+        opts = load_options(__doc__)
+        if opts['--version']:
+            print(VERSION)
+            return
         prefs = load_prefs(PREFS_FILE)
         sesh = get_oauth_session(opts, prefs, PREFS_FILE)
         resp = send_request(sesh, prefs, opts, PREFS_FILE)

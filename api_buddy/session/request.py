@@ -1,5 +1,13 @@
 from requests import Response, Session
-from ..utils import api_url_join, REQUEST_TIMEOUT
+from ..utils import (
+    GET,
+    POST,
+    PUT,
+    PATCH,
+    DELETE,
+    REQUEST_TIMEOUT,
+    api_url_join,
+)
 from ..typing import Preferences, Options
 from ..exceptions import APIBuddyException
 from ..session.oauth import reauthenticate
@@ -18,8 +26,33 @@ def send_request(
         prefs['api_version'],
         opts['<endpoint>'],
     )
-    if opts['get']:
+    method = opts['method']
+    if method == GET:
         resp = sesh.get(
+            url,
+            params=opts['<params>'],
+            timeout=REQUEST_TIMEOUT,
+        )
+    elif method == POST:
+        resp = sesh.post(
+            url,
+            params=opts['<params>'],
+            timeout=REQUEST_TIMEOUT,
+        )
+    elif method == PUT:
+        resp = sesh.put(
+            url,
+            params=opts['<params>'],
+            timeout=REQUEST_TIMEOUT,
+        )
+    elif method == PATCH:
+        resp = sesh.patch(
+            url,
+            params=opts['<params>'],
+            timeout=REQUEST_TIMEOUT,
+        )
+    elif method == DELETE:
+        resp = sesh.delete(
             url,
             params=opts['<params>'],
             timeout=REQUEST_TIMEOUT,

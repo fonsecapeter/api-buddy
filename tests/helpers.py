@@ -26,7 +26,7 @@ TEST_PREFERENCES: Preferences = {
 TEST_OPTIONS: Options = {
     '<endpoint>': FAKE_ENDPOINT,
     '<params>': [],
-    'get': True,
+    'method': 'get',
     '--help': False,
     '--version': False,
 }
@@ -94,8 +94,14 @@ def _mock_api_method_side_effect(method: str = 'get') -> Callable[..., Any]:
 # Use these
 mock_get = _mock_api_method('get')
 mock_post = _mock_api_method('post')
+mock_put = _mock_api_method('put')
+mock_patch = _mock_api_method('patch')
+mock_delete = _mock_api_method('delete')
 mock_get_side_effect = _mock_api_method_side_effect('get')
 mock_post_side_effect = _mock_api_method_side_effect('post')
+mock_put_side_effect = _mock_api_method_side_effect('put')
+mock_patch_side_effect = _mock_api_method_side_effect('patch')
+mock_delete_side_effect = _mock_api_method_side_effect('delete')
 
 
 def clean_temp_yml_file() -> None:
