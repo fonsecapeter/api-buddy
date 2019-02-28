@@ -1,22 +1,19 @@
+from json import loads, JSONDecodeError
 from copy import deepcopy
-from typing import cast, Dict, List, Union
+from typing import Any, cast, Dict, List, Optional, Union
 from urllib.parse import urlparse
-from ..typing import Options
+from ..typing import Options, RawOptions
 from ..exceptions import APIBuddyException
 from ..utils import HTTP_METHODS, GET
 
 
-def _more_than_one_method_selected(
-            opts: Dict[str, Union[str, bool]]
-        ) -> bool:
+def _more_than_one_method_selected(opts: RawOptions) -> bool:
     return sum(
         cast(bool, opts[method]) for method in HTTP_METHODS
     ) > 1
 
 
-def _validate_method(
-            opts: Dict[str, Union[str, bool]]
-        ) -> Dict[str, Union[str, bool]]:
+def _validate_method(opts: RawOptions) -> RawOptions:
     """Converts named bools to str enum
 
     Implicitly removed the old docopt booleans from opts
@@ -36,7 +33,7 @@ def _validate_method(
         del opts[method]
         if using_this_method is True:
             selected_method = method
-    opts['method'] = selected_method
+    opts['<method>'] = selected_method
     return opts
 
 
@@ -80,14 +77,57 @@ def _validate_params(
     return keyed_params
 
 
-def validate_options(
-            opts: Dict[str, Union[str, bool]]
-        ) -> Options:
+def _validate_data(data: Optional[str]) -> Any:
+    if data is None:
+        return None
+    try:
+        return loads(data)
+    except JSONDecodeError:
+        raise APIBuddyException(
+            title='Your request body data are wack',
+            message=f'Please use valid json for: \'{data}\'',
+        )
+
+
+def _validate_params_and_data(opts: RawOptions) -> RawOptions:
+    """Validate query params and request body data
+
+    Because of the cli argument signature, docopt always puts <data> at the end
+    the <params> if it's given, and None in opts['<data>'] no matter what. It
+    can't ever know the difference between the last param and the optional data
+    arg, so we have to check the last param and see if it's data.
+    """
+    params = cast(List[str], opts['<params>'])
+    data = None
+    if len(params) > 0:
+        maybe_data = params[-1]
+        maybe_params = params[:-1]
+        try:
+            data = _validate_data(maybe_data)
+        except APIBuddyException as data_err:
+            try:  # maybe it's a param?
+                _validate_params([maybe_data])
+            except APIBuddyException:
+                if opts['<method>'] != GET:  # should never be data for GET
+                    raise data_err  # it's not a param, its bad data
+        else:  # maybe_data is data
+            params = maybe_params
+    if data is not None and opts['<method>'] == GET:
+        raise APIBuddyException(
+            title='You can\'t use request body data with GET',
+            message='Did you mean to use POST?',
+        )
+    opts['<params>'] = _validate_params(params)  # type: ignore
+    opts['<data>'] = data
+    return opts
+
+
+def validate_options(opts: RawOptions) -> Options:
     """Convert types and validate"""
     valid_opts = deepcopy(opts)
-    valid_opts['<endpoint>'] = _validate_endpoint(str(opts['<endpoint>']))
-    valid_opts['<params>'] = _validate_params(  # type: ignore
-        cast(List[str], opts['<params>'])
+    valid_opts['<endpoint>'] = _validate_endpoint(
+        cast(str, valid_opts['<endpoint>'])
     )
     _validate_method(valid_opts)
+    _validate_params_and_data(valid_opts)
     return cast(Options, valid_opts)

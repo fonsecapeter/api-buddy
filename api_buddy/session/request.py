@@ -26,7 +26,7 @@ def send_request(
         prefs['api_version'],
         opts['<endpoint>'],
     )
-    method = opts['method']
+    method = opts['<method>']
     if method == GET:
         resp = sesh.get(
             url,
@@ -37,24 +37,28 @@ def send_request(
         resp = sesh.post(
             url,
             params=opts['<params>'],
+            data=opts['<data>'],
             timeout=REQUEST_TIMEOUT,
         )
     elif method == PUT:
         resp = sesh.put(
             url,
             params=opts['<params>'],
+            data=opts['<data>'],
             timeout=REQUEST_TIMEOUT,
         )
     elif method == PATCH:
         resp = sesh.patch(
             url,
             params=opts['<params>'],
+            data=opts['<data>'],
             timeout=REQUEST_TIMEOUT,
         )
     elif method == DELETE:
         resp = sesh.delete(
             url,
             params=opts['<params>'],
+            data=opts['<data>'],
             timeout=REQUEST_TIMEOUT,
         )
     else:

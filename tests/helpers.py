@@ -24,9 +24,10 @@ TEST_PREFERENCES: Preferences = {
     'state': FAKE_STATE,
 }
 TEST_OPTIONS: Options = {
+    '<method>': 'get',
     '<endpoint>': FAKE_ENDPOINT,
     '<params>': [],
-    'method': 'get',
+    '<data>': None,
     '--help': False,
     '--version': False,
 }

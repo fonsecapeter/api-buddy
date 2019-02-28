@@ -1,5 +1,5 @@
 from mypy_extensions import TypedDict
-from typing import Dict, Iterable, List, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 Preferences = TypedDict('Preferences', {
     'api_url': str,
@@ -17,7 +17,24 @@ Preferences = TypedDict('Preferences', {
 Options = TypedDict('Options', {
     '--help': bool,
     '--version': bool,
-    'method': str,
+    '<method>': str,
     '<endpoint>': str,
     '<params>': Dict[str, Union[str, List[str]]],
+    '<data>': Any,
 })
+
+RawOptions = Dict[str, Optional[Union[str, bool]]]
+# TypedDict currently requires string literal key indexing
+# RawOptions = TypedDict('RawOptions', {
+#     '--help': bool,
+#     '--version': bool,
+#     '<method>': str,  # added in validation
+#     'get': bool,
+#     'post': bool,
+#     'patch': bool,
+#     'put': bool,
+#     'delete': bool,
+#     '<endpoint>': str,
+#     '<params>': List[str],
+#     '<data>': Optional[str],
+# }, total=False)
