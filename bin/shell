@@ -2,5 +2,4 @@
 # Run python repl
 set -e -o pipefail
 
-bin/check_venv
-venv/bin/ipython
+poetry run ipython

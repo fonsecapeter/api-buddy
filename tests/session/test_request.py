@@ -100,12 +100,17 @@ class TestSendRequest(TempYAMLTestCase):
         opts['<params>'] = params
         sesh = get_oauth_session(opts, prefs, TEMP_FILE)
         mock_resp = send_request(sesh, prefs, opts, TEMP_FILE)
-        assert mock_resp.url == f'{FAKE_API_URL}/{FAKE_API_VERSION}/{FAKE_ENDPOINT}'
+        assert (
+            mock_resp.url
+            == f'{FAKE_API_URL}/{FAKE_API_VERSION}/{FAKE_ENDPOINT}'
+        )
 
     @mock_get()
     @patch('requests.get')
     @patch('api_buddy.session.oauth._authenticate')
-    def test_skips_authentication_if_token_is_valid(self, mock_authenticate, mock_get):
+    def test_skips_authentication_if_token_is_valid(
+                self, mock_authenticate, mock_get
+            ):
         mock_authenticate.side_effect = explode()  # should not get called
         prefs = deepcopy(TEST_PREFERENCES)
         opts = deepcopy(TEST_OPTIONS)
@@ -114,12 +119,16 @@ class TestSendRequest(TempYAMLTestCase):
         assert sesh.token['access_token'] == FAKE_ACCESS_TOKEN
 
     @mock_get(status_code=401)  # expired token check
-    @mock_post(content=f'{{"access_token": "{NEW_ACCESS_TOKEN}"}}')  # within Oauth2.fetch_token
+    @mock_post(content=f'{{"access_token": "{NEW_ACCESS_TOKEN}"}}')
     @patch('requests.get')
     @patch('webbrowser.open')
     @patch('api_buddy.session.oauth._get_authorization_response_url')
-    def test_re_authenticates_if_token_is_expired(self, mock_auth_resp_url, mock_open, mock_get):
-        mock_auth_resp_url.return_value = f'{FAKE_API_URL}/?code=banana&state={FAKE_STATE}'
+    def test_re_authenticates_if_token_is_expired(
+                self, mock_auth_resp_url, mock_open, mock_get
+            ):
+        mock_auth_resp_url.return_value = (
+            f'{FAKE_API_URL}/?code=banana&state={FAKE_STATE}'
+        )
         prefs = deepcopy(TEST_PREFERENCES)
         opts = deepcopy(TEST_OPTIONS)
         sesh = get_oauth_session(opts, prefs, TEMP_FILE)
@@ -127,12 +136,16 @@ class TestSendRequest(TempYAMLTestCase):
         assert sesh.token['access_token'] == NEW_ACCESS_TOKEN
 
     @mock_get(status_code=401)  # expired token check
-    @mock_post(content=f'{{"access_token": "{NEW_ACCESS_TOKEN}"}}')  # within Oauth2.fetch_token
+    @mock_post(content=f'{{"access_token": "{NEW_ACCESS_TOKEN}"}}')
     @patch('requests.get')
     @patch('webbrowser.open')
     @patch('api_buddy.session.oauth._get_authorization_response_url')
-    def test_writes_new_token_if_re_authenticating(self, mock_auth_resp_url, mock_open, mock_get):
-        mock_auth_resp_url.return_value = f'{FAKE_API_URL}/?code=banana&state={FAKE_STATE}'
+    def test_writes_new_token_if_re_authenticating(
+                self, mock_auth_resp_url, mock_open, mock_get
+            ):
+        mock_auth_resp_url.return_value = (
+            f'{FAKE_API_URL}/?code=banana&state={FAKE_STATE}'
+        )
         prefs = deepcopy(TEST_PREFERENCES)
         opts = deepcopy(TEST_OPTIONS)
         sesh = get_oauth_session(opts, prefs, TEMP_FILE)
