@@ -2,8 +2,9 @@
 # Reset venv
 set -e -o pipefail
 
-rm -rf venv
+rm -rf dist
 rm -rf api-buddy.egg-info
+rm -rf pip-wheel-metadata
 find . \
   -type f -name '*.pyc' -delete \
   -o -type d -name __pycache__ -delete

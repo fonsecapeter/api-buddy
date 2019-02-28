@@ -47,10 +47,14 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     def test_merges_yaml_with_defaults(self):
         prefs = load_prefs(_fixture_path('test.yml'))
-        assert prefs['client_id'] == 'my_favorite_client_id'     # retains non-default
-        assert prefs['redirect_uri'] == DEFAULT_PREFS['redirect_uri']  # not specified
-        assert prefs['api_version'] == DEFAULT_PREFS['api_version']  # not specified
-        assert prefs['auth_test_status'] == 403                  # overwritten default
+        # retains non-default
+        assert prefs['client_id'] == 'my_favorite_client_id'
+        # not specified
+        assert prefs['redirect_uri'] == DEFAULT_PREFS['redirect_uri']
+        # not specified
+        assert prefs['api_version'] == DEFAULT_PREFS['api_version']
+        # overwritten default
+        assert prefs['auth_test_status'] == 403
 
     def test_when_file_doesnt_exist_it_writes_example_prefs(self):
         assert not path.isfile(TEMP_FILE)

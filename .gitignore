@@ -1,7 +1,8 @@
-venv
+dist
 
 __pycache__
 api_buddy.egg*
+pip-wheel-metadata
 .pytest_cache
 .ropeproject
 .coverage

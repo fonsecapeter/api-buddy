@@ -18,7 +18,9 @@ def _validate_endpoint(endpoint: str) -> str:
     return endpoint
 
 
-def _validate_params(params: List[str]) -> Dict[str, Union[str, List[str]]]:
+def _validate_params(
+            params: List[str]
+        ) -> Dict[str, Union[str, List[str]]]:
     """Parse query params
 
     ['key1=val1', 'key2=val2', 'key2=val3']
@@ -50,5 +52,5 @@ def validate_options(opts: Dict['str', Union[str, bool]]) -> Options:
     valid_opts['<params>'] = _validate_params(  # type: ignore
         cast(List[str], opts['<params>'])
     )
-    valid_opts['get'] = True  # TODO only do this if not using a different method
+    valid_opts['get'] = True  # TODO handle different methods
     return cast(Options, valid_opts)

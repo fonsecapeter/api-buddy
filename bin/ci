@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
 
-echo 'Checking types...'
-flake8 api_buddy tests
-echo '🤙'
-echo 'Checking pep8 style...'
-mypy api_buddy --ignore-missing-imports --strict
-echo '😄'
-pytest --cov --pspec tests
+poetry build
+bin/test

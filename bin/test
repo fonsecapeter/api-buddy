@@ -2,6 +2,5 @@
 # Run all tests
 set -e -o pipefail
 
-bin/check_venv
 bin/lint
-venv/bin/pytest --cov --cov-report term-missing --pspec tests
+poetry run pytest --cov --cov-report term-missing --pspec tests

@@ -87,7 +87,10 @@ def reauthenticate(
             prefs: Preferences,
             prefs_file: str,
         ) -> OAuth2Session:
-    """Get a new oauth token for an existing session and save it to preferences"""
+    """Get a new oauth token for an existing session
+
+    Also save it to preferences
+    """
     access_token = _authenticate(
         sesh,
         client_secret=prefs['client_secret'],

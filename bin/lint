@@ -2,10 +2,9 @@
 # Run mypy
 set -e -o pipefail
 
-bin/check_venv
 echo 'Checking pep8 style...'
-venv/bin/flake8 api_buddy tests
+poetry run flake8 api_buddy tests
 echo '🤙'
 echo 'Checking types...'
-venv/bin/mypy api_buddy --ignore-missing-imports --strict
+poetry run mypy api_buddy --ignore-missing-imports --strict
 echo '😄'
