@@ -1,11 +1,12 @@
 from copy import deepcopy
 from mock import MagicMock, PropertyMock, patch
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
 
 from api_buddy.config.preferences import load_prefs
 from api_buddy.exceptions import APIBuddyException
 from api_buddy.session.oauth import get_oauth_session
 from api_buddy.session.request import send_request
+from api_buddy.utils import HTTP_METHODS, GET
 from ..helpers import (
     FAKE_ACCESS_TOKEN,
     FAKE_API_URL,
@@ -18,7 +19,14 @@ from ..helpers import (
     explode,
     mock_get,
     mock_post,
+    mock_patch,
+    mock_put,
+    mock_delete,
     mock_get_side_effect,
+    mock_post_side_effect,
+    mock_patch_side_effect,
+    mock_put_side_effect,
+    mock_delete_side_effect,
     TempYAMLTestCase,
 )
 
@@ -45,22 +53,48 @@ def _mock_url_catcher(
     return mock_resp
 
 
+def _mock_data_catcher(
+            url: str,
+            params: Dict[str, Union[str, List[str]]] = {},
+            data: Any = None,
+            timeout: int = 0,
+        ):
+    mock_resp = MagicMock()
+    type(mock_resp).data = PropertyMock(return_value=data)
+    return mock_resp
+
+
 class TestSendRequest(TempYAMLTestCase):
     @mock_get()
     @patch('requests.get')
-    def test_returns_a_resopnse(self, mock_get):
+    def test_returns_a_response(self, mock_get):
         prefs = deepcopy(TEST_PREFERENCES)
         opts = deepcopy(TEST_OPTIONS)
         sesh = get_oauth_session(opts, prefs, TEMP_FILE)
         mock_resp = send_request(sesh, prefs, opts, TEMP_FILE)
         assert mock_resp.status_code == 200
 
-    @mock_get()
     @patch('requests.get')
+    @mock_get('{"get": true}')
+    @mock_post('{"post": true}')
+    @mock_patch('{"patch": true}')
+    @mock_put('{"put": true}')
+    @mock_delete('{"delete": true}')
     def test_checks_method(self, mock_get):
         prefs = deepcopy(TEST_PREFERENCES)
         opts = deepcopy(TEST_OPTIONS)
-        opts['get'] = False
+        for method in HTTP_METHODS:
+            opts['<method>'] = method
+            sesh = get_oauth_session(opts, prefs, TEMP_FILE)
+            resp = send_request(sesh, prefs, opts, TEMP_FILE)
+            assert resp.json()[method] is True
+
+    @mock_get()
+    @patch('requests.get')
+    def test_if_method_isnt_off_it_blows_up(self, mock_get):
+        prefs = deepcopy(TEST_PREFERENCES)
+        opts = deepcopy(TEST_OPTIONS)
+        opts['<method>'] = 'banana'
         sesh = get_oauth_session(opts, prefs, TEMP_FILE)
         try:
             send_request(sesh, prefs, opts, TEMP_FILE)
@@ -152,3 +186,23 @@ class TestSendRequest(TempYAMLTestCase):
         send_request(sesh, prefs, opts, TEMP_FILE)
         prefs = load_prefs(TEMP_FILE)
         assert prefs['access_token'] == NEW_ACCESS_TOKEN
+
+    @patch('requests.get')
+    @mock_get_side_effect(_mock_data_catcher)
+    @mock_post_side_effect(_mock_data_catcher)
+    @mock_put_side_effect(_mock_data_catcher)
+    @mock_patch_side_effect(_mock_data_catcher)
+    @mock_delete_side_effect(_mock_data_catcher)
+    def test_adds_data_to_requests(self, mock_get):
+        data = '{"dis":"json"}'
+        prefs = deepcopy(TEST_PREFERENCES)
+        opts = deepcopy(TEST_OPTIONS)
+        opts['<data>'] = data
+        sesh = get_oauth_session(opts, prefs, TEMP_FILE)
+        for method in HTTP_METHODS:
+            opts['<method>'] = method
+            mock_resp = send_request(sesh, prefs, opts, TEMP_FILE)
+            if method == GET:
+                assert mock_resp.data is None
+            else:
+                assert mock_resp.data == data
