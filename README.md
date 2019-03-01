@@ -4,7 +4,7 @@
 
 Explore APIs from your console with API Buddy
 
-⚠️ Right now, only OAuth2 authentication is supported. It's the most common, and current gold standard for good security practices. Also most APIs use it. That said, I have no beef with all the APIs out there using something else, so feel free to open a ticket if you want something else supported. 🎟
+> Right now, only OAuth2 authentication is supported. It's the most common, and current gold standard for good security practices. Also most APIs use it. That said, I have no beef with all the APIs out there using something else, so feel free to open a ticket if you want something else supported. 🎟
 
 ## Usage
 
@@ -22,7 +22,7 @@ api get some-endpoint
 
 HTTP Method defaults to `get`:
 ```bash
-api this-endpoint  # same as first example ☝️
+api this-endpoint  # same as first example
 ```
 
 You can add query params in key=val format:
