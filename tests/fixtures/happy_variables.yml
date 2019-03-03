@@ -1,0 +1,12 @@
+---
+api_url: https://seinfeld-quotes.herokuapp.com
+client_id: my_favorite_client_id
+client_secret: my_favorite_client_secret
+scopes:
+   - quotes
+   - episodes
+variables:
+  simle_str: is probably most common
+  ints: 2
+  3: 3
+  'true': 'true'

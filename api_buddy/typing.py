@@ -11,7 +11,7 @@ Preferences = TypedDict('Preferences', {
     'api_version': Optional[str],  # Optional
     'access_token': str,
     'state': Optional[str],  # Optional, can be None
-    'absolute_path': str,
+    'variables': Dict[str, str],  # Optional
 }, total=False)
 
 Options = TypedDict('Options', {
