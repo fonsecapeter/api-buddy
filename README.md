@@ -117,9 +117,8 @@ variables:
 
 ## Advanced Usage
 ### Variables
-If you find yourself typing a specific value a bunch of times, like a user id or something, you can put arbitrary variables into your preferences and they'll be interpolated throughout your arguments if you wrap them in `#{}`. For example, if you had this in your preferences:
+If you find yourself typing a specific value a bunch of times, you can put it into your preferences and then you'll be able to interpolate it throughout your arguments. Just wrap it's name in `#{}` and API Buddy will do the rest. For example, if you had this in your preferences:
 ```yaml
-# in preferences
 variables:
   - user_id: 123
   - name: Art Vandalay
@@ -132,7 +131,7 @@ api get '/users/#{user_id}'
 
 And API Buddy would hit the `/users/123` endpoint.
 
-You can also use variables as values in your query params, or anywhere in your request body data.
+You can use variables within in your endpoint, as part of values in your query params, or anywhere in your request body data.
 ```bash
 api post '/users/' \
   'id=#{user_id}' \

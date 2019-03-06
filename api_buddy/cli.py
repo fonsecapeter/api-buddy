@@ -26,9 +26,10 @@ api post \\
      "field": "value"
   }'
 
-Variables can be interpolated within your endpoint, in
-your query params, or anywhere in your request body data,
-as long as they're defined by name in your preferences:
+Variables can be interpolated within your endpoint, as part
+of values in your query params, or anywhere in your request
+body data, as long as they're defined by name in your
+preferences:
 api post \\
   'users/#{user_id}' \\
   'name=#{name}' \\
