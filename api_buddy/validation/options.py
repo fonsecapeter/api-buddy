@@ -1,6 +1,6 @@
 from json import loads, JSONDecodeError
 from copy import deepcopy
-from typing import Any, cast, Dict, List, Optional, Union
+from typing import Any, cast, Dict, List, Union
 from urllib.parse import urlparse
 from ..typing import Options, RawOptions
 from ..exceptions import APIBuddyException
@@ -77,9 +77,7 @@ def _validate_params(
     return keyed_params
 
 
-def _validate_data(data: Optional[str]) -> Any:
-    if data is None:
-        return None
+def _validate_data(data: str) -> Any:
     try:
         return loads(data)
     except JSONDecodeError:

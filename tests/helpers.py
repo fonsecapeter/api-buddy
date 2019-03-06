@@ -27,7 +27,7 @@ TEST_PREFERENCES: Preferences = {
 TEST_OPTIONS: Options = {
     '<method>': 'get',
     '<endpoint>': FAKE_ENDPOINT,
-    '<params>': [],
+    '<params>': {},
     '<data>': None,
     '--help': False,
     '--version': False,

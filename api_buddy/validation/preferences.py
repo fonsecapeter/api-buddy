@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 from ..typing import Preferences
 from ..exceptions import APIBuddyException
 
+VARIABLE_CHARS = '#{}'
 DEFAULT_URL_SCHEME = 'https'
 DEFAULT_PREFS: Preferences = {
     'redirect_uri': 'http://localhost:8080/',
@@ -103,6 +104,14 @@ def _validate_variables(variables: Dict[Any, Any]) -> Dict[str, str]:
                     'Rename it or throw some quotes around that bad boy so I '
                     'know how to capitalize it. Something like:\n'
                     f'  \'{display_name}\': {val}'
+                )
+            )
+        if any(special_char in str(name) for special_char in VARIABLE_CHARS):
+            raise APIBuddyException(
+                title=f'Your variable name "{name}" is too funky',
+                message=(
+                    f'You can\'t use any of these special characters:\n  '
+                    ' '.join([f'"{c}"' for c in tuple(VARIABLE_CHARS)])
                 )
             )
         processed_vars[str(name)] = str(val)

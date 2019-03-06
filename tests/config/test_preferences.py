@@ -170,6 +170,17 @@ class TestLoadPreferences(TempYAMLTestCase):
             else:
                 assert False, f'Preferences loaded just fine: {prefs}'
 
+    def test_doesnt_allow_special_characters(self):
+        try:
+            prefs = load_prefs(_fixture_path(
+                'special_chars_variable_name.yml'
+            ))
+        except APIBuddyException as err:
+            assert 'my_#{bad}_variable' in err.title
+            assert 'special characters' in err.message
+        else:
+            assert False, f'Preferences loaded just fine: {prefs}'
+
 
 class TestSavePreferences(TempYAMLTestCase):
     def test_can_save_to_a_new_file(self):
