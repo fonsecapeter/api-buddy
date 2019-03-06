@@ -26,12 +26,13 @@ NEW_PREFS: Preferences = {
     'state': None,
     'auth_test_status': 401,
     'api_version': None,
+    'variables': {},
 }
 
 
 def _fixture_path(file_name):
     abs_path = path.join(FIXTURES_DIR, file_name)
-    assert path.isfile(abs_path)
+    assert path.isfile(abs_path), f'There\'s no fixtures named "{file_name}"'
     return abs_path
 
 
@@ -65,40 +66,40 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     def test_file_must_contain_valid_yaml(self):
         try:
-            load_prefs(_fixture_path('bad.yml'))
+            prefs = load_prefs(_fixture_path('bad.yml'))
         except APIBuddyException as err:
             assert 'problem reading' in err.title
             assert 'valid yaml' in err.message
         else:
-            assert False
+            assert False, f'Preferences loaded just fine: {prefs}'
 
     def test_file_cant_be_empty(self):
         try:
-            load_prefs(_fixture_path('empty.yml'))
+            prefs = load_prefs(_fixture_path('empty.yml'))
         except APIBuddyException as err:
             assert 'preferences are empty' in err.title
             assert f'client_id: {EXAMPLE_PREFS["client_id"]}' in err.message
         else:
-            assert False
+            assert False, f'Preferences loaded just fine: {prefs}'
 
     def test_validates_field_types(self):
         try:
-            load_prefs(_fixture_path('bad_types.yml'))
+            prefs = load_prefs(_fixture_path('bad_types.yml'))
         except APIBuddyException as err:
             assert 'preferences are funky' in err.title
             assert 'client_id' in err.message
         else:
-            assert False
+            assert False, f'Preferences loaded just fine: {prefs}'
 
     def test_validates_required_fields(self):
         try:
-            load_prefs(_fixture_path('missing_fields.yml'))
+            prefs = load_prefs(_fixture_path('missing_fields.yml'))
         except APIBuddyException as err:
             assert 'preferences are funky' in err.title
             assert 'api_url' in err.message
             assert 'client_secret' in err.message
         else:
-            assert False
+            assert False, f'Preferences loaded just fine: {prefs}'
 
     def test_adds_default_api_url_scheme_if_missing(self):
         prefs = load_prefs(_fixture_path('api_url_without_scheme.yml'))
@@ -106,23 +107,23 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     def test_doesnt_allow_query_string_in_api_url(self):
         try:
-            load_prefs(_fixture_path('api_url_with_query_string.yml'))
+            prefs = load_prefs(_fixture_path('api_url_with_query_string.yml'))
         except APIBuddyException as err:
             assert 'query parameters' in err.title
             # helpful suggestion
             assert CAT_FACTS_API_URL in err.message
         else:
-            assert False
+            assert False, f'Preferences loaded just fine: {prefs}'
 
     def test_doesnt_allow_hash_fragments_in_api_url(self):
         try:
-            load_prefs(_fixture_path('api_url_with_hash_fragment.yml'))
+            prefs = load_prefs(_fixture_path('api_url_with_hash_fragment.yml'))
         except APIBuddyException as err:
             assert 'hash fragments' in err.title
             # helpful suggestion
             assert CAT_FACTS_API_URL in err.message
         else:
-            assert False
+            assert False, f'Preferences loaded just fine: {prefs}'
 
     def test_supports_string_api_versions(self):
         prefs = load_prefs(_fixture_path('api_version_as_str.yml'))
@@ -131,6 +132,54 @@ class TestLoadPreferences(TempYAMLTestCase):
     def test_when_api_version_is_not_none_it_coerces_to_str(self):
         prefs = load_prefs(_fixture_path('api_version_as_int.yml'))
         assert prefs['api_version'] == '3'
+
+    def test_loads_variables_as_strings(self):
+        prefs = load_prefs(_fixture_path('happy_variables.yml'))
+        assert prefs['variables'] == {
+            'simle_str': 'is probably most common',
+            'ints': '2',
+            '3': '3',  # keys are stringified too
+            'true': 'true',  # bools should be quoted
+        }
+
+    def test_doesnt_allow_nested_variables(self):
+        bad_variable_fixtures = (
+            'nested_dict_variables.yml',
+            'nested_list_variables.yml',
+        )
+        for bad_variable_fixture in bad_variable_fixtures:
+            try:
+                prefs = load_prefs(_fixture_path(bad_variable_fixture))
+            except APIBuddyException as err:
+                assert 'variable' in err.title
+                assert 'nested' in err.message
+            else:
+                assert False, f'Preferences loaded just fine: {prefs}'
+
+    def test_doesnt_allow_bools(self):
+        bool_variable_fixtures = (
+            'bool_variable_value.yml',
+            'bool_variable_name.yml',
+        )
+        for bool_variable_fixture in bool_variable_fixtures:
+            try:
+                prefs = load_prefs(_fixture_path(bool_variable_fixture))
+            except APIBuddyException as err:
+                assert 'boolean' in err.title
+                assert '\'true\'' in err.message  # helpful suggestion
+            else:
+                assert False, f'Preferences loaded just fine: {prefs}'
+
+    def test_doesnt_allow_special_characters(self):
+        try:
+            prefs = load_prefs(_fixture_path(
+                'special_chars_variable_name.yml'
+            ))
+        except APIBuddyException as err:
+            assert 'my_#{bad}_variable' in err.title
+            assert 'special characters' in err.message
+        else:
+            assert False, f'Preferences loaded just fine: {prefs}'
 
 
 class TestSavePreferences(TempYAMLTestCase):

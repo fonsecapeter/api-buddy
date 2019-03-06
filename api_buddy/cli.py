@@ -26,17 +26,32 @@ api post \\
      "field": "value"
   }'
 
+Variables can be interpolated within your endpoint, in
+your query params, or anywhere in your request body data,
+as long as they're defined by name in your preferences:
+api post \\
+  'users/#{user_id}' \\
+  'name=#{name}' \\
+  '{
+    "occupation"="#{occupation}"
+  }'
+
 Your preferences live in in ~/.api-buddy.yml
 You'll have to specify these (with examples shown):
   api_url: https://base.api.url.com
   client_id: your_client_id
   client_secret: your_client_secret
-  scopes: [one_scope, another_scope]
+  scopes:
+    - one_scope
+    - another_scope
 
 And you can optionally specify these (with defaults shown):
   redirect_uri: http://localhost:8080/
   auth_fail_path: 401
   api_version: null
+  variables:
+    my_var: some value
+    another_var: some other value
 
 Arguments:
   http_method  (optional, default: get) One of
@@ -67,6 +82,7 @@ from .utils import VERSION, PREFS_FILE
 from .exceptions import APIBuddyException, exit_with_exception
 from .config.preferences import load_prefs
 from .config.options import load_options
+from .config.variables import interpolate_variables
 from .session.oauth import get_oauth_session
 from .session.request import send_request
 from .session.response import format_response
@@ -79,8 +95,9 @@ def run() -> None:
             print(VERSION)
             return
         prefs = load_prefs(PREFS_FILE)
-        sesh = get_oauth_session(opts, prefs, PREFS_FILE)
-        resp = send_request(sesh, prefs, opts, PREFS_FILE)
+        interpolated_opts = interpolate_variables(opts, prefs)
+        sesh = get_oauth_session(interpolated_opts, prefs, PREFS_FILE)
+        resp = send_request(sesh, prefs, interpolated_opts, PREFS_FILE)
         print(f'=> {resp.status_code}')
         print(format_response(resp))
     except APIBuddyException as err:

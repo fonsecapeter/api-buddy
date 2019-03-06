@@ -22,11 +22,12 @@ TEST_PREFERENCES: Preferences = {
     'auth_test_status': 401,
     'api_version': None,
     'state': FAKE_STATE,
+    'variables': {},
 }
 TEST_OPTIONS: Options = {
     '<method>': 'get',
     '<endpoint>': FAKE_ENDPOINT,
-    '<params>': [],
+    '<params>': {},
     '<data>': None,
     '--help': False,
     '--version': False,

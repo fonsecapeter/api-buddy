@@ -1,4 +1,4 @@
-# OAuth2 API CLI Buddy
+# API CLI Buddy
 
 [![Build Status](https://travis-ci.org/fonsecapeter/api-buddy.svg?branch=master)](https://travis-ci.org/fonsecapeter/api-buddy.svg)
 
@@ -74,7 +74,9 @@ client_id: your_client_id
 client_secret: your_client_secret
   # (str) Part of your api provider dev account
   #       (PROTECT THIS, IT'S SECRET) 🙊
-scopes: [one_scope, another_scope]
+scopes:
+  - one_scope
+  - another_scope
   # (List[str]) Specify which resources you want to
   #             access
 ```
@@ -91,6 +93,12 @@ api_version: null
   # (str) If your api uses versioning, you can specify
   #       this and not have to type it all the time.
   #       https://an.api.com/<version>/my-fav-endpoint
+variables:
+  my_var: some value
+  another_var: some other value
+  # (Dict[str, str]) Specify variables for use throughout
+  #                  your options, see ##Advanced Usage for
+  #                  more info
 ```
 
 ### Arguments
@@ -106,6 +114,33 @@ api_version: null
 ### Options
 - `-h`, `--help`: Show the help message
 - `-v`, `--version`: Show the installed version
+
+## Advanced Usage
+### Variables
+If you find yourself typing a specific value a bunch of times, like a user id or something, you can put arbitrary variables into your preferences and they'll be interpolated throughout your arguments if you wrap them in `#{}`. For example, if you had this in your preferences:
+```yaml
+# in preferences
+variables:
+  - user_id: 123
+  - name: Art Vandalay
+```
+
+You could do this:
+```bash
+api get '/users/#{user_id}'
+```
+
+And API Buddy would hit the `/users/123` endpoint.
+
+You can also use variables as values in your query params, or anywhere in your request body data.
+```bash
+api post '/users/' \
+  'id=#{user_id}' \
+  '{
+    "id"=#{user_id},
+    "name"="#{name}"
+  }'
+```
 
 ## Development
 Requires:
