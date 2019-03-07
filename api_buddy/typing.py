@@ -1,17 +1,23 @@
 from mypy_extensions import TypedDict
 from typing import Any, Dict, Iterable, List, Optional, Union
 
+VerbosenessPreferences = TypedDict('VerbosenessPreferences', {
+    'request': bool,
+    'response': bool,
+})
+
 Preferences = TypedDict('Preferences', {
     'api_url': str,
     'client_id': str,
     'client_secret': str,
     'scopes': Iterable[str],
-    'redirect_uri': str,  # Optional
-    'auth_test_status': int,  # Optional
-    'api_version': Optional[str],  # Optional
+    'redirect_uri': str,
+    'auth_test_status': int,
+    'api_version': Optional[str],
     'access_token': str,
-    'state': Optional[str],  # Optional, can be None
-    'variables': Dict[str, str],  # Optional
+    'state': Optional[str],
+    'verboseness': VerbosenessPreferences,
+    'variables': Dict[str, str],
 }, total=False)
 
 Options = TypedDict('Options', {

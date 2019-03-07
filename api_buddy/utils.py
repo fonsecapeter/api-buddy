@@ -1,4 +1,5 @@
-from typing import Optional
+from requests.cookies import RequestsCookieJar
+from typing import Any, Dict, MutableMapping, Optional, Union
 from os import path
 from urllib.parse import urljoin
 
@@ -18,6 +19,8 @@ HTTP_METHODS = (
     PUT,
     DELETE,
 )
+MAX_LINE_LENGTH = 50
+INDENT = '  '
 
 
 def api_url_join(
@@ -34,3 +37,22 @@ def api_url_join(
     if api_version is not None:
         path = f'{api_version}/{path}'
     return urljoin(api_url, path)
+
+
+def format_dict_like_thing(
+            name: str,
+            thing: Union[
+                Dict[str, Any],
+                MutableMapping[str, str],
+                RequestsCookieJar,
+            ]
+        ) -> str:
+    """Format dictionaries for nice printing"""
+    formatted = f'{name}:'
+    for key, val in thing.items():
+        display_val = val
+        if isinstance(val, list):
+            display_val = f'\n{INDENT}{INDENT}- '.join(val)
+            display_val = f'\n{INDENT}{INDENT}- {display_val}'
+        formatted += f'\n{INDENT}{key}: {display_val}'
+    return formatted

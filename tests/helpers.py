@@ -22,6 +22,10 @@ TEST_PREFERENCES: Preferences = {
     'auth_test_status': 401,
     'api_version': None,
     'state': FAKE_STATE,
+    'verboseness': {
+        'request': False,
+        'response': False,
+    },
     'variables': {},
 }
 TEST_OPTIONS: Options = {

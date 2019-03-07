@@ -26,6 +26,10 @@ NEW_PREFS: Preferences = {
     'state': None,
     'auth_test_status': 401,
     'api_version': None,
+    'verboseness': {
+        'request': False,
+        'response': False,
+    },
     'variables': {},
 }
 

@@ -65,13 +65,15 @@ def _mock_data_catcher(
 
 
 class TestSendRequest(TempYAMLTestCase):
+    def setUp(self):
+        self.prefs = deepcopy(TEST_PREFERENCES)
+        self.opts = deepcopy(TEST_OPTIONS)
+        self.sesh = get_oauth_session(self.opts, self.prefs, TEMP_FILE)
+
     @mock_get()
     @patch('requests.get')
     def test_returns_a_response(self, mock_get):
-        prefs = deepcopy(TEST_PREFERENCES)
-        opts = deepcopy(TEST_OPTIONS)
-        sesh = get_oauth_session(opts, prefs, TEMP_FILE)
-        mock_resp = send_request(sesh, prefs, opts, TEMP_FILE)
+        mock_resp = send_request(self.sesh, self.prefs, self.opts, TEMP_FILE)
         assert mock_resp.status_code == 200
 
     @patch('requests.get')
@@ -81,23 +83,17 @@ class TestSendRequest(TempYAMLTestCase):
     @mock_put('{"put": true}')
     @mock_delete('{"delete": true}')
     def test_checks_method(self, mock_get):
-        prefs = deepcopy(TEST_PREFERENCES)
-        opts = deepcopy(TEST_OPTIONS)
         for method in HTTP_METHODS:
-            opts['<method>'] = method
-            sesh = get_oauth_session(opts, prefs, TEMP_FILE)
-            resp = send_request(sesh, prefs, opts, TEMP_FILE)
+            self.opts['<method>'] = method
+            resp = send_request(self.sesh, self.prefs, self.opts, TEMP_FILE)
             assert resp.json()[method] is True
 
     @mock_get()
     @patch('requests.get')
     def test_if_method_isnt_off_it_blows_up(self, mock_get):
-        prefs = deepcopy(TEST_PREFERENCES)
-        opts = deepcopy(TEST_OPTIONS)
-        opts['<method>'] = 'banana'
-        sesh = get_oauth_session(opts, prefs, TEMP_FILE)
+        self.opts['<method>'] = 'banana'
         try:
-            send_request(sesh, prefs, opts, TEMP_FILE)
+            send_request(self.sesh, self.prefs, self.opts, TEMP_FILE)
         except APIBuddyException as err:
             assert 'went wrong' in err.title
             assert 'http method' in err.message
@@ -107,33 +103,24 @@ class TestSendRequest(TempYAMLTestCase):
     @patch('requests.get')
     @mock_get_side_effect(_mock_url_catcher)
     def test_adds_endpoint_to_api_url(self, mock_get):
-        prefs = deepcopy(TEST_PREFERENCES)
-        opts = deepcopy(TEST_OPTIONS)
-        sesh = get_oauth_session(opts, prefs, TEMP_FILE)
-        mock_resp = send_request(sesh, prefs, opts, TEMP_FILE)
+        mock_resp = send_request(self.sesh, self.prefs, self.opts, TEMP_FILE)
         assert mock_resp.url == f'{FAKE_API_URL}/{FAKE_ENDPOINT}'
 
     @patch('requests.get')
     @mock_get_side_effect(_mock_param_catcher)
     def test_uses_params(self, mock_get):
         params = {'fake_param': 'fake_value'}
-        prefs = deepcopy(TEST_PREFERENCES)
-        opts = deepcopy(TEST_OPTIONS)
-        opts['<params>'] = params
-        sesh = get_oauth_session(opts, prefs, TEMP_FILE)
-        mock_resp = send_request(sesh, prefs, opts, TEMP_FILE)
+        self.opts['<params>'] = params
+        mock_resp = send_request(self.sesh, self.prefs, self.opts, TEMP_FILE)
         assert mock_resp.params == params
 
     @patch('requests.get')
     @mock_get_side_effect(_mock_url_catcher)
     def test_uses_api_version_if_given(self, mock_get):
         params = {'fake_param': 'fake_value'}
-        prefs = deepcopy(TEST_PREFERENCES)
-        prefs['api_version'] = FAKE_API_VERSION
-        opts = deepcopy(TEST_OPTIONS)
-        opts['<params>'] = params
-        sesh = get_oauth_session(opts, prefs, TEMP_FILE)
-        mock_resp = send_request(sesh, prefs, opts, TEMP_FILE)
+        self.prefs['api_version'] = FAKE_API_VERSION
+        self.opts['<params>'] = params
+        mock_resp = send_request(self.sesh, self.prefs, self.opts, TEMP_FILE)
         assert (
             mock_resp.url
             == f'{FAKE_API_URL}/{FAKE_API_VERSION}/{FAKE_ENDPOINT}'
@@ -146,11 +133,8 @@ class TestSendRequest(TempYAMLTestCase):
                 self, mock_authenticate, mock_get
             ):
         mock_authenticate.side_effect = explode()  # should not get called
-        prefs = deepcopy(TEST_PREFERENCES)
-        opts = deepcopy(TEST_OPTIONS)
-        sesh = get_oauth_session(opts, prefs, TEMP_FILE)
-        send_request(sesh, prefs, opts, TEMP_FILE)
-        assert sesh.token['access_token'] == FAKE_ACCESS_TOKEN
+        send_request(self.sesh, self.prefs, self.opts, TEMP_FILE)
+        assert self.sesh.token['access_token'] == FAKE_ACCESS_TOKEN
 
     @mock_get(status_code=401)  # expired token check
     @mock_post(content=f'{{"access_token": "{NEW_ACCESS_TOKEN}"}}')
@@ -163,11 +147,8 @@ class TestSendRequest(TempYAMLTestCase):
         mock_auth_resp_url.return_value = (
             f'{FAKE_API_URL}/?code=banana&state={FAKE_STATE}'
         )
-        prefs = deepcopy(TEST_PREFERENCES)
-        opts = deepcopy(TEST_OPTIONS)
-        sesh = get_oauth_session(opts, prefs, TEMP_FILE)
-        send_request(sesh, prefs, opts, TEMP_FILE)
-        assert sesh.token['access_token'] == NEW_ACCESS_TOKEN
+        send_request(self.sesh, self.prefs, self.opts, TEMP_FILE)
+        assert self.sesh.token['access_token'] == NEW_ACCESS_TOKEN
 
     @mock_get(status_code=401)  # expired token check
     @mock_post(content=f'{{"access_token": "{NEW_ACCESS_TOKEN}"}}')
@@ -180,10 +161,7 @@ class TestSendRequest(TempYAMLTestCase):
         mock_auth_resp_url.return_value = (
             f'{FAKE_API_URL}/?code=banana&state={FAKE_STATE}'
         )
-        prefs = deepcopy(TEST_PREFERENCES)
-        opts = deepcopy(TEST_OPTIONS)
-        sesh = get_oauth_session(opts, prefs, TEMP_FILE)
-        send_request(sesh, prefs, opts, TEMP_FILE)
+        send_request(self.sesh, self.prefs, self.opts, TEMP_FILE)
         prefs = load_prefs(TEMP_FILE)
         assert prefs['access_token'] == NEW_ACCESS_TOKEN
 
@@ -195,14 +173,41 @@ class TestSendRequest(TempYAMLTestCase):
     @mock_delete_side_effect(_mock_data_catcher)
     def test_adds_data_to_requests(self, mock_get):
         data = '{"dis":"json"}'
-        prefs = deepcopy(TEST_PREFERENCES)
-        opts = deepcopy(TEST_OPTIONS)
-        opts['<data>'] = data
-        sesh = get_oauth_session(opts, prefs, TEMP_FILE)
+        self.opts['<data>'] = data
         for method in HTTP_METHODS:
-            opts['<method>'] = method
-            mock_resp = send_request(sesh, prefs, opts, TEMP_FILE)
+            self.opts['<method>'] = method
+            mock_resp = send_request(
+                self.sesh,
+                self.prefs,
+                self.opts,
+                TEMP_FILE
+            )
             if method == GET:
                 assert mock_resp.data is None
             else:
                 assert mock_resp.data == data
+
+    @patch('requests.get')
+    @mock_get()
+    @mock_post()
+    def test_can_print_request_details(self, mock_get):
+        self.opts['<params>'] = {
+            'name': 'george-costanza',
+            'occupations': [
+                'architect',
+                'marine-biologist',
+            ],
+            'has_hair': 'false',
+        }
+        self.opts['<data>'] = {
+            'name': 'Cosmo Kramer',
+            'occupations': [
+                'Bagelrista',
+                'Car Parker',
+            ],
+            'has_hair': True,
+        }
+        self.opts['<method>'] = 'post'
+        self.prefs['verboseness']['request'] = True
+        # should not raise any errors
+        send_request(self.sesh, self.prefs, self.opts, TEMP_FILE)

@@ -1,10 +1,10 @@
-# API CLI Buddy
+# API Buddy
 
 [![Build Status](https://travis-ci.org/fonsecapeter/api-buddy.svg?branch=master)](https://travis-ci.org/fonsecapeter/api-buddy.svg)
 
 Explore APIs from your console with API Buddy
 
-> Right now, only OAuth2 authentication is supported. It's the most common, and current gold standard for good security practices. Also most APIs use it. That said, I have no beef with all the APIs out there using something else, so feel free to open a ticket if you want something else supported. 🎟
+> Right now, only OAuth2 authentication is supported. It's the most common, and current gold standard for security best practices. Also most APIs use it. That said, I have no beef with all the APIs out there using something else, so feel free to open a ticket if you want something else supported. 🎟
 
 ## Usage
 
@@ -63,7 +63,7 @@ scopes:
   - another_scope
 ```
 
-In case you didn't know that's [yaml format](https://yaml.org).
+> That's [yaml format](https://yaml.org).
 
 You'll have to specify these (with examples shown):
 ```yaml
@@ -93,6 +93,11 @@ api_version: null
   # (str) If your api uses versioning, you can specify
   #       this and not have to type it all the time.
   #       https://an.api.com/<version>/my-fav-endpoint
+verboseness:
+  request: false
+    # (bool) Show request details
+  response: true
+    # (bool) Show response details
 variables:
   my_var: some value
   another_var: some other value
