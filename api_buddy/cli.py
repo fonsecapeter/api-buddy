@@ -50,6 +50,9 @@ And you can optionally specify these (with defaults shown):
   redirect_uri: http://localhost:8080/
   auth_fail_path: 401
   api_version: null
+  verboseness:
+    request: false
+    response: false
   variables:
     my_var: some value
     another_var: some other value
@@ -86,7 +89,7 @@ from .config.options import load_options
 from .config.variables import interpolate_variables
 from .session.oauth import get_oauth_session
 from .session.request import send_request
-from .session.response import format_response
+from .session.response import print_response
 
 
 def run() -> None:
@@ -99,8 +102,7 @@ def run() -> None:
         interpolated_opts = interpolate_variables(opts, prefs)
         sesh = get_oauth_session(interpolated_opts, prefs, PREFS_FILE)
         resp = send_request(sesh, prefs, interpolated_opts, PREFS_FILE)
-        print(f'=> {resp.status_code}')
-        print(format_response(resp))
+        print_response(resp, prefs)
     except APIBuddyException as err:
         exit_with_exception(err)
         return

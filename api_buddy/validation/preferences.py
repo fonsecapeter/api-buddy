@@ -17,6 +17,10 @@ DEFAULT_PREFS: Preferences = {
     'auth_test_status': 401,
     'api_version': None,
     'access_token': 'can_haz_token',
+    'verboseness': {
+        'request': False,
+        'response': False,
+    },
     'variables': {},
 }
 
@@ -46,6 +50,10 @@ prefs_schema = Schema({
             'access_token',
             default=DEFAULT_PREFS['access_token'],
         ): str,
+    Maybe(
+            'verboseness',
+            default=DEFAULT_PREFS['variables'],
+        ): dict,
     Maybe(
             'variables',
             default=DEFAULT_PREFS['variables'],
