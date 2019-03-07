@@ -1,10 +1,5 @@
 ---
-api_url: https://seinfeld-quotes.herokuapp.com
-client_id: my_favorite_client_id
-client_secret: my_favorite_client_secret
-scopes:
-   - quotes
-   - episodes
+api_url: https://newman.com
 variables:
   nested_list:
     - chunky

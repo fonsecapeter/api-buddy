@@ -87,9 +87,9 @@ from .exceptions import APIBuddyException, exit_with_exception
 from .config.preferences import load_prefs
 from .config.options import load_options
 from .config.variables import interpolate_variables
-from .session.oauth import get_oauth_session
-from .session.request import send_request
-from .session.response import print_response
+from .network.session import get_session
+from .network.request import send_request
+from .network.response import print_response
 
 
 def run() -> None:
@@ -100,7 +100,7 @@ def run() -> None:
             return
         prefs = load_prefs(PREFS_FILE)
         interpolated_opts = interpolate_variables(opts, prefs)
-        sesh = get_oauth_session(interpolated_opts, prefs, PREFS_FILE)
+        sesh = get_session(interpolated_opts, prefs, PREFS_FILE)
         resp = send_request(sesh, prefs, interpolated_opts, PREFS_FILE)
         print_response(resp, prefs)
     except APIBuddyException as err:

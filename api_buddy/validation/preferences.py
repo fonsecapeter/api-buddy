@@ -6,38 +6,77 @@ from schema import (
 )
 from typing import Any, Dict, Optional
 from urllib.parse import urlparse
-from ..typing import Preferences
-from ..exceptions import APIBuddyException
+from ..typing import Preferences, RawPreferences
+from ..exceptions import PrefsException
+from ..utils import AUTH_TYPES, OAUTH2, PREFS_FILE
 
 VARIABLE_CHARS = '#{}'
 DEFAULT_URL_SCHEME = 'https'
-DEFAULT_PREFS: Preferences = {
+DEFAULT_OAUTH2_PREFS = {
     'redirect_uri': 'http://localhost:8080/',
     'state': None,
+    'access_token': 'can_haz_token',
+}
+DEFAULT_VERBOSENESS_PREFS = {
+    'request': False,
+    'response': False,
+}
+DEFAULT_PREFS = {
+    'auth_type': None,
+    'oauth2': DEFAULT_OAUTH2_PREFS,
     'auth_test_status': 401,
     'api_version': None,
-    'access_token': 'can_haz_token',
-    'verboseness': {
-        'request': False,
-        'response': False,
-    },
+    'verify_ssl': True,
+    'verboseness': DEFAULT_VERBOSENESS_PREFS,
     'variables': {},
 }
+DEFAULT_AUTH_PREFS = {
+    OAUTH2: DEFAULT_OAUTH2_PREFS,
+}
+NESTED_DEFAULT_PREFS = {
+    **DEFAULT_AUTH_PREFS,  # type: ignore
+    'verboseness': DEFAULT_VERBOSENESS_PREFS,
+}
 
-
-prefs_schema = Schema({
-    'api_url': str,
+oauth2_schema = Schema({
     'client_id': str,
     'client_secret': str,
     'scopes': Schema([str]).validate,
     Maybe(
             'redirect_uri',
-            default=DEFAULT_PREFS['redirect_uri'],
+            default=DEFAULT_OAUTH2_PREFS['redirect_uri'],
         ): str,
     Maybe(
             'state',
-            default=DEFAULT_PREFS['state'],
+            default=DEFAULT_OAUTH2_PREFS['state'],
         ): Or(str, None),
+    Maybe(
+            'access_token',
+            default=DEFAULT_OAUTH2_PREFS['access_token'],
+        ): str,
+})
+
+verboseness_schema = Schema({
+    Maybe(
+            'request',
+            default=DEFAULT_VERBOSENESS_PREFS['request'],
+        ): bool,
+    Maybe(
+            'response',
+            default=DEFAULT_VERBOSENESS_PREFS['response'],
+        ): bool,
+})
+
+prefs_schema = Schema({
+    'api_url': str,
+    Maybe(
+            'auth_type',
+            default=DEFAULT_PREFS['auth_type'],
+        ): Or(str, None),
+    Maybe(
+            'oauth2',
+            default=DEFAULT_PREFS['oauth2'],
+        ): oauth2_schema,
     Maybe(
             'auth_test_status',
             default=DEFAULT_PREFS['auth_test_status'],
@@ -47,18 +86,34 @@ prefs_schema = Schema({
             default=DEFAULT_PREFS['api_version'],
         ): Or(str, None),
     Maybe(
-            'access_token',
-            default=DEFAULT_PREFS['access_token'],
-        ): str,
+            'verify_ssl',
+            default=DEFAULT_PREFS['verify_ssl'],
+        ): bool,
     Maybe(
             'verboseness',
-            default=DEFAULT_PREFS['variables'],
-        ): dict,
+            default=DEFAULT_PREFS['verboseness'],
+        ): verboseness_schema,
     Maybe(
             'variables',
             default=DEFAULT_PREFS['variables'],
         ): dict,
 })
+
+
+def _validate_auth_type(auth_type: Optional[str]) -> Optional[str]:
+    if auth_type is None:
+        return None
+    valid_auth_type = auth_type.lower()
+    if valid_auth_type not in AUTH_TYPES:
+        display_auth_types = '  - '.join(AUTH_TYPES)
+        raise PrefsException(
+            title=f'I can\'t recognize your auth_type',
+            message=(
+                f'It should be one of these:\n'
+                f'  - null\n  - {display_auth_types}'
+            ),
+        )
+    return valid_auth_type
 
 
 def _validate_api_url(api_url: str) -> str:
@@ -67,13 +122,13 @@ def _validate_api_url(api_url: str) -> str:
     if not url_parts.scheme:
         valid_url = f'{DEFAULT_URL_SCHEME}://{api_url}'
     if '?' in api_url:
-        raise APIBuddyException(
-            title='Your api_url can\'t have query parameters',
+        raise PrefsException(
+            title=f'Your api_url can\'t have query parameters',
             message=f'Did you mean "{valid_url.split("?", 1)}"?',
         )
     if '#' in api_url:
-        raise APIBuddyException(
-            title='Your api_url can\'t have hash fragments',
+        raise PrefsException(
+            title=f'Your api_url can\'t have hash fragments',
             message=f'Did you mean "{valid_url.split("#", 1)}"?',
         )
     return valid_url
@@ -89,14 +144,14 @@ def _validate_variables(variables: Dict[Any, Any]) -> Dict[str, str]:
     processed_vars = {}
     for name, val in variables.items():
         if isinstance(val, (dict, list)):
-            raise APIBuddyException(
+            raise PrefsException(
                 title=f'Your "{name}" variable is not gonna fly',
                 message='It can\'t be nested, try something simpler',
             )
         # bool capitalization is unpredictable
         if isinstance(val, bool):
             display_val = str(val).lower()
-            raise APIBuddyException(
+            raise PrefsException(
                 title=f'Your "{name}" variable is a boolean',
                 message=(
                     'You\'re going to have to throw some quotes around that '
@@ -106,8 +161,10 @@ def _validate_variables(variables: Dict[Any, Any]) -> Dict[str, str]:
             )
         if isinstance(name, bool):
             display_name = str(name).lower()
-            raise APIBuddyException(
-                title=f'Yo, you have a boolean for a variable name "{name}"',
+            raise PrefsException(
+                title=(
+                    f'Yo, you have a boolean for a variable name "{name}"'
+                ),
                 message=(
                     'Rename it or throw some quotes around that bad boy so I '
                     'know how to capitalize it. Something like:\n'
@@ -115,7 +172,7 @@ def _validate_variables(variables: Dict[Any, Any]) -> Dict[str, str]:
                 )
             )
         if any(special_char in str(name) for special_char in VARIABLE_CHARS):
-            raise APIBuddyException(
+            raise PrefsException(
                 title=f'Your variable name "{name}" is too funky',
                 message=(
                     f'You can\'t use any of these special characters:\n  '
@@ -126,16 +183,17 @@ def _validate_variables(variables: Dict[Any, Any]) -> Dict[str, str]:
     return processed_vars
 
 
-def validate_preferences(prefs: Preferences) -> Preferences:
+def validate_preferences(prefs: RawPreferences) -> Preferences:
     """Wrap errors nicely"""
     prefs['api_version'] = _validate_api_version(prefs.get('api_version'))
     try:
         valid_prefs: Preferences = prefs_schema.validate(prefs)
     except SchemaError as err:
-        raise APIBuddyException(
-            title='These preferences are funky',
+        raise PrefsException(
+            title=f'These {PREFS_FILE} preferences are funky',
             message=str(err),
         )
     valid_prefs['api_url'] = _validate_api_url(valid_prefs['api_url'])
     valid_prefs['variables'] = _validate_variables(valid_prefs['variables'])
+    valid_prefs['auth_type'] = _validate_auth_type(valid_prefs['auth_type'])
     return valid_prefs

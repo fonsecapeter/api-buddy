@@ -1,4 +1,5 @@
-from requests import Response, Session
+import urllib3
+import requests
 from typing import Any, Dict, List, MutableMapping, Union
 
 from ..utils import (
@@ -13,7 +14,19 @@ from ..utils import (
 )
 from ..typing import Preferences, Options
 from ..exceptions import APIBuddyException
-from ..session.oauth import reauthenticate
+from .session import reauthenticate
+
+DNS = 'http://1.1.1.1'
+
+
+def _check_interwebs_connection() -> None:
+    try:
+        requests.get(DNS, timeout=REQUEST_TIMEOUT)
+    except requests.exceptions.ConnectionError:
+        raise APIBuddyException(
+            title='There was a problem connecting to the internet',
+            message='Are you on WiFi?'
+        )
 
 
 def print_request(
@@ -36,13 +49,14 @@ def print_request(
 
 
 def send_request(
-            sesh: Session,
+            sesh: requests.Session,
             prefs: Preferences,
             opts: Options,
             prefs_file: str,
             retry: bool = True,
-        ) -> Response:
+        ) -> requests.Response:
     """Send the http request, reauthenticating if necessary"""
+    _check_interwebs_connection()
     url = api_url_join(
         prefs['api_url'],
         prefs['api_version'],
@@ -51,13 +65,16 @@ def send_request(
     method = opts['<method>']
     params = opts['<params>']
     data = opts['<data>']
+    verify = prefs['verify_ssl']
     if prefs['verboseness']['request'] is True:
         print_request(method, url, sesh.headers, params, data)
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     if method == GET:
         resp = sesh.get(
             url,
             params=params,
             timeout=REQUEST_TIMEOUT,
+            verify=verify,
         )
     elif method == POST:
         resp = sesh.post(
@@ -65,6 +82,7 @@ def send_request(
             params=params,
             data=data,
             timeout=REQUEST_TIMEOUT,
+            verify=verify,
         )
     elif method == PUT:
         resp = sesh.put(
@@ -72,6 +90,7 @@ def send_request(
             params=params,
             data=data,
             timeout=REQUEST_TIMEOUT,
+            verify=verify,
         )
     elif method == PATCH:
         resp = sesh.patch(
@@ -79,6 +98,7 @@ def send_request(
             params=params,
             data=data,
             timeout=REQUEST_TIMEOUT,
+            verify=verify,
         )
     elif method == DELETE:
         resp = sesh.delete(
@@ -86,13 +106,15 @@ def send_request(
             params=params,
             data=data,
             timeout=REQUEST_TIMEOUT,
+            verify=verify,
         )
     else:
         raise APIBuddyException(
             title='Something went wrong',
             message='Try a different http method'
         )
-    if retry and resp.status_code == prefs['auth_test_status']:
-        sesh = reauthenticate(sesh, prefs, prefs_file)
-        resp = send_request(sesh, prefs, opts, prefs_file, retry=False)
+    if prefs['auth_type'] is not None:
+        if retry and resp.status_code == prefs['auth_test_status']:
+            sesh = reauthenticate(sesh, prefs, prefs_file)
+            resp = send_request(sesh, prefs, opts, prefs_file, retry=False)
     return resp

@@ -1,7 +1,7 @@
 from copy import deepcopy
 from mock import MagicMock, PropertyMock
 from unittest import TestCase
-from api_buddy.session.response import format_response, print_response
+from api_buddy.network.response import format_response, print_response
 from ..helpers import TEST_PREFERENCES
 
 TEXT_TO_KEEP = 'This text should stay'

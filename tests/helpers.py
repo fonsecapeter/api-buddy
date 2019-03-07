@@ -14,14 +14,18 @@ FAKE_ENDPOINT = 'cats'
 FAKE_STATE = 'california'
 TEST_PREFERENCES: Preferences = {
     'api_url': FAKE_API_URL,
-    'client_id': 'client_id',
-    'client_secret': 'client_secret',
-    'scopes': ['a_scope', 'another_scope'],
-    'redirect_uri': 'http://localhost:8080/',
-    'access_token': FAKE_ACCESS_TOKEN,
+    'auth_type': 'oauth2',
+    'oauth2': {
+        'client_id': 'client_id',
+        'client_secret': 'client_secret',
+        'scopes': ['a_scope', 'another_scope'],
+        'redirect_uri': 'http://localhost:8080/',
+        'access_token': FAKE_ACCESS_TOKEN,
+        'state': FAKE_STATE,
+    },
     'auth_test_status': 401,
     'api_version': None,
-    'state': FAKE_STATE,
+    'verify_ssl': True,
     'verboseness': {
         'request': False,
         'response': False,
@@ -58,7 +62,7 @@ def _mock_api_method(method: str = 'get') -> Callable[..., Any]:
                         **kwargs: Optional[Any]
                     ) -> Any:
                 with mock.patch(
-                            f'requests_oauthlib.OAuth2Session.{method}'
+                            f'requests.Session.{method}'
                         ) as mock_api_call:
                     resp = Response()
                     mock_req = mock.MagicMock()
@@ -88,7 +92,7 @@ def _mock_api_method_side_effect(method: str = 'get') -> Callable[..., Any]:
                         **kwargs: Optional[Any]
                     ) -> Any:
                 with mock.patch(
-                            f'requests_oauthlib.OAuth2Session.{method}'
+                            f'requests.Session.{method}'
                         ) as mock_api_call:
                     mock_api_call.side_effect = side_effect
                     return func(*args, **kwargs)

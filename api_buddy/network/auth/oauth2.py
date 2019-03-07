@@ -1,16 +1,12 @@
 import webbrowser
-import requests
 from os import environ
 from typing import Optional
 from urllib.parse import urljoin
 from requests_oauthlib import OAuth2Session
 
-from ..exceptions import APIBuddyException
-from ..typing import Preferences, Options
-from ..utils import REQUEST_TIMEOUT
-from ..config.preferences import save_prefs
+from api_buddy.typing import Preferences, Options
+from api_buddy.config.preferences import save_prefs
 
-DNS = 'http://1.1.1.1'
 APPLICATION_JSON = 'application/json'
 HEADERS = {
     'Accept': APPLICATION_JSON,
@@ -20,16 +16,6 @@ HEADERS = {
 
 def _get_authorization_response_url() -> str:
     return input('Enter the full url: ')  # pragma: no cover
-
-
-def _check_interwebs_connection() -> None:
-    try:
-        requests.get(DNS, timeout=REQUEST_TIMEOUT)
-    except requests.exceptions.ConnectionError:
-        raise APIBuddyException(
-            title='There was a problem connecting to the internet',
-            message='Are you on WiFi?'
-        )
 
 
 def _authenticate(
@@ -65,24 +51,23 @@ def _authenticate(
     return str(token['access_token'])
 
 
-def get_oauth_session(
+def get_oauth2_session(
             opts: Options,
             prefs: Preferences,
             prefs_file_name: str,
         ) -> OAuth2Session:
     """Initialize OAuth2 session"""
-    _check_interwebs_connection()
     sesh = OAuth2Session(
-        client_id=prefs['client_id'],
-        redirect_uri=prefs['redirect_uri'],
-        scope=' '.join(prefs['scopes']),
-        token={'access_token': prefs['access_token']},
+        client_id=prefs['oauth2']['client_id'],
+        redirect_uri=prefs['oauth2']['redirect_uri'],
+        scope=' '.join(prefs['oauth2']['scopes']),
+        token={'access_token': prefs['oauth2']['access_token']},
     )
     sesh.headers.update(HEADERS)
     return sesh
 
 
-def reauthenticate(
+def reauthenticate_oauth2(
             sesh: OAuth2Session,
             prefs: Preferences,
             prefs_file: str,
@@ -93,11 +78,11 @@ def reauthenticate(
     """
     access_token = _authenticate(
         sesh,
-        client_secret=prefs['client_secret'],
+        client_secret=prefs['oauth2']['client_secret'],
         api_url=prefs['api_url'],
-        redirect_uri=prefs['redirect_uri'],
-        state=prefs['state'],
+        redirect_uri=prefs['oauth2']['redirect_uri'],
+        state=prefs['oauth2']['state'],
     )
-    prefs['access_token'] = access_token
+    prefs['oauth2']['access_token'] = access_token
     save_prefs(prefs, prefs_file)
     return sesh
