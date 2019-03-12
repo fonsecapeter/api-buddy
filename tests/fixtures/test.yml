@@ -1,9 +1,11 @@
 ---
-api_url: https://seinfeld-quotes.herokuapp.com
-client_id: my_favorite_client_id
-client_secret: my_favorite_client_secret
-scopes:
-   - quotes
-   - episodes
-state: null
+api_url: https://api.doggos.com
+auth_type: oauth2
+oauth2:
+  client_id: my_favorite_client_id
+  client_secret: my_favorite_client_secret
+  scopes:
+     - dogs
+     - kibbles
+  state: null
 auth_test_status: 403

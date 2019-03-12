@@ -1,7 +1,2 @@
 ---
-api_url: alexwohlbruck.github.io/cat-facts
-client_id: my_favorite_client_id
-client_secret: my_favorite_client_secret
-scopes: [meows, kibbles]
-state: null
-auth_test_status: 403
+api_url: cat-facts.com

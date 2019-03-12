@@ -6,19 +6,27 @@ VerbosenessPreferences = TypedDict('VerbosenessPreferences', {
     'response': bool,
 })
 
-Preferences = TypedDict('Preferences', {
-    'api_url': str,
+OAuth2Preferences = TypedDict('OAuth2Preferences', {
     'client_id': str,
     'client_secret': str,
     'scopes': Iterable[str],
     'redirect_uri': str,
-    'auth_test_status': int,
-    'api_version': Optional[str],
     'access_token': str,
     'state': Optional[str],
+})
+
+Preferences = TypedDict('Preferences', {
+    'api_url': str,
+    'auth_type': Optional[str],
+    'oauth2': OAuth2Preferences,
+    'auth_test_status': int,
+    'api_version': Optional[str],
+    'verify_ssl': bool,
     'verboseness': VerbosenessPreferences,
     'variables': Dict[str, str],
-}, total=False)
+})
+
+RawPreferences = Dict[str, Any]
 
 Options = TypedDict('Options', {
     '--help': bool,

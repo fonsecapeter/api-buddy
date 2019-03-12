@@ -1,8 +1,10 @@
 ---
-api_url: https://seinfeld-quotes.herokuapp.com
-client_id: 42
-client_secret: my_favorite_client_secret
-scopes:
-  - 7
-state: null
+api_url: https://corgies.io/api
+auth_type: oauth2
+oauth2:
+  client_id: 42
+  client_secret: royal_client_secret
+  scopes:
+    - 7
+  state: null
 auth_test_status: 403

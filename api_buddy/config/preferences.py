@@ -5,14 +5,22 @@ from typing import Any
 
 from ..exceptions import APIBuddyException
 from ..typing import Preferences
-from ..validation.preferences import DEFAULT_PREFS, validate_preferences
+from ..validation.preferences import (
+    DEFAULT_PREFS,
+    NESTED_DEFAULT_PREFS,
+    validate_preferences,
+)
+from ..utils import OAUTH2
 
-EXAMPLE_PREFS: Preferences = {
-    'api_url': 'https://jsonplaceholder.typicode.com',
+EXAMPLE_OAUTH2_PREFS = {
     'client_id': 'your_client_id',
     'client_secret': 'your_client_secret',
     'scopes': ['one_scope', 'another_scope'],
-    'redirect_uri': DEFAULT_PREFS['redirect_uri'],
+}
+EXAMPLE_PREFS = {
+    'api_url': 'https://jsonplaceholder.typicode.com',
+    'auth_type': OAUTH2,
+    'oauth2': EXAMPLE_OAUTH2_PREFS,
 }
 
 
@@ -20,8 +28,15 @@ def _remove_defaults(prefs: Preferences) -> Preferences:
     """Remove defaults if they haven't been changed"""
     filtered_prefs = deepcopy(prefs)
     for key, default_val in DEFAULT_PREFS.items():
-        if filtered_prefs[key] == default_val:  # type: ignore
-            del filtered_prefs[key]             # type: ignore
+        if key in NESTED_DEFAULT_PREFS:
+            continue
+        if filtered_prefs[key] == default_val:               # type: ignore
+            del filtered_prefs[key]                          # type: ignore
+    for nested_name, nested_defaults in NESTED_DEFAULT_PREFS.items():
+        nested_prefs = filtered_prefs[nested_name]           # type: ignore
+        for nested_key, default_nested_val in nested_defaults.items():
+            if nested_prefs[nested_key] == default_nested_val:
+                del filtered_prefs[nested_name][nested_key]  # type: ignore
     return filtered_prefs
 
 
