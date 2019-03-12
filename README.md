@@ -51,65 +51,90 @@ api post \
 ```
 
 ### Preferences
-All the things that you don't want to type in every cli command live in your preferences. These will be where you keep track of what API you're messing around with, your OAuth2 credentials, and general API Buddy configuration.
+All the things that you don't want to type in every command can be set in your preferences. They live in `~/.api-buddy.yml` and should be writtend in [yaml format](https://yaml.org). There's currently only one you *have* to set (`api_url`), but there's plenty more to configure for a better API exploration experience.
 
-They live in `~/.api-buddy.yml` and should look something like this:
+The basic knobs you can dial are (with defaults shown):
+
+#### API URL
+>`str` (required)
 ```yaml
-api_url: https://base.api.url.com
-client_id: your_client_id
-client_secret: your_client_secret
-scopes:
-  - one_scope
-  - another_scope
+api_url: https://api.url.com
 ```
 
-> That's [yaml format](https://yaml.org).
+This is your base API URL. It's' be the part of the url that comes before all the endpoints you want to hit. For example, if you wanted to hit `https://api.url.com/an-endpoint`, it would be `https://api.url.com`.
 
-You'll have to specify these (with examples shown):
+
+#### Auth Type
+> `null` or `str` (optional)
 ```yaml
-api_url: https://base.api.url.com
-  # (str) The base api url you'll be using
-client_id: your_client_id
-  # (str) Part of your api provider dev account
-client_secret: your_client_secret
-  # (str) Part of your api provider dev account
-  #       (PROTECT THIS, IT'S SECRET) 🙊
-scopes:
-  - one_scope
-  - another_scope
-  # (List[str]) Specify which resources you want to
-  #             access
+auth_type: null
 ```
 
-And can optionally specify these (with defaults shown):
+This is the type of authentication you'll use. If you don't specify or use `null` it will default to no authentication, but oauth2 is also supported. [Read more about authentication here](docs/authentication.md). It's super easy, I promise 😬
+
+**TL;DR** OAuth2 is currently the only other supported option and looks like this:
 ```yaml
-redirect_uri: http://localhost:8080/
-  # (str) Part of your api provider dev account, needs to
-  #       be on localhost
-auth_fail_path: 401
-  # (int) Response status code that means you need to
-  #       re-authorize
+auth_type: oauth2
+oauth2:
+  client_id: your_client_id
+  client_secret: your_client_secret
+  scopes:
+    - one_scope
+    - another_scope
+```
+
+#### Auth Test Status
+> `int` (optional)
+```yaml
+auth_test_status: 401
+```
+
+This is status code that indicates it's time to reauthorize. You only need to specify this if you're using an auth type. If API Buddy encounters this status code after an API call, and you're using authentication, it'll re-authorize then try again. It really should be `401`, but not all APIs are designed the same. 😸
+
+#### API Version
+> `null` or `str` (optional)
+```yaml
 api_version: null
-  # (str) If your api uses versioning, you can specify
-  #       this and not have to type it all the time.
-  #       https://an.api.com/<version>/my-fav-endpoint
+```
+
+If your API uses versioning, you can specify this and not have to type all the time. Not all APIs use this, but a lot of them do, so it's just a convenience -- is ignored if left out or `null`. Would be like this: `https://an.api.com/<version>/my-fav-endpoint`.
+
+#### Verify SSL
+> `bool` (optional)
+```yaml
+verify_ssl: true
+```
+
+By default, API Buddy will not allow you to communicate over http or though an untrusted SSL certificate. We're all adults here, if you want to override that just use this setting. It's something you'll probably want to do if you're actually developing the API you're exploring and it's running on localhost.
+
+#### Verboseness
+> `Dict[str, bool]` (optional)
+```yaml
 verboseness:
   request: false
-    # (bool) Show request details
-  response: true
-    # (bool) Show response details
-variables:
-  my_var: some value
-  another_var: some other value
-  # (Dict[str, str]) Specify variables for use throughout
-  #                  your options, see ##Advanced Usage for
-  #                  more info
+  response: false
 ```
 
+If you want to see more details about what you're doing, this is the place to do it. Just specify `true` on the one you want and you're good to go.
+
+#### Variables
+> `Dict[str, str]` (optional)
+```yaml
+variables: {}
+```
+
+You can [read more about this here](docs/variables.md), but these are super handy for arbitrary things you want to interpolate throughout your commands.
+
+
 ### Arguments
-- `http_method`: (Optoinal, default: `get`) The HTTP method to use in your request.
-  - It should be one of `get`, `post`, `patch`, `put`, `delete`.
-- `endpoint`: The relative path to an API endpoint.
+- `http_method`: (optional, default=`get`) The HTTP method to use in your request.
+  - It should be one of:
+    - `get`
+    - `post`
+    - `patch`
+    - `put`
+    - `delete`
+- `endpoint`: (required) The relative path to an API endpoint.
   - AKA you don't need to type the base api url again here.
 - `params`: (optional) A list of `key=val` query params
 - `data`: (optional) A JSON string of requets body data.
@@ -119,32 +144,6 @@ variables:
 ### Options
 - `-h`, `--help`: Show the help message
 - `-v`, `--version`: Show the installed version
-
-## Advanced Usage
-### Variables
-If you find yourself typing a specific value a bunch of times, you can put it into your preferences and then you'll be able to interpolate it throughout your arguments. Just wrap it's name in `#{}` and API Buddy will do the rest. For example, if you had this in your preferences:
-```yaml
-variables:
-  - user_id: 123
-  - name: Art Vandalay
-```
-
-You could do this:
-```bash
-api get '/users/#{user_id}'
-```
-
-And API Buddy would hit the `/users/123` endpoint.
-
-You can use variables within in your endpoint, as part of values in your query params, or anywhere in your request body data.
-```bash
-api post '/users/' \
-  'id=#{user_id}' \
-  '{
-    "id"=#{user_id},
-    "name"="#{name}"
-  }'
-```
 
 ## Development
 Requires:
