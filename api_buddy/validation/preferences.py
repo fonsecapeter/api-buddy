@@ -16,6 +16,9 @@ DEFAULT_OAUTH2_PREFS = {
     'redirect_uri': 'http://localhost:8080/',
     'state': None,
     'access_token': 'can_haz_token',
+    'token_path': 'token',
+    'authorize_path': 'authorize',
+    'authorize_params': {},
 }
 DEFAULT_VERBOSENESS_PREFS = {
     'request': False,
@@ -54,6 +57,18 @@ oauth2_schema = Schema({
             'access_token',
             default=DEFAULT_OAUTH2_PREFS['access_token'],
         ): str,
+    Maybe(
+            'token_path',
+            default=DEFAULT_OAUTH2_PREFS['token_path'],
+        ): str,
+    Maybe(
+            'authorize_path',
+            default=DEFAULT_OAUTH2_PREFS['authorize_path'],
+        ): str,
+    Maybe(
+            'authorize_params',
+            default=DEFAULT_OAUTH2_PREFS['authorize_params'],
+        ): dict,
 })
 
 verboseness_schema = Schema({
@@ -84,7 +99,7 @@ prefs_schema = Schema({
     Maybe(
             'api_version',
             default=DEFAULT_PREFS['api_version'],
-        ): Or(str, None),
+        ): Or(str, int, float, None),
     Maybe(
             'verify_ssl',
             default=DEFAULT_PREFS['verify_ssl'],
@@ -140,19 +155,23 @@ def _validate_api_version(api_version: Any) -> Optional[str]:
     return api_version
 
 
-def _validate_variables(variables: Dict[Any, Any]) -> Dict[str, str]:
+def _validate_dict_like_thing(
+            thing_name: str,
+            thing: Dict[Any, Any]
+        ) -> Dict[str, str]:
+    """Convert dictionary like thing into strict, flat Dict[str, str]"""
     processed_vars = {}
-    for name, val in variables.items():
+    for name, val in thing.items():
         if isinstance(val, (dict, list)):
             raise PrefsException(
-                title=f'Your "{name}" variable is not gonna fly',
+                title=f'Your "{name}" {thing_name} is not gonna fly',
                 message='It can\'t be nested, try something simpler',
             )
         # bool capitalization is unpredictable
         if isinstance(val, bool):
             display_val = str(val).lower()
             raise PrefsException(
-                title=f'Your "{name}" variable is a boolean',
+                title=f'Your "{name}" {thing_name} is a boolean',
                 message=(
                     'You\'re going to have to throw some quotes around that '
                     'bad boy so I know how to capitalize it. Something like\n'
@@ -163,7 +182,7 @@ def _validate_variables(variables: Dict[Any, Any]) -> Dict[str, str]:
             display_name = str(name).lower()
             raise PrefsException(
                 title=(
-                    f'Yo, you have a boolean for a variable name "{name}"'
+                    f'Yo, you have a boolean for a {thing_name} name "{name}"'
                 ),
                 message=(
                     'Rename it or throw some quotes around that bad boy so I '
@@ -173,7 +192,7 @@ def _validate_variables(variables: Dict[Any, Any]) -> Dict[str, str]:
             )
         if any(special_char in str(name) for special_char in VARIABLE_CHARS):
             raise PrefsException(
-                title=f'Your variable name "{name}" is too funky',
+                title=f'Your {thing_name} name "{name}" is too funky',
                 message=(
                     f'You can\'t use any of these special characters:\n  '
                     ' '.join([f'"{c}"' for c in tuple(VARIABLE_CHARS)])
@@ -194,6 +213,13 @@ def validate_preferences(prefs: RawPreferences) -> Preferences:
             message=str(err),
         )
     valid_prefs['api_url'] = _validate_api_url(valid_prefs['api_url'])
-    valid_prefs['variables'] = _validate_variables(valid_prefs['variables'])
+    valid_prefs['variables'] = _validate_dict_like_thing(
+        'variables',
+        valid_prefs['variables'],
+    )
+    valid_prefs['oauth2']['authorize_params'] = _validate_dict_like_thing(
+        'authorize_params',
+        valid_prefs['oauth2']['authorize_params'],
+    )
     valid_prefs['auth_type'] = _validate_auth_type(valid_prefs['auth_type'])
     return valid_prefs
