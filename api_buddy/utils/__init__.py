@@ -5,26 +5,9 @@ from urllib.parse import urljoin
 
 VERSION = '0.1.0'
 PREFS_FILE = '~/.api-buddy.yml'
-ROOT_DIR = path.dirname(path.dirname(__file__))
-REQUEST_TIMEOUT = 5  # seconds
-GET = 'get'
-POST = 'post'
-PATCH = 'patch'
-PUT = 'put'
-DELETE = 'delete'
-HTTP_METHODS = (
-    GET,
-    POST,
-    PATCH,
-    PUT,
-    DELETE,
-)
+ROOT_DIR = path.dirname(path.dirname(path.dirname(__file__)))
 MAX_LINE_LENGTH = 50
 INDENT = '  '
-OAUTH2 = 'oauth2'
-AUTH_TYPES = (
-    OAUTH2,
-)
 
 
 def api_url_join(

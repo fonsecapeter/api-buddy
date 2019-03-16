@@ -4,7 +4,7 @@ from unittest import TestCase
 from api_buddy.typing import RawOptions
 from api_buddy.exceptions import APIBuddyException
 from api_buddy.validation.options import validate_options
-from api_buddy.utils import GET
+from api_buddy.utils.http import GET
 from ..helpers import FAKE_ENDPOINT
 
 FIRST_NAME = 'Cosmo'

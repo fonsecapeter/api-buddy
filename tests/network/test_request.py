@@ -8,7 +8,7 @@ from api_buddy.config.preferences import load_prefs
 from api_buddy.exceptions import APIBuddyException
 from api_buddy.network.session import get_session
 from api_buddy.network.request import send_request
-from api_buddy.utils import HTTP_METHODS, GET
+from api_buddy.utils.http import HTTP_METHODS, GET
 from ..helpers import (
     FAKE_ACCESS_TOKEN,
     FAKE_API_URL,

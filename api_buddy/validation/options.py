@@ -4,7 +4,7 @@ from typing import Any, cast, Dict, List, Union
 from urllib.parse import urlparse
 from ..typing import Options, RawOptions
 from ..exceptions import APIBuddyException
-from ..utils import HTTP_METHODS, GET
+from ..utils.http import HTTP_METHODS, GET
 
 
 def _more_than_one_method_selected(opts: RawOptions) -> bool:

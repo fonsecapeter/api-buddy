@@ -37,25 +37,9 @@ api post \\
     "occupation"="#{occupation}"
   }'
 
-Your preferences live in in ~/.api-buddy.yml
-You'll have to specify these (with examples shown):
-  api_url: https://base.api.url.com
-  client_id: your_client_id
-  client_secret: your_client_secret
-  scopes:
-    - one_scope
-    - another_scope
-
-And you can optionally specify these (with defaults shown):
-  redirect_uri: http://localhost:8080/
-  auth_fail_path: 401
-  api_version: null
-  verboseness:
-    request: false
-    response: false
-  variables:
-    my_var: some value
-    another_var: some other value
+Your preferences live in ~/.api-buddy.yml
+Check out GitHub for more info
+https://github.com/fonsecapeter/api-buddy
 
 Arguments:
   http_method  (optional, default: get) One of
@@ -78,9 +62,6 @@ Usage:
 Options:
   -h, --help     Show this help message
   -v, --version  Show installed version
-
-Check out GitHub for more info
-https://github.com/fonsecapeter/api-buddy
 """
 from .utils import VERSION, PREFS_FILE
 from .exceptions import APIBuddyException, exit_with_exception

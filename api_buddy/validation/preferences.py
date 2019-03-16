@@ -8,7 +8,8 @@ from typing import Any, Dict, Optional
 from urllib.parse import urlparse
 from ..typing import Preferences, RawPreferences
 from ..exceptions import PrefsException
-from ..utils import AUTH_TYPES, OAUTH2, PREFS_FILE
+from ..utils import PREFS_FILE
+from ..utils.auth import AUTH_TYPES, OAUTH2
 
 VARIABLE_CHARS = '#{}'
 DEFAULT_URL_SCHEME = 'https'
