@@ -1,6 +1,6 @@
 import webbrowser
 from os import environ
-from typing import Optional
+from typing import Dict, Optional
 from urllib.parse import urljoin
 from requests_oauthlib import OAuth2Session
 
@@ -23,7 +23,10 @@ def _authenticate(
             client_secret: str,
             api_url: str,
             redirect_uri: str,
-            state: Optional[str] = None,
+            state: Optional[str],
+            token_path: str,
+            authorize_path: str,
+            authorize_params: Dict[str, str],
         ) -> str:
     """Perform OAuth2 Flow and get a new token
 
@@ -31,9 +34,9 @@ def _authenticate(
         Implicitly updates the OAuth2Session
     """
     authorization_url, state = sesh.authorization_url(
-        urljoin(api_url, 'authorize'),
+        urljoin(api_url, authorize_path),
         state=state,
-        kwargs={'select_profile': 'true'},
+        kwargs=authorize_params,
     )
     print(
         f'Opening browser to visit:\n\n{authorization_url}\n\n'
@@ -43,7 +46,7 @@ def _authenticate(
     authorization_response = _get_authorization_response_url()
     environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # allow non-http redirect_uri
     token = sesh.fetch_token(
-        urljoin(api_url, 'token'),
+        urljoin(api_url, token_path),
         authorization_response=authorization_response,
         client_secret=client_secret,
         include_client_id=True,
@@ -76,12 +79,16 @@ def reauthenticate_oauth2(
 
     Also save it to preferences
     """
+    oauth2_prefs = prefs['oauth2']
     access_token = _authenticate(
         sesh,
         client_secret=prefs['oauth2']['client_secret'],
         api_url=prefs['api_url'],
-        redirect_uri=prefs['oauth2']['redirect_uri'],
-        state=prefs['oauth2']['state'],
+        redirect_uri=oauth2_prefs['redirect_uri'],
+        state=oauth2_prefs['state'],
+        token_path=oauth2_prefs['token_path'],
+        authorize_path=oauth2_prefs['authorize_path'],
+        authorize_params=oauth2_prefs['authorize_params'],
     )
     prefs['oauth2']['access_token'] = access_token
     save_prefs(prefs, prefs_file)

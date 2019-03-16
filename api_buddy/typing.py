@@ -13,6 +13,9 @@ OAuth2Preferences = TypedDict('OAuth2Preferences', {
     'redirect_uri': str,
     'access_token': str,
     'state': Optional[str],
+    'token_path': str,
+    'authorize_path': str,
+    'authorize_params': Dict[str, str],
 })
 
 Preferences = TypedDict('Preferences', {

@@ -32,6 +32,9 @@ NEW_PREFS: Preferences = {
         'scopes': ['keyboards', 'stuck_in_boxes'],
         'state': None,
         'access_token': 'feline_token',
+        'token_path': 'token',
+        'authorize_path': 'authorize',
+        'authorize_params': {},
     },
     'auth_test_status': 401,
     'api_version': None,
@@ -179,7 +182,7 @@ class TestLoadPreferences(TempYAMLTestCase):
             else:
                 assert False, f'{LOADED_MSG}{prefs}'
 
-    def test_doesnt_allow_bools(self):
+    def test_doesnt_allow_boolean_variables(self):
         bool_variable_fixtures = (
             'bool_variable_value.yml',
             'bool_variable_name.yml',
@@ -188,12 +191,51 @@ class TestLoadPreferences(TempYAMLTestCase):
             try:
                 prefs = load_prefs(_fixture_path(bool_variable_fixture))
             except APIBuddyException as err:
+                assert 'variable' in err.title
                 assert 'boolean' in err.title
                 assert '\'true\'' in err.message  # helpful suggestion
             else:
                 assert False, f'{LOADED_MSG}{prefs}'
 
-    def test_doesnt_allow_special_characters(self):
+    def test_loads_authorize_params_as_strings(self):
+        prefs = load_prefs(_fixture_path('happy_authorize_params.yml'))
+        assert prefs['oauth2']['authorize_params'] == {
+            'simle_str': 'is probably most common',
+            'ints': '2',
+            '3': '3',  # keys are stringified too
+            'true': 'true',  # bools should be quoted
+        }
+
+    def test_doesnt_allow_nested_authorize_params(self):
+        bad_variable_fixtures = (
+            'nested_dict_authorize_params.yml',
+            'nested_list_authorize_params.yml',
+        )
+        for bad_variable_fixture in bad_variable_fixtures:
+            try:
+                prefs = load_prefs(_fixture_path(bad_variable_fixture))
+            except APIBuddyException as err:
+                assert 'authorize_param' in err.title
+                assert 'nested' in err.message
+            else:
+                assert False, f'{LOADED_MSG}{prefs}'
+
+    def test_doesnt_allow_boolean_authorize_params(self):
+        bool_variable_fixtures = (
+            'bool_authorize_param_value.yml',
+            'bool_authorize_param_name.yml',
+        )
+        for bool_variable_fixture in bool_variable_fixtures:
+            try:
+                prefs = load_prefs(_fixture_path(bool_variable_fixture))
+            except APIBuddyException as err:
+                assert 'authorize_param' in err.title
+                assert 'boolean' in err.title
+                assert '\'true\'' in err.message  # helpful suggestion
+            else:
+                assert False, f'{LOADED_MSG}{prefs}'
+
+    def test_doesnt_allow_variable_names_with_special_characters(self):
         try:
             prefs = load_prefs(_fixture_path(
                 'special_chars_variable_name.yml'

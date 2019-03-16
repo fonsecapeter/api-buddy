@@ -53,7 +53,7 @@ api post \
 ### Preferences
 All the things that you don't want to type in every command can be set in your preferences. They live in `~/.api-buddy.yml` and should be writtend in [yaml format](https://yaml.org). There's currently only one you *have* to set (`api_url`), but there's plenty more to configure for a better API exploration experience.
 
-The basic knobs you can dial are (with defaults shown):
+The basic knobs you can dial are (with defaults shown if optional):
 
 #### API URL
 >`str` (required)
@@ -70,7 +70,7 @@ This is your base API URL. It's' be the part of the url that comes before all th
 auth_type: null
 ```
 
-This is the type of authentication you'll use. If you don't specify or use `null` it will default to no authentication, but oauth2 is also supported. [Read more about authentication here](docs/authentication.md). It's super easy, I promise 😬
+This is the type of authentication you'll use. If you don't specify or use `null` it will default to no authentication, but oauth2 is also supported. [Read more about authentication here](docs/oauth2.md). It's super easy, I promise 😬
 
 **TL;DR** OAuth2 is currently the only other supported option and looks like this:
 ```yaml
@@ -92,7 +92,7 @@ auth_test_status: 401
 This is status code that indicates it's time to reauthorize. You only need to specify this if you're using an auth type. If API Buddy encounters this status code after an API call, and you're using authentication, it'll re-authorize then try again. It really should be `401`, but not all APIs are designed the same. 😸
 
 #### API Version
-> `null` or `str` (optional)
+> `null`, `str`, `int`, or `float` (optional)
 ```yaml
 api_version: null
 ```
