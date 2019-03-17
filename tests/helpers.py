@@ -52,7 +52,10 @@ def explode(err: Exception = Exception) -> Callable[..., Any]:
 
 
 def _mock_api_method(method: str = 'get') -> Callable[..., Any]:
-    """ Wrapper for method-specific api method decorators """
+    """Wrapper for method-specific api method decorators
+
+    With response content and status code values
+    """
     def decorator_with_args(
                 content: str = '{}',
                 status_code: int = 200,
@@ -83,7 +86,10 @@ def _mock_api_method(method: str = 'get') -> Callable[..., Any]:
 
 
 def _mock_api_method_side_effect(method: str = 'get') -> Callable[..., Any]:
-    """ Wrapper for method-specific api method decorators """
+    """Wrapper for method-specific api method decorators
+
+    With side effects
+    """
     def decorator_with_args(
                 side_effect: Callable[..., Any],
             ) -> Callable[..., Any]:

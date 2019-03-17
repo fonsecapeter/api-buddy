@@ -2,7 +2,7 @@ import requests
 from typing import Callable, Dict
 from .auth.oauth2 import get_oauth2_session, reauthenticate_oauth2
 from ..typing import Options, Preferences
-from ..utils import OAUTH2
+from ..utils.auth import OAUTH2
 
 SessionInitializer = Callable[
     [Options, Preferences, str],

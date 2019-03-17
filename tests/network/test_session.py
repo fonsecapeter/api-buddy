@@ -6,7 +6,7 @@ from api_buddy.network.session import (
     get_session,
     reauthenticate,
 )
-from api_buddy.utils import OAUTH2
+from api_buddy.utils.auth import OAUTH2
 from ..helpers import (
     TEST_PREFERENCES,
     TEST_OPTIONS,

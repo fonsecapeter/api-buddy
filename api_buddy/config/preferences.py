@@ -10,7 +10,7 @@ from ..validation.preferences import (
     NESTED_DEFAULT_PREFS,
     validate_preferences,
 )
-from ..utils import OAUTH2
+from ..utils.auth import OAUTH2
 
 EXAMPLE_OAUTH2_PREFS = {
     'client_id': 'your_client_id',

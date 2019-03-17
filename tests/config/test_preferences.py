@@ -2,7 +2,7 @@ import yaml
 from os import path
 from api_buddy.exceptions import APIBuddyException
 from api_buddy.typing import Preferences
-from api_buddy.utils import OAUTH2, AUTH_TYPES
+from api_buddy.utils.auth import OAUTH2, AUTH_TYPES
 from api_buddy.validation.preferences import (
     DEFAULT_PREFS,
     DEFAULT_OAUTH2_PREFS,
