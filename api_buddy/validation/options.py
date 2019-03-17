@@ -1,10 +1,10 @@
 from json import loads, JSONDecodeError
 from copy import deepcopy
-from typing import Any, cast, Dict, List, Union
+from typing import Any, cast, List
 from urllib.parse import urlparse
-from ..typing import Options, RawOptions
-from ..exceptions import APIBuddyException
-from ..utils.http import HTTP_METHODS, GET
+from ..utils.typing import Options, RawOptions
+from ..utils.exceptions import APIBuddyException
+from ..utils.http import HTTP_METHODS, GET, pack_query_params
 
 
 def _more_than_one_method_selected(opts: RawOptions) -> bool:
@@ -50,33 +50,6 @@ def _validate_endpoint(endpoint: str) -> str:
     return endpoint
 
 
-def _validate_params(
-            params: List[str]
-        ) -> Dict[str, Union[str, List[str]]]:
-    """Parse query params
-
-    ['key1=val1', 'key2=val2', 'key2=val3']
-    => {'key1': 'val1', 'key2': ['val2', 'val3']}
-    """
-    keyed_params: Dict[str, Union[str, List[str]]] = {}
-    for param in params:
-        try:
-            key, val = param.split('=')
-        except ValueError:
-            raise APIBuddyException(
-                title='One of your query params is borked',
-                message=f'"{param}" should contain one and only one "="',
-            )
-        prev_val = keyed_params.get(key)
-        if prev_val is None:
-            keyed_params[key] = val
-        elif isinstance(prev_val, str):
-            keyed_params[key] = [prev_val, val]
-        else:
-            prev_val.append(val)
-    return keyed_params
-
-
 def _validate_data(data: str) -> Any:
     try:
         return loads(data)
@@ -104,7 +77,7 @@ def _validate_params_and_data(opts: RawOptions) -> RawOptions:
             data = _validate_data(maybe_data)
         except APIBuddyException as data_err:
             try:  # maybe it's a param?
-                _validate_params([maybe_data])
+                pack_query_params([maybe_data])
             except APIBuddyException:
                 if opts['<method>'] != GET:  # should never be data for GET
                     raise data_err  # it's not a param, its bad data
@@ -115,7 +88,7 @@ def _validate_params_and_data(opts: RawOptions) -> RawOptions:
             title='You can\'t use request body data with GET',
             message='Did you mean to use POST?',
         )
-    opts['<params>'] = _validate_params(params)  # type: ignore
+    opts['<params>'] = pack_query_params(params)  # type: ignore
     opts['<data>'] = data
     return opts
 

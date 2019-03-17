@@ -1,7 +1,7 @@
 import json
 from copy import deepcopy
 from typing import Any, Callable, Dict, List, Union
-from ..typing import Options, Preferences
+from ..utils.typing import Options, Preferences
 
 
 def _interpolate(thing: str, name: str, val: str) -> str:

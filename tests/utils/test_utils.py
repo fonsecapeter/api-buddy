@@ -1,6 +1,6 @@
 from unittest import TestCase
 from api_buddy.utils import api_url_join, format_dict_like_thing
-from .helpers import FAKE_API_URL, FAKE_API_VERSION, FAKE_ENDPOINT
+from ..helpers import FAKE_API_URL, FAKE_API_VERSION, FAKE_ENDPOINT
 
 NAME = 'Cosmo Kramer'
 ALIAS = 'Dr. Martin Van Nostrand'

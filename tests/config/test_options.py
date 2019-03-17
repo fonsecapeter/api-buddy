@@ -1,8 +1,8 @@
 """Testing validation only because testing docopt is hard + unnecessary"""
 from copy import deepcopy
 from unittest import TestCase
-from api_buddy.typing import RawOptions
-from api_buddy.exceptions import APIBuddyException
+from api_buddy.utils.typing import RawOptions
+from api_buddy.utils.exceptions import APIBuddyException
 from api_buddy.validation.options import validate_options
 from api_buddy.utils.http import GET
 from ..helpers import FAKE_ENDPOINT

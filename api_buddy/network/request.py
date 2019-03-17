@@ -16,8 +16,8 @@ from ..utils import (
     format_dict_like_thing,
 )
 from ..utils.spin import spin
-from ..typing import Preferences, Options
-from ..exceptions import APIBuddyException
+from ..utils.typing import Preferences, Options
+from ..utils.exceptions import APIBuddyException
 from .session import reauthenticate
 
 DNS = 'http://1.1.1.1'

@@ -9,6 +9,5 @@ oauth2:
      - squirrels
   state: null
   authorize_params:
-    nested_dict:
-      aint: gonna
+    - aint: gonna
       fly: here

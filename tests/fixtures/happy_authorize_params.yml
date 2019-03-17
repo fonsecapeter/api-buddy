@@ -9,7 +9,6 @@ oauth2:
      - squirrels
   state: null
   authorize_params:
-    simle_str: is probably most common
-    ints: 2
-    3: 3
-    'true': 'true'
+    - a=b
+    - c=d
+    - a=e

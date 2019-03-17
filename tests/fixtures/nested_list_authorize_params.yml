@@ -9,6 +9,4 @@ oauth2:
      - squirrels
   state: null
   authorize_params:
-    nested_list:
-      - chunky
-      - monkey
+    - [chunky, monkey]

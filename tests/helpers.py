@@ -3,7 +3,7 @@ from requests import Response
 from unittest import mock, TestCase
 from typing import Any, Callable, NoReturn, Optional
 from api_buddy.utils import ROOT_DIR
-from api_buddy.typing import Preferences, Options
+from api_buddy.utils.typing import Preferences, Options
 
 FIXTURES_DIR = path.join(ROOT_DIR, 'tests', 'fixtures')
 TEMP_FILE = path.join(FIXTURES_DIR, 'temp.yml')

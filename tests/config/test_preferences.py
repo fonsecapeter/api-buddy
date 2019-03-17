@@ -1,7 +1,7 @@
 import yaml
 from os import path
-from api_buddy.exceptions import APIBuddyException
-from api_buddy.typing import Preferences
+from api_buddy.utils.exceptions import APIBuddyException
+from api_buddy.utils.typing import Preferences
 from api_buddy.utils.auth import OAUTH2, AUTH_TYPES
 from api_buddy.validation.preferences import (
     DEFAULT_PREFS,
@@ -34,7 +34,7 @@ NEW_PREFS: Preferences = {
         'access_token': 'feline_token',
         'token_path': 'token',
         'authorize_path': 'authorize',
-        'authorize_params': {},
+        'authorize_params': {'give_treat': 'yes'},
     },
     'auth_test_status': 401,
     'api_version': None,
@@ -101,7 +101,7 @@ class TestLoadPreferences(TempYAMLTestCase):
         try:
             prefs = load_prefs(_fixture_path('empty.yml'))
         except APIBuddyException as err:
-            assert 'preferences are empty' in err.title
+            assert 'empty' in err.title
             assert (
                 f'client_id: {EXAMPLE_PREFS["oauth2"]["client_id"]}'
                 in err.message
@@ -113,7 +113,7 @@ class TestLoadPreferences(TempYAMLTestCase):
         try:
             prefs = load_prefs(_fixture_path('bad_types.yml'))
         except APIBuddyException as err:
-            assert 'preferences are funky' in err.title
+            assert 'schema' in err.title
             assert 'client_id' in err.message
         else:
             assert False, f'{LOADED_MSG}{prefs}'
@@ -122,7 +122,7 @@ class TestLoadPreferences(TempYAMLTestCase):
         try:
             prefs = load_prefs(_fixture_path('missing_fields.yml'))
         except APIBuddyException as err:
-            assert 'preferences are funky' in err.title
+            assert 'schema' in err.title
             assert 'api_url' in err.message
         else:
             assert False, f'{LOADED_MSG}{prefs}'
@@ -200,38 +200,22 @@ class TestLoadPreferences(TempYAMLTestCase):
     def test_loads_authorize_params_as_strings(self):
         prefs = load_prefs(_fixture_path('happy_authorize_params.yml'))
         assert prefs['oauth2']['authorize_params'] == {
-            'simle_str': 'is probably most common',
-            'ints': '2',
-            '3': '3',  # keys are stringified too
-            'true': 'true',  # bools should be quoted
+            'a': ['b', 'e'],
+            'c': 'd',
         }
 
-    def test_doesnt_allow_nested_authorize_params(self):
-        bad_variable_fixtures = (
-            'nested_dict_authorize_params.yml',
-            'nested_list_authorize_params.yml',
-        )
-        for bad_variable_fixture in bad_variable_fixtures:
+    def test_must_be_list_of_param_strings(self):
+        bad_variable_fixtures = {
+            'missing_equals_authorize_params.yml': 'param',
+            'int_authorize_params.yml': 'preferences',
+            'nested_dict_authorize_params.yml': 'preferences',
+            'nested_list_authorize_params.yml': 'preferences',
+        }
+        for bad_variable_fixture, msg in bad_variable_fixtures.items():
             try:
                 prefs = load_prefs(_fixture_path(bad_variable_fixture))
             except APIBuddyException as err:
-                assert 'authorize_param' in err.title
-                assert 'nested' in err.message
-            else:
-                assert False, f'{LOADED_MSG}{prefs}'
-
-    def test_doesnt_allow_boolean_authorize_params(self):
-        bool_variable_fixtures = (
-            'bool_authorize_param_value.yml',
-            'bool_authorize_param_name.yml',
-        )
-        for bool_variable_fixture in bool_variable_fixtures:
-            try:
-                prefs = load_prefs(_fixture_path(bool_variable_fixture))
-            except APIBuddyException as err:
-                assert 'authorize_param' in err.title
-                assert 'boolean' in err.title
-                assert '\'true\'' in err.message  # helpful suggestion
+                assert msg in err.title
             else:
                 assert False, f'{LOADED_MSG}{prefs}'
 
@@ -265,18 +249,25 @@ class TestLoadPreferences(TempYAMLTestCase):
 
 
 class TestSavePreferences(TempYAMLTestCase):
-    def test_can_save_to_a_new_file(self):
+    def setUp(self):
+        super().setUp()
         assert not path.isfile(TEMP_FILE)
         save_prefs(NEW_PREFS, TEMP_FILE)
         assert path.isfile(TEMP_FILE)
+
+    def test_can_save_to_a_new_file(self):
         loaded_prefs = load_prefs(TEMP_FILE)
         assert loaded_prefs['api_url'] == NEW_PREFS['api_url']
 
     def test_doesnt_save_defaults_if_unchanged(self):
-        assert not path.isfile(TEMP_FILE)
-        save_prefs(NEW_PREFS, TEMP_FILE)
-        assert path.isfile(TEMP_FILE)
         with open(TEMP_FILE, 'r') as prefs_file:
             written_prefs = yaml.load(prefs_file)
         assert 'auth_test_status' not in written_prefs
         assert 'state' not in written_prefs['oauth2']
+
+    def test_unpacks_query_params(self):
+        with open(TEMP_FILE, 'r') as prefs_file:
+            written_prefs = yaml.load(prefs_file)
+        assert written_prefs['oauth2']['authorize_params'] == [
+            'give_treat=yes'
+        ]
