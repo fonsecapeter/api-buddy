@@ -1,0 +1,5 @@
+---
+api_url: https://larry.david.com
+headers:
+  Accept: text/html
+  Authorization: Basic ab1c23d4

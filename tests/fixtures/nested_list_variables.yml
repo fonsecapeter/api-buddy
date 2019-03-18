@@ -1,6 +1,0 @@
----
-api_url: https://newman.com
-variables:
-  nested_list:
-    - chunky
-    - monkey

@@ -1,4 +1,5 @@
 import yaml
+from mock import patch
 from os import path
 from api_buddy.utils.exceptions import APIBuddyException
 from api_buddy.utils.typing import Preferences
@@ -39,6 +40,7 @@ NEW_PREFS: Preferences = {
     'auth_test_status': 401,
     'api_version': None,
     'verify_ssl': True,
+    'headers': {},
     'verboseness': {
         'request': False,
         'response': False,
@@ -159,65 +161,32 @@ class TestLoadPreferences(TempYAMLTestCase):
         prefs = load_prefs(_fixture_path('api_version_as_int.yml'))
         assert prefs['api_version'] == '3'
 
-    def test_loads_variables_as_strings(self):
-        prefs = load_prefs(_fixture_path('happy_variables.yml'))
-        assert prefs['variables'] == {
-            'simle_str': 'is probably most common',
-            'ints': '2',
-            '3': '3',  # keys are stringified too
-            'true': 'true',  # bools should be quoted
-        }
+    @patch('api_buddy.validation.preferences.flat_str_dict')
+    def test_loads_headers_as_flat_str_dict(self, mock_flat_str_dict):
+        load_prefs(_fixture_path('happy_headers.yml'))
+        mock_flat_str_dict.assert_any_call('headers', {
+            'Accept': 'text/html',
+            'Authorization': 'Basic ab1c23d4',
+        })
 
-    def test_doesnt_allow_nested_variables(self):
-        bad_variable_fixtures = (
-            'nested_dict_variables.yml',
-            'nested_list_variables.yml',
-        )
-        for bad_variable_fixture in bad_variable_fixtures:
-            try:
-                prefs = load_prefs(_fixture_path(bad_variable_fixture))
-            except APIBuddyException as err:
-                assert 'variable' in err.title
-                assert 'nested' in err.message
-            else:
-                assert False, f'{LOADED_MSG}{prefs}'
+    @patch('api_buddy.validation.preferences.flat_str_dict')
+    def test_loads_variables_as_flat_str_dict(self, mock_flat_str_dict):
+        load_prefs(_fixture_path('happy_variables.yml'))
+        mock_flat_str_dict.assert_any_call('variables', {
+              'simle_str': 'is probably most common',
+              'ints': 2,
+              3: 3,
+              'true': 'true',
+        }, check_special_chars=True)
 
-    def test_doesnt_allow_boolean_variables(self):
-        bool_variable_fixtures = (
-            'bool_variable_value.yml',
-            'bool_variable_name.yml',
-        )
-        for bool_variable_fixture in bool_variable_fixtures:
-            try:
-                prefs = load_prefs(_fixture_path(bool_variable_fixture))
-            except APIBuddyException as err:
-                assert 'variable' in err.title
-                assert 'boolean' in err.title
-                assert '\'true\'' in err.message  # helpful suggestion
-            else:
-                assert False, f'{LOADED_MSG}{prefs}'
-
-    def test_loads_authorize_params_as_strings(self):
-        prefs = load_prefs(_fixture_path('happy_authorize_params.yml'))
-        assert prefs['oauth2']['authorize_params'] == {
-            'a': ['b', 'e'],
-            'c': 'd',
-        }
-
-    def test_must_be_list_of_param_strings(self):
-        bad_variable_fixtures = {
-            'missing_equals_authorize_params.yml': 'param',
-            'int_authorize_params.yml': 'preferences',
-            'nested_dict_authorize_params.yml': 'preferences',
-            'nested_list_authorize_params.yml': 'preferences',
-        }
-        for bad_variable_fixture, msg in bad_variable_fixtures.items():
-            try:
-                prefs = load_prefs(_fixture_path(bad_variable_fixture))
-            except APIBuddyException as err:
-                assert msg in err.title
-            else:
-                assert False, f'{LOADED_MSG}{prefs}'
+    @patch('api_buddy.validation.preferences.pack_query_params')
+    def test_packs_authorize_params(self, mock_pack_params):
+        load_prefs(_fixture_path('happy_authorize_params.yml'))
+        mock_pack_params.assert_any_call([
+            'a=b',
+            'c=d',
+            'a=e',
+        ])
 
     def test_doesnt_allow_variable_names_with_special_characters(self):
         try:

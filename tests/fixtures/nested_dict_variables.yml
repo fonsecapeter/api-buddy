@@ -1,6 +1,0 @@
----
-api_url: https://george.com
-variables:
-  nested_dict:
-    aint: gonna
-    fly: here
