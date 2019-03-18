@@ -27,6 +27,7 @@ Preferences = TypedDict('Preferences', {
     'auth_test_status': int,
     'api_version': Optional[str],
     'verify_ssl': bool,
+    'headers': Dict[str, str],
     'verboseness': VerbosenessPreferences,
     'variables': Dict[str, str],
 })

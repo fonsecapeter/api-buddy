@@ -29,7 +29,9 @@ def get_session(
     if auth_type is None:
         return requests.Session()
     session_initializer = SESSIONS[auth_type]
-    return session_initializer(opts, prefs, prefs_file_name)
+    sesh = session_initializer(opts, prefs, prefs_file_name)
+    sesh.headers.update(prefs['headers'])
+    return sesh
 
 
 def reauthenticate(
@@ -41,4 +43,6 @@ def reauthenticate(
     if auth_type is None:
         return sesh
     reauthenticate_strategy = REAUTHENTICATIONS[auth_type]
-    return reauthenticate_strategy(sesh, prefs, prefs_file)
+    new_sesh = reauthenticate_strategy(sesh, prefs, prefs_file)
+    new_sesh.headers.update(prefs['headers'])
+    return new_sesh

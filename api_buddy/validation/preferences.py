@@ -4,14 +4,14 @@ from schema import (
     Optional as Maybe,
     Or
 )
-from typing import Any, cast, Dict, List, Optional
+from typing import Any, cast, List, Optional
 from urllib.parse import urlparse
+from ..utils import flat_str_dict, UtilException
 from ..utils.typing import Preferences, RawPreferences
 from ..utils.exceptions import PrefsException
 from ..utils.auth import AUTH_TYPES, OAUTH2
 from ..utils.http import pack_query_params
 
-VARIABLE_CHARS = '#{}'
 DEFAULT_URL_SCHEME = 'https'
 DEFAULT_OAUTH2_PREFS = {
     'redirect_uri': 'http://localhost:8080/',
@@ -31,6 +31,7 @@ DEFAULT_PREFS = {
     'auth_test_status': 401,
     'api_version': None,
     'verify_ssl': True,
+    'headers': {},
     'verboseness': DEFAULT_VERBOSENESS_PREFS,
     'variables': {},
 }
@@ -107,6 +108,10 @@ prefs_schema = Schema({
             default=DEFAULT_PREFS['verify_ssl'],
         ): bool,
     Maybe(
+            'headers',
+            default=DEFAULT_PREFS['headers'],
+        ): dict,
+    Maybe(
             'verboseness',
             default=DEFAULT_PREFS['verboseness'],
         ): verboseness_schema,
@@ -157,53 +162,6 @@ def _validate_api_version(api_version: Any) -> Optional[str]:
     return api_version
 
 
-def _validate_dict_like_thing(
-            thing_name: str,
-            thing: Dict[Any, Any]
-        ) -> Dict[str, str]:
-    """Convert dictionary like thing into strict, flat Dict[str, str]"""
-    processed_vars = {}
-    for name, val in thing.items():
-        if isinstance(val, (dict, list)):
-            raise PrefsException(
-                title=f'Your "{name}" {thing_name} is not gonna fly',
-                message='It can\'t be nested, try something simpler',
-            )
-        # bool capitalization is unpredictable
-        if isinstance(val, bool):
-            display_val = str(val).lower()
-            raise PrefsException(
-                title=f'Your "{name}" {thing_name} is a boolean',
-                message=(
-                    'You\'re going to have to throw some quotes around that '
-                    'bad boy so I know how to capitalize it. Something like\n'
-                    f'  {name}: \'{display_val}\''
-                )
-            )
-        if isinstance(name, bool):
-            display_name = str(name).lower()
-            raise PrefsException(
-                title=(
-                    f'Yo, you have a boolean for a {thing_name} name "{name}"'
-                ),
-                message=(
-                    'Rename it or throw some quotes around that bad boy so I '
-                    'know how to capitalize it. Something like:\n'
-                    f'  \'{display_name}\': {val}'
-                )
-            )
-        if any(special_char in str(name) for special_char in VARIABLE_CHARS):
-            raise PrefsException(
-                title=f'Your {thing_name} name "{name}" is too funky',
-                message=(
-                    f'You can\'t use any of these special characters:\n  '
-                    ' '.join([f'"{c}"' for c in tuple(VARIABLE_CHARS)])
-                )
-            )
-        processed_vars[str(name)] = str(val)
-    return processed_vars
-
-
 def validate_preferences(prefs: RawPreferences) -> Preferences:
     """Wrap errors nicely"""
     prefs['api_version'] = _validate_api_version(prefs.get('api_version'))
@@ -215,12 +173,17 @@ def validate_preferences(prefs: RawPreferences) -> Preferences:
             message=str(err),
         )
     valid_prefs['api_url'] = _validate_api_url(valid_prefs['api_url'])
-    valid_prefs['variables'] = _validate_dict_like_thing(
-        'variables',
-        valid_prefs['variables'],
-    )
+    try:
+        valid_prefs['variables'] = flat_str_dict(
+            'variables',
+            valid_prefs['variables'],
+            check_special_chars=True,
+        )
+    except UtilException as err:
+        raise PrefsException(title=err.title, message=err.message)
     valid_prefs['oauth2']['authorize_params'] = pack_query_params(
         cast(List[str], valid_prefs['oauth2']['authorize_params']),
     )
+    valid_prefs['headers'] = flat_str_dict('headers', valid_prefs['headers'])
     valid_prefs['auth_type'] = _validate_auth_type(valid_prefs['auth_type'])
     return valid_prefs

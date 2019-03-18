@@ -29,6 +29,7 @@ TEST_PREFERENCES: Preferences = {
     'auth_test_status': 401,
     'api_version': None,
     'verify_ssl': True,
+    'headers': {},
     'verboseness': {
         'request': False,
         'response': False,
