@@ -107,6 +107,16 @@ verify_ssl: true
 
 By default, API Buddy will not allow you to communicate over http or though an untrusted SSL certificate. We're all adults here, if you want to override that just use this setting. It's something you'll probably want to do if you're actually developing the API you're exploring and it's running on localhost.
 
+#### Headers
+> `Dict[str, str]` (optional)
+
+If you have any extra headers you want to send on every request, add them here. You can add them in simple yaml dictionary format, ex:
+```yaml
+headers:
+  Authorize: basic ab1c23d4
+  Something: else
+```
+
 #### Verboseness
 > `Dict[str, bool]` (optional)
 ```yaml
