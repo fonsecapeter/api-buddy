@@ -9,4 +9,4 @@ oauth2:
      - squirrels
   state: null
   authorize_params:
-    true: why would anyone do this
+    - thiswontwork

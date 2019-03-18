@@ -1,5 +1,5 @@
 from docopt import docopt
-from ..typing import Options
+from ..utils.typing import Options
 from ..validation.options import validate_options
 
 

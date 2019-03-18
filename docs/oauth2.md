@@ -47,8 +47,8 @@ oauth2:
   authorize_path: authorize
   redirect_uri: https://localhost:5000/
   authorize_params:
-    select_profile: 'true'
-    some_other_param: a_value
+    - select_profile=true
+    - some_other_param=a_value
 ```
 
 ### OAuth2 Preferences
@@ -124,9 +124,9 @@ The token path is the relative path (from your base `api_url`) that you'll hit t
 > Note it's not a full, absolute url, but feel free to file a ticket if you really need it to be. 🎟
 
 #### Authorize Params
-> `Dict[str, str]` (optional)
+> `List[str]` (optional)
 ```yaml
-  authorize_params: {}
+  authorize_params: []
 ```
 
-Some APIs give you the option of changing the DSA and/or token behavior through extra query params at the authorize step. This just let's you specify them here if you need to. See the "at maximum" example above for what this would look like with real stuff in it.
+Some APIs give you the option of changing the DSA and/or token behavior through extra query params at the authorize step. This just let's you specify them here if you need to. These should be specified just like param cli arguments.

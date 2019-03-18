@@ -1,6 +1,6 @@
 import random
 from typing import NoReturn
-from .utils import PREFS_FILE
+from api_buddy.utils import PREFS_FILE
 
 
 class APIBuddyException(Exception):

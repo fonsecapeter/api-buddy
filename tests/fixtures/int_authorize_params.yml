@@ -9,4 +9,4 @@ oauth2:
      - squirrels
   state: null
   authorize_params:
-    my_var: true
+    - 42

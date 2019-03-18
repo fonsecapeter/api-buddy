@@ -64,7 +64,7 @@ Options:
   -v, --version  Show installed version
 """
 from .utils import VERSION, PREFS_FILE
-from .exceptions import APIBuddyException, exit_with_exception
+from .utils.exceptions import APIBuddyException, exit_with_exception
 from .config.preferences import load_prefs
 from .config.options import load_options
 from .config.variables import interpolate_variables

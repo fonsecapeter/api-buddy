@@ -6,6 +6,7 @@ VerbosenessPreferences = TypedDict('VerbosenessPreferences', {
     'response': bool,
 })
 
+QueryParams = Dict[str, Union[str, List[str]]]
 OAuth2Preferences = TypedDict('OAuth2Preferences', {
     'client_id': str,
     'client_secret': str,
@@ -15,9 +16,10 @@ OAuth2Preferences = TypedDict('OAuth2Preferences', {
     'state': Optional[str],
     'token_path': str,
     'authorize_path': str,
-    'authorize_params': Dict[str, str],
+    'authorize_params': QueryParams,
 })
 
+RawPreferences = Dict[str, Any]
 Preferences = TypedDict('Preferences', {
     'api_url': str,
     'auth_type': Optional[str],
@@ -29,14 +31,13 @@ Preferences = TypedDict('Preferences', {
     'variables': Dict[str, str],
 })
 
-RawPreferences = Dict[str, Any]
 
 Options = TypedDict('Options', {
     '--help': bool,
     '--version': bool,
     '<method>': str,
     '<endpoint>': str,
-    '<params>': Dict[str, Union[str, List[str]]],
+    '<params>': QueryParams,
     '<data>': Any,
 })
 

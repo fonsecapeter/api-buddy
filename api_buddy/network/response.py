@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from requests import Response
 from requests.cookies import RequestsCookieJar
 from typing import MutableMapping
-from ..typing import Preferences
+from ..utils.typing import Preferences
 from ..utils import format_dict_like_thing
 
 INDENT = 2

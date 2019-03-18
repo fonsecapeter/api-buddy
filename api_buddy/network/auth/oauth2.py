@@ -1,10 +1,10 @@
 import webbrowser
 from os import environ
-from typing import Dict, Optional
+from typing import Optional
 from urllib.parse import urljoin
 from requests_oauthlib import OAuth2Session
 
-from api_buddy.typing import Preferences, Options
+from api_buddy.utils.typing import Options, Preferences, QueryParams
 from api_buddy.config.preferences import save_prefs
 
 APPLICATION_JSON = 'application/json'
@@ -26,7 +26,7 @@ def _authenticate(
             state: Optional[str],
             token_path: str,
             authorize_path: str,
-            authorize_params: Dict[str, str],
+            authorize_params: QueryParams,
         ) -> str:
     """Perform OAuth2 Flow and get a new token
 
@@ -44,6 +44,7 @@ def _authenticate(
     )
     webbrowser.open(authorization_url)
     authorization_response = _get_authorization_response_url()
+    print()
     environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # allow non-http redirect_uri
     token = sesh.fetch_token(
         urljoin(api_url, token_path),

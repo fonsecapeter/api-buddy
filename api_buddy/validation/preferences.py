@@ -4,12 +4,12 @@ from schema import (
     Optional as Maybe,
     Or
 )
-from typing import Any, Dict, Optional
+from typing import Any, cast, Dict, List, Optional
 from urllib.parse import urlparse
-from ..typing import Preferences, RawPreferences
-from ..exceptions import PrefsException
-from ..utils import PREFS_FILE
+from ..utils.typing import Preferences, RawPreferences
+from ..utils.exceptions import PrefsException
 from ..utils.auth import AUTH_TYPES, OAUTH2
+from ..utils.http import pack_query_params
 
 VARIABLE_CHARS = '#{}'
 DEFAULT_URL_SCHEME = 'https'
@@ -42,6 +42,7 @@ NESTED_DEFAULT_PREFS = {
     'verboseness': DEFAULT_VERBOSENESS_PREFS,
 }
 
+
 oauth2_schema = Schema({
     'client_id': str,
     'client_secret': str,
@@ -69,7 +70,7 @@ oauth2_schema = Schema({
     Maybe(
             'authorize_params',
             default=DEFAULT_OAUTH2_PREFS['authorize_params'],
-        ): dict,
+        ): [str],
 })
 
 verboseness_schema = Schema({
@@ -210,7 +211,7 @@ def validate_preferences(prefs: RawPreferences) -> Preferences:
         valid_prefs: Preferences = prefs_schema.validate(prefs)
     except SchemaError as err:
         raise PrefsException(
-            title=f'These {PREFS_FILE} preferences are funky',
+            title='Something doesn\'t match the schema',
             message=str(err),
         )
     valid_prefs['api_url'] = _validate_api_url(valid_prefs['api_url'])
@@ -218,9 +219,8 @@ def validate_preferences(prefs: RawPreferences) -> Preferences:
         'variables',
         valid_prefs['variables'],
     )
-    valid_prefs['oauth2']['authorize_params'] = _validate_dict_like_thing(
-        'authorize_params',
-        valid_prefs['oauth2']['authorize_params'],
+    valid_prefs['oauth2']['authorize_params'] = pack_query_params(
+        cast(List[str], valid_prefs['oauth2']['authorize_params']),
     )
     valid_prefs['auth_type'] = _validate_auth_type(valid_prefs['auth_type'])
     return valid_prefs
