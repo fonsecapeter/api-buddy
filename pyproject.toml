@@ -4,6 +4,17 @@ version = "0.1.0"
 description = "Explore APIs from your console with API Buddy"
 authors = ["Peter Fonseca <peter.nfonseca@gmail.com>"]
 license = "MIT"
+keyworks = ["api", "cli", "terminal"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Internet :: WWW/HTTP",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -13,6 +24,8 @@ requests-oauthlib = "^1.2.0"
 schema = "^0.6.8"
 PyYAML = "=4.2b1"
 yaspin = "^0.14.1"
+colorama = "^0.4.1"
+Pygments = "^2.3"
 
 [tool.poetry.dev-dependencies]
 colorama = "^0.4.1"

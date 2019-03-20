@@ -1,4 +1,5 @@
 import webbrowser
+from colorama import Fore, Style
 from os import environ
 from typing import Optional
 from urllib.parse import urljoin
@@ -15,7 +16,10 @@ HEADERS = {
 
 
 def _get_authorization_response_url() -> str:
-    return input('Enter the full url: ')  # pragma: no cover
+    return input(  # pragma: no cover
+        f'{Fore.GREEN}Enter the full url{Fore.BLACK}{Style.BRIGHT}:'
+        f'{Style.RESET_ALL} '
+    )
 
 
 def _authenticate(
@@ -39,8 +43,9 @@ def _authenticate(
         kwargs=authorize_params,
     )
     print(
-        f'Opening browser to visit:\n\n{authorization_url}\n\n'
-        'Sign in and go through the DSA, then copy the url.\n'
+        f'Opening browser to visit:\n\n'
+        f'{Fore.BLUE}{Style.BRIGHT}{authorization_url}{Style.RESET_ALL}\n\n'
+        f'Sign in and go through the DSA, then copy the url.\n'
     )
     webbrowser.open(authorization_url)
     authorization_response = _get_authorization_response_url()

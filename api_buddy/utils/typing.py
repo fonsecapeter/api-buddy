@@ -27,8 +27,11 @@ Preferences = TypedDict('Preferences', {
     'auth_test_status': int,
     'api_version': Optional[str],
     'verify_ssl': bool,
+    'timeout': int,
     'headers': Dict[str, str],
     'verboseness': VerbosenessPreferences,
+    'indent': Optional[int],
+    'theme': Optional[str],
     'variables': Dict[str, str],
 })
 
@@ -47,7 +50,7 @@ RawOptions = Dict[str, Optional[Union[str, bool]]]
 # RawOptions = TypedDict('RawOptions', {
 #     '--help': bool,
 #     '--version': bool,
-#     '<method>': str,  # added in validation
+#     'help': bool,
 #     'get': bool,
 #     'post': bool,
 #     'patch': bool,
@@ -56,4 +59,4 @@ RawOptions = Dict[str, Optional[Union[str, bool]]]
 #     '<endpoint>': str,
 #     '<params>': List[str],
 #     '<data>': Optional[str],
-# }, total=False)
+# })

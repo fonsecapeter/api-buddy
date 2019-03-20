@@ -2,6 +2,7 @@ from copy import deepcopy
 from mock import MagicMock, PropertyMock
 from unittest import TestCase
 from api_buddy.network.response import format_response, print_response
+from api_buddy.config.themes import SHELLECTRIC
 from ..helpers import TEST_PREFERENCES
 
 TEXT_TO_KEEP = 'This text should stay'
@@ -18,8 +19,16 @@ class TestPrintResponse(TestCase):
         # should not raise any errors
         print_response(self.resp, self.prefs)
 
-    def test_can_print_verboce_response(self):
+    def test_can_print_verbose_response(self):
         self.prefs['verboseness']['response'] = True
+        # should not raise any errors
+        print_response(self.resp, self.prefs)
+
+    def test_can_prints_statuses(self):
+        type(self.resp).ok = True
+        # should not raise any errors
+        print_response(self.resp, self.prefs)
+        type(self.resp).ok = False
         # should not raise any errors
         print_response(self.resp, self.prefs)
 
@@ -31,8 +40,21 @@ class TestFormatResponse(TestCase):
 
     def test_when_json_it_can_expand_and_indent(self):
         self.resp.json.return_value = {'it': 'works'}
-        formatted = format_response(self.resp)
+        formatted = format_response(self.resp, 2, None)
         assert formatted == '{\n  "it": "works"\n}'
+
+    def test_can_style_json(self):
+        self.resp.json.return_value = {'it': 'works'}
+        formatted = format_response(self.resp, 2, SHELLECTRIC)
+        assert '"it"' in formatted
+        assert '"works"' in formatted
+
+    def test_honors_indent(self):
+        self.resp.json.return_value = {'it': 'works'}
+        formatted = format_response(self.resp, 4, None)
+        assert formatted == '{\n    "it": "works"\n}'
+        formatted = format_response(self.resp, None, None)
+        assert formatted == '{"it": "works"}'
 
     def test_when_html_it_can_strip_tags(self):
         type(self.resp).text = PropertyMock(return_value=(
@@ -55,7 +77,7 @@ class TestFormatResponse(TestCase):
             '  </body>\n'
             '</html>\n'
         ))
-        formatted = format_response(self.resp)
+        formatted = format_response(self.resp, None, None)
         assert formatted == (
             f'{TEXT_TO_KEEP}\n'
             f'{TEXT_TO_KEEP}'
@@ -65,5 +87,5 @@ class TestFormatResponse(TestCase):
         type(self.resp).text = PropertyMock(
             return_value=TEXT_TO_KEEP
         )
-        formatted = format_response(self.resp)
+        formatted = format_response(self.resp, None, None)
         assert formatted == TEXT_TO_KEEP

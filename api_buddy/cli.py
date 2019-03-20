@@ -1,83 +1,24 @@
-"""Explore OAuth2 APIs from your console with API Buddy
-
-It's as easy as:
-api get some-endpoint
-
-HTTP Method defaults to get:
-api this-endpoint
-
-You can add query params in key=val format:
-api get \\
-  my/favorite/endpoint \\
-  first_name=cosmo \\
-  last_name=kramer
-
-You can also add request body data in JSON format:
-api post \\
-  some-endpoint \\
-  '{"id": 1, "field": "value"}'
-
-Note the single-quotes, you can also expand this accross
-multiple lines:
-api post \\
-  some-endpoint \\
-  '{
-     "id": 1,
-     "field": "value"
-  }'
-
-Variables can be interpolated within your endpoint, as part
-of values in your query params, or anywhere in your request
-body data, as long as they're defined by name in your
-preferences:
-api post \\
-  'users/#{user_id}' \\
-  'name=#{name}' \\
-  '{
-    "occupation"="#{occupation}"
-  }'
-
-Your preferences live in ~/.api-buddy.yml
-Check out GitHub for more info
-https://github.com/fonsecapeter/api-buddy
-
-Arguments:
-  http_method  (optional, default: get) One of
-                 [get, post, patch, put, delete]
-  endpoint     The relative path to an API endpoint
-  params       (optional) A list of key=val query params
-  data         (optional) A JSON string of request body
-                 data, for all methods but 'get'
-
-Usage:
-  api get <endpoint> [<params> ...]
-  api post <endpoint> [<params> ...] [<data>]
-  api patch <endpoint> [<params> ...] [<data>]
-  api put <endpoint> [<params> ...] [<data>]
-  api delete <endpoint> [<params> ...] [<data>]
-  api <endpoint> [<params> ...]
-  api (-h | --help)
-  api (-v | --version)
-
-Options:
-  -h, --help     Show this help message
-  -v, --version  Show installed version
-"""
-from .utils import VERSION, PREFS_FILE
-from .utils.exceptions import APIBuddyException, exit_with_exception
-from .config.preferences import load_prefs
+from colorama import init as init_colorama
+from .config.help import HELP
 from .config.options import load_options
+from .config.preferences import load_prefs
 from .config.variables import interpolate_variables
-from .network.session import get_session
 from .network.request import send_request
 from .network.response import print_response
+from .network.session import get_session
+from .utils import VERSION, PREFS_FILE
+from .utils.exceptions import APIBuddyException, exit_with_exception
 
 
 def run() -> None:
+    init_colorama()
     try:
-        opts = load_options(__doc__)
+        opts = load_options(HELP)
         if opts['--version']:
             print(VERSION)
+            return
+        if opts['--help']:
+            print(HELP)
             return
         prefs = load_prefs(PREFS_FILE)
         interpolated_opts = interpolate_variables(opts, prefs)

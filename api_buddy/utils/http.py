@@ -1,8 +1,8 @@
+from colorama import Fore, Style
 from typing import Dict, List, Union
 from .typing import QueryParams
 from .exceptions import APIBuddyException
 
-REQUEST_TIMEOUT = 5  # seconds
 GET = 'get'
 POST = 'post'
 PATCH = 'patch'
@@ -32,7 +32,10 @@ def pack_query_params(
         except ValueError:
             raise APIBuddyException(
                 title='One of your query params is borked',
-                message=f'"{param}" should contain one and only one "="',
+                message=(
+                    f'{Fore.MAGENTA}{param}{Style.RESET_ALL} should contain '
+                    f'one and only one {Fore.MAGENTA}"="{Style.RESET_ALL}'
+                ),
             )
         prev_val = keyed_params.get(key)
         if prev_val is None:

@@ -19,6 +19,7 @@ RAW_OPTIONS: RawOptions = {
     'patch': False,
     'put': False,
     'delete': False,
+    'help': False,
     '--help': False,
     '--version': False,
 }
@@ -194,7 +195,9 @@ class TestData(TestCase):
         try:
             validate_options(opts)
         except APIBuddyException as err:
-            assert 'data with GET' in err.title
-            assert 'use POST?' in err.message
+            assert 'data with' in err.title
+            assert 'GET' in err.title
+            assert 'Did you mean' in err.message
+            assert 'POST' in err.message
         else:
             assert False
