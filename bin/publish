@@ -4,5 +4,5 @@ set -eu -o pipefail
 
 poetry check
 poetry build
-bin/tag
+bin/tag || true
 poetry publish

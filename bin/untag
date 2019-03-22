@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Delete current API Buddy version tag
+set -eu -o pipefail
+
+version=`poetry run api --version`
+git tag -d "${version}" \
+  && git push origin ":refs/tags/${version}"
