@@ -4,6 +4,7 @@ from unittest import mock, TestCase
 from typing import Any, Callable, NoReturn, Optional
 from api_buddy.utils import ROOT_DIR
 from api_buddy.utils.typing import Preferences, Options
+from api_buddy.config.themes import SHELLECTRIC
 
 FIXTURES_DIR = path.join(ROOT_DIR, 'tests', 'fixtures')
 TEMP_FILE = path.join(FIXTURES_DIR, 'temp.yml')
@@ -29,11 +30,14 @@ TEST_PREFERENCES: Preferences = {
     'auth_test_status': 401,
     'api_version': None,
     'verify_ssl': True,
+    'timeout': 60,
     'headers': {},
     'verboseness': {
         'request': False,
         'response': False,
     },
+    'indent': 2,
+    'theme': SHELLECTRIC,
     'variables': {},
 }
 TEST_OPTIONS: Options = {

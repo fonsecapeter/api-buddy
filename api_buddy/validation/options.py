@@ -1,5 +1,6 @@
 from json import loads, JSONDecodeError
 from copy import deepcopy
+from colorama import Fore, Style
 from typing import Any, cast, List
 from urllib.parse import urlparse
 from ..utils.typing import Options, RawOptions
@@ -40,12 +41,16 @@ def _validate_method(opts: RawOptions) -> RawOptions:
 def _validate_endpoint(endpoint: str) -> str:
     url_parts = urlparse(endpoint)
     if url_parts.scheme:
+        message = 'You don\'t need to supply the full url, just the path.'
+        path = url_parts.path
+        if path:
+            message += (
+                f'\nDid you mean {Fore.BLUE}{Style.BRIGHT}{url_parts.path}'
+                f'{Style.RESET_ALL}?'
+            )
         raise APIBuddyException(
             title='Check your endpoint, dude',
-            message=(
-                'You don\'t need to supply the full url, just the path.\n'
-                f'Did you mean "{url_parts.path}"?'
-            ),
+            message=message,
         )
     return endpoint
 
@@ -56,7 +61,10 @@ def _validate_data(data: str) -> Any:
     except JSONDecodeError:
         raise APIBuddyException(
             title='Your request body data are wack',
-            message=f'Please use valid json for: \'{data}\'',
+            message=(
+                'Please use valid json for: '
+                f'{Fore.MAGENTA}{data}{Style.RESET_ALL}'
+            ),
         )
 
 
@@ -85,11 +93,23 @@ def _validate_params_and_data(opts: RawOptions) -> RawOptions:
             params = maybe_params
     if data is not None and opts['<method>'] == GET:
         raise APIBuddyException(
-            title='You can\'t use request body data with GET',
-            message='Did you mean to use POST?',
+            title=(
+                'You can\'t use request body data with '
+                f'{Fore.MAGENTA}GET{Style.RESET_ALL}'
+            ),
+            message=(
+                'Did you mean to use '
+                f'{Fore.MAGENTA}POST{Style.RESET_ALL}?'
+            ),
         )
     opts['<params>'] = pack_query_params(params)  # type: ignore
     opts['<data>'] = data
+    return opts
+
+
+def _validate_help(opts: RawOptions) -> RawOptions:
+    opts['--help'] = opts['help']
+    del opts['help']
     return opts
 
 
@@ -101,4 +121,5 @@ def validate_options(opts: RawOptions) -> Options:
     )
     _validate_method(valid_opts)
     _validate_params_and_data(valid_opts)
+    _validate_help(valid_opts)
     return cast(Options, valid_opts)

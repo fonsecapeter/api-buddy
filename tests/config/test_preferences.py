@@ -1,6 +1,7 @@
 import yaml
 from mock import patch
 from os import path
+from api_buddy.config.themes import SHELLECTRIC
 from api_buddy.utils.exceptions import APIBuddyException
 from api_buddy.utils.typing import Preferences
 from api_buddy.utils.auth import OAUTH2, AUTH_TYPES
@@ -40,11 +41,14 @@ NEW_PREFS: Preferences = {
     'auth_test_status': 401,
     'api_version': None,
     'verify_ssl': True,
+    'timeout': 60,
     'headers': {},
     'verboseness': {
         'request': False,
         'response': False,
     },
+    'indent': 2,
+    'theme': SHELLECTRIC,
     'variables': {},
 }
 
@@ -164,7 +168,7 @@ class TestLoadPreferences(TempYAMLTestCase):
     @patch('api_buddy.validation.preferences.flat_str_dict')
     def test_loads_headers_as_flat_str_dict(self, mock_flat_str_dict):
         load_prefs(_fixture_path('happy_headers.yml'))
-        mock_flat_str_dict.assert_any_call('headers', {
+        mock_flat_str_dict.assert_any_call('header', {
             'Accept': 'text/html',
             'Authorization': 'Basic ab1c23d4',
         })
@@ -172,7 +176,7 @@ class TestLoadPreferences(TempYAMLTestCase):
     @patch('api_buddy.validation.preferences.flat_str_dict')
     def test_loads_variables_as_flat_str_dict(self, mock_flat_str_dict):
         load_prefs(_fixture_path('happy_variables.yml'))
-        mock_flat_str_dict.assert_any_call('variables', {
+        mock_flat_str_dict.assert_any_call('variable', {
               'simle_str': 'is probably most common',
               'ints': 2,
               3: 3,
@@ -215,6 +219,35 @@ class TestLoadPreferences(TempYAMLTestCase):
             'no_auth.yml'
         ))
         assert prefs['auth_type'] is None
+
+    def test_allows_no_theme(self):
+        prefs = load_prefs(_fixture_path(
+            'no_theme.yml'
+        ))
+        assert prefs['theme'] is None
+
+    def test_allows_shellectric_theme(self):
+        prefs = load_prefs(_fixture_path(
+            'shellectric_theme.yml'
+        ))
+        assert prefs['theme'] == SHELLECTRIC
+
+    def test_allows_pygment_themes(self):
+        prefs = load_prefs(_fixture_path(
+            'pygment_theme.yml'
+        ))
+        assert prefs['theme'] == 'paraiso-dark'
+
+    def test_wont_allow_unrecognized_theme(self):
+        try:
+            prefs = load_prefs(_fixture_path(
+                'bad_theme.yml'
+            ))
+        except APIBuddyException as err:
+            assert 'theme' in err.title
+            assert 'one of these instead:' in err.message  # helpful suggestion
+        else:
+            assert False, f'{LOADED_MSG}{prefs}'
 
 
 class TestSavePreferences(TempYAMLTestCase):

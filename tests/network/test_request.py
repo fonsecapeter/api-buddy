@@ -1,11 +1,15 @@
 import requests  # noqa
 from copy import deepcopy
 from mock import MagicMock, PropertyMock, patch
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, ReadTimeout
 from typing import Any, Dict, List, Union
 
 from api_buddy.config.preferences import load_prefs
-from api_buddy.utils.exceptions import APIBuddyException
+from api_buddy.utils.exceptions import (
+    APIBuddyException,
+    ConnectionException,
+    TimeoutException,
+)
 from api_buddy.network.session import get_session
 from api_buddy.network.request import send_request
 from api_buddy.utils.http import HTTP_METHODS, GET
@@ -89,8 +93,8 @@ class TestSendRequest(TempYAMLTestCase):
         self.sesh = get_session(self.opts, self.prefs, TEMP_FILE)
         super().setUp()
 
-    @patch('requests.get', side_effect=explode(ConnectionError))
-    def test_checks_internet_connection(self, mock_get):
+    @mock_get_side_effect(explode(ConnectionError))
+    def test_checks_internet_connection(self):
         try:
             send_request(
                 self.sesh,
@@ -98,9 +102,22 @@ class TestSendRequest(TempYAMLTestCase):
                 self.opts,
                 TEMP_FILE,
             )
-        except APIBuddyException as err:
-            assert 'internet' in err.title
-            assert 'WiFi' in err.message
+        except ConnectionException:
+            assert True
+        else:
+            assert False
+
+    @mock_get_side_effect(explode(ReadTimeout))
+    def test_can_timeout_on_internet_connection(self):
+        try:
+            send_request(
+                self.sesh,
+                self.prefs,
+                self.opts,
+                TEMP_FILE,
+            )
+        except TimeoutException:
+            assert True
         else:
             assert False
 

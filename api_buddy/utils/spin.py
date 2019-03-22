@@ -1,23 +1,30 @@
+from colorama import Fore, Style
+from typing import List
 from yaspin import Spinner
 
-INTERVAL = 100
-SINGLE = '='
-DOUBLE = '=='
-TRIPLE = '==='
-LEFT = '['
-RIGHT = ']'
+INTERVAL = 80
+OPEN = f'{Style.BRIGHT}'
+CLOSE = f'{Style.RESET_ALL}'
+COLORS = (Fore.GREEN, Fore.BLUE, Fore.MAGENTA, Fore.RED, Fore.YELLOW)
 
-spin = Spinner((
-    f'  {LEFT}    {RIGHT}',
-    f'  {LEFT}{SINGLE}   {RIGHT}',
-    f'  {LEFT}{DOUBLE}  {RIGHT}',
-    f'  {LEFT}{TRIPLE} {RIGHT}',
-    f'  {LEFT} {TRIPLE}{RIGHT}',
-    f'  {LEFT}  {DOUBLE}{RIGHT}',
-    f'  {LEFT}   {SINGLE}{RIGHT}',
-    f'  {LEFT}  {DOUBLE}{RIGHT}',
-    f'  {LEFT} {TRIPLE}{RIGHT}',
-    f'  {LEFT}{TRIPLE} {RIGHT}',
-    f'  {LEFT}{DOUBLE}  {RIGHT}',
-    f'  {LEFT}{SINGLE}   {RIGHT}',
-), INTERVAL)
+frames: List[str] = []
+for color in COLORS:
+    frames += (
+        f'{OPEN}{color}=>  {CLOSE}',
+        f'{OPEN}{color}==> {CLOSE}',
+        f'{OPEN}{color}===>{CLOSE}',
+        f'{OPEN}{color} ==={CLOSE}',
+        f'{OPEN}{color}  =={CLOSE}',
+        f'{OPEN}{color}   ={CLOSE}',
+        f'{OPEN}{color}   <{CLOSE}',
+        f'{OPEN}{color}  <={CLOSE}',
+        f'{OPEN}{color} <=={CLOSE}',
+        f'{OPEN}{color}<==={CLOSE}',
+        f'{OPEN}{color}=== {CLOSE}',
+        f'{OPEN}{color}==  {CLOSE}',
+        f'{OPEN}{color}=   {CLOSE}',
+        f'{OPEN}{color}    {CLOSE}',
+        f'{OPEN}{color}>   {CLOSE}',
+    )
+
+spin = Spinner(frames, INTERVAL)

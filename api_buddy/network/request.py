@@ -1,37 +1,25 @@
-import urllib3
 import requests
-from typing import Any, Dict, List, MutableMapping, Union
+import urllib3
+from colorama import Fore, Style
+from typing import Any, Dict, List, MutableMapping, Optional, Union
 from yaspin import yaspin
 
+from .session import reauthenticate
+from ..utils.exceptions import (
+    APIBuddyException,
+    ConnectionException,
+    TimeoutException,
+)
+from ..utils.formatting import api_url_join, format_dict_like_thing
 from ..utils.http import (
     GET,
     POST,
     PUT,
     PATCH,
     DELETE,
-    REQUEST_TIMEOUT,
-)
-from ..utils import (
-    api_url_join,
-    format_dict_like_thing,
 )
 from ..utils.spin import spin
 from ..utils.typing import Preferences, Options
-from ..utils.exceptions import APIBuddyException
-from .session import reauthenticate
-
-DNS = 'http://1.1.1.1'
-
-
-def _check_interwebs_connection() -> None:
-    try:
-        with yaspin(spin):
-            requests.get(DNS, timeout=REQUEST_TIMEOUT)
-    except requests.exceptions.ConnectionError:
-        raise APIBuddyException(
-            title='There was a problem connecting to the internet',
-            message='Are you on WiFi?'
-        )
 
 
 def _send_request(
@@ -41,13 +29,14 @@ def _send_request(
             params: Dict[str, Union[str, List[str]]],
             data: Any,
             verify: bool,
+            timeout: int,
         ) -> requests.Response:
     with yaspin(spin):
         if method == GET:
             return(sesh.get(
                 url,
                 params=params,
-                timeout=REQUEST_TIMEOUT,
+                timeout=timeout,
                 verify=verify,
             ))
         elif method == POST:
@@ -55,7 +44,7 @@ def _send_request(
                 url,
                 params=params,
                 data=data,
-                timeout=REQUEST_TIMEOUT,
+                timeout=timeout,
                 verify=verify,
             ))
         elif method == PUT:
@@ -63,7 +52,7 @@ def _send_request(
                 url,
                 params=params,
                 data=data,
-                timeout=REQUEST_TIMEOUT,
+                timeout=timeout,
                 verify=verify,
             ))
         elif method == PATCH:
@@ -71,7 +60,7 @@ def _send_request(
                 url,
                 params=params,
                 data=data,
-                timeout=REQUEST_TIMEOUT,
+                timeout=timeout,
                 verify=verify,
             ))
         elif method == DELETE:
@@ -79,7 +68,7 @@ def _send_request(
                 url,
                 params=params,
                 data=data,
-                timeout=REQUEST_TIMEOUT,
+                timeout=timeout,
                 verify=verify,
             ))
         else:
@@ -95,16 +84,18 @@ def print_request(
             headers: MutableMapping[str, str],
             params: Dict[str, Union[str, List[str]]],
             data: Dict[str, Any],
+            theme: Optional[str],
         ) -> None:
     print(
-        f'{method.upper()} {url}'
+        f'\n{Fore.GREEN}{Style.BRIGHT}{method.upper()} '
+        f'{Fore.BLUE}{url}{Style.RESET_ALL}'
     )
     if headers:
-        print(format_dict_like_thing('Headers', headers))
+        print(format_dict_like_thing('Headers', headers, theme))
     if params:
-        print(format_dict_like_thing('Query Params', params))
+        print(format_dict_like_thing('Query Params', params, theme))
     if data is not None:
-        print(format_dict_like_thing('Data', data))
+        print(format_dict_like_thing('Data', data, theme))
     print()
 
 
@@ -116,7 +107,7 @@ def send_request(
             retry: bool = True,
         ) -> requests.Response:
     """Send the http request, reauthenticating if necessary"""
-    _check_interwebs_connection()
+    timeout = prefs['timeout']
     url = api_url_join(
         prefs['api_url'],
         prefs['api_version'],
@@ -125,11 +116,23 @@ def send_request(
     method = opts['<method>']
     params = opts['<params>']
     data = opts['<data>']
-    verify = prefs['verify_ssl']
-    if prefs['verboseness']['request'] is True:
-        print_request(method, url, sesh.headers, params, data)
+    if prefs['verboseness']['request'] is True and retry:
+        print_request(method, url, sesh.headers, params, data, prefs['theme'])
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    resp = _send_request(sesh, method, url, params, data, verify)
+    try:
+        resp = _send_request(
+            sesh,
+            method,
+            url,
+            params,
+            data,
+            prefs['verify_ssl'],
+            timeout,
+        )
+    except requests.exceptions.ConnectionError:
+        raise ConnectionException()
+    except requests.exceptions.ReadTimeout:
+        raise TimeoutException(timeout)
     if prefs['auth_type'] is not None:
         if retry and resp.status_code == prefs['auth_test_status']:
             sesh = reauthenticate(sesh, prefs, prefs_file)
