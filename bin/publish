@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Build, tag, and push to PyPi
+set -eu -o pipefail
+
+poetry check
+poetry build
+bin/tag
+poetry publish

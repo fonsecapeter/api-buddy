@@ -4,7 +4,6 @@ version = "0.1.0"
 description = "Explore APIs from your console with API Buddy"
 authors = ["Peter Fonseca <peter.nfonseca@gmail.com>"]
 license = "MIT"
-keyworks = ["api", "cli", "terminal"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",
