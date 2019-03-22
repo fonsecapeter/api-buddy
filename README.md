@@ -52,7 +52,7 @@ api post \
   }'
 ```
 
-### [Preferences 👉](docs/preferences.md)
+### [Preferences 👉](/docs/preferences.md)
 
 ### Arguments
 - `http_method`: (optional, default=`get`) The HTTP method to use in your request.

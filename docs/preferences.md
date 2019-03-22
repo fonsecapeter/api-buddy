@@ -1,4 +1,4 @@
-# Preferences Reference
+# Preferences
 All the things that you don't want to type in every command can be set in your preferences. They live in `~/.api-buddy.yml` and should be writtend in [yaml format](https://yaml.org). There's currently only one you *have* to set (`api_url`), but there's plenty more to configure for a better API exploration experience.
 
 At maximum a preferences configuration might look something like this:
@@ -29,7 +29,13 @@ variables:
   email: me@email.com
 ```
 
-All the knobs you can dial are (with defaults shown if optional):
+But at minimum, you just need to specify this:
+```yaml
+api_url: https://some.url.com
+```
+
+## Configuration Reference
+All the possible knobs you can dial are (with defaults shown if optional):
 
 #### API URL
 >`str` (required)
@@ -46,7 +52,7 @@ This is your base API URL. It's' be the part of the url that comes before all th
 auth_type: null
 ```
 
-This is the type of authentication you'll use. If you don't specify or use `null` it will default to no authentication, but oauth2 is also supported. [Read more about OAuth2 authentication here](docs/oauth2.md). It's super easy, I promise 😬
+This is the type of authentication you'll use. If you don't specify or use `null` it will default to no authentication, but oauth2 is also supported. [Read more about OAuth2 authentication here](/docs/oauth2.md). It's super easy, I promise 😬
 
 You can also always manually set headers for authentication (more on that below).
 
@@ -108,7 +114,7 @@ If you want to see more details about what you're doing, this is the place to do
 variables: {}
 ```
 
-You can [read more about this here](docs/variables.md), but these are super handy for arbitrary things you want to interpolate throughout your commands.
+You can [read more about this here](/docs/variables.md), but these are super handy for arbitrary things you want to interpolate throughout your commands.
 
 #### Indent
 > `int` or `null` (optional)

@@ -14,6 +14,8 @@ After that, the API Provider will redirect you to your `redirect_uri`, which sho
 
 But fear not! This is what it should be doing. You'll just copy that whole url and go back to your terminal where API Buddy will be waiting for you to paste it.
 
+![Receive Code](/media/receive_code.png 'receive_code.png')
+
 From there, API Buddy will re-do the request and give you the new response. 🎉
 
 
