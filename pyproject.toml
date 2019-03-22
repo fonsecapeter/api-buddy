@@ -1,9 +1,20 @@
 [tool.poetry]
 name = "api-buddy"
-version = "0.1.0"
+version = "0.1.1"
 description = "Explore APIs from your console with API Buddy"
 authors = ["Peter Fonseca <peter.nfonseca@gmail.com>"]
 license = "MIT"
+repository = "https://github.com/fonsecapeter/api-buddy"
+documentation = "https://poetry.eustace.io/docs"
+keywords = [
+  "api_buddy",
+  "api-buddy",
+  "api",
+  "apibuddy",
+  "cli",
+  "oauth2",
+  "terminal",
+]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",

@@ -1,6 +1,7 @@
 # API Buddy
 
 [![Build Status](https://travis-ci.org/fonsecapeter/api-buddy.svg?branch=master)](https://travis-ci.org/fonsecapeter/api-buddy.svg)
+[![PyPI version](https://badge.fury.io/py/api-buddy.svg)](https://badge.fury.io/py/api-buddy)
 
 Explore APIs from your console with API Buddy
 
