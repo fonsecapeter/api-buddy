@@ -9,6 +9,13 @@ Explore APIs from your console with API Buddy
 >
 > You can also always manually set headers.
 
+## Installation
+
+As long as you have python 3.7 or higher (I recommend using [pyenv](https://github.com/pyenv/pyenv)), just:
+```bash
+pip install api-buddy
+```
+
 ## Usage
 
 It's as easy as:
