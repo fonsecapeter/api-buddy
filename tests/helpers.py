@@ -7,7 +7,7 @@ from api_buddy.utils.typing import Preferences, Options
 from api_buddy.config.themes import SHELLECTRIC
 
 FIXTURES_DIR = path.join(ROOT_DIR, 'tests', 'fixtures')
-TEMP_FILE = path.join(FIXTURES_DIR, 'temp.yml')
+TEMP_FILE = path.join(FIXTURES_DIR, 'temp.yaml')
 FAKE_ACCESS_TOKEN = 'banana'
 FAKE_API_URL = 'https://fake.api.com'
 FAKE_API_VERSION = '3'
@@ -128,14 +128,14 @@ mock_patch_side_effect = _mock_api_method_side_effect('patch')
 mock_delete_side_effect = _mock_api_method_side_effect('delete')
 
 
-def clean_temp_yml_file() -> None:
+def clean_temp_yaml_file() -> None:
     if path.isfile(TEMP_FILE):
         remove(TEMP_FILE)
 
 
 class TempYAMLTestCase(TestCase):
     def setUp(self):
-        clean_temp_yml_file()
+        clean_temp_yaml_file()
 
     def tearDown(self):
-        clean_temp_yml_file()
+        clean_temp_yaml_file()

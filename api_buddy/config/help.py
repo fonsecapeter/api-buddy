@@ -4,6 +4,37 @@ BRIGHT_GREEN = f'{Style.BRIGHT}{Fore.GREEN}'
 BRIGHT_NORMAL = f'{Style.RESET_ALL}{Style.BRIGHT}'
 API_CLI = f'{BRIGHT_GREEN}api{BRIGHT_NORMAL}'
 BACKSLASH = f'{Fore.MAGENTA}\\'
+EXAMPLE_PREFS = """
+api_url: https://api.url.com
+auth_type: oauth2
+oauth2:
+  client_id: your_client_id
+  client_secret: your_client_secret
+  scopes:
+    - one_scope
+    - another_scope
+  redirec_uri: http://loclahost:8080
+  state: something
+  token_path: /token
+  authorize_path: /authorize
+  authorize_params:
+    - select_profile=true
+auth_test_status: 401
+api_version: 2
+verify_ssl: false
+timeout: 100
+headers:
+  Cookie: flavor=chocolate-chip; milk=please;
+  Origin: your-face
+verboseness:
+  request: true
+  response: true
+indent: 4
+theme: paraiso-dark
+variables:
+  user_id: ab12c3d
+  email: me@email.com
+"""
 
 HELP = f"""\nExplore OAuth2 APIs from your console with API Buddy
 
@@ -44,7 +75,9 @@ preferences:
     "occupation"="#{{occupation}}"
   }}'{Style.RESET_ALL}
 
-Your preferences live in {Fore.MAGENTA}~/.api-buddy.yml{Style.RESET_ALL}
+Your preferences live in {Fore.MAGENTA}~/.api-buddy.yaml{Style.RESET_ALL}
+They can look something like this:
+{Style.BRIGHT}{EXAMPLE_PREFS}{Style.RESET_ALL}
 Check out GitHub for more info
 {Fore.BLUE}{Style.BRIGHT}https://github.com/fonsecapeter/api-buddy{Style.RESET_ALL}
 

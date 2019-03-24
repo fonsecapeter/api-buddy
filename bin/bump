@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Bump current version (major, minor, or patch)
+set -eu -o pipefail
+
+increment="${1}"
+case "${increment}" in
+'major')
+  ;;
+'minor')
+  ;;
+'patch')
+  ;;
+*)
+  echo "Unknown increment: ${increment}, must be major, minor, or patch"
+  exit 1
+  ;;
+esac
+
+version=`poetry run api --version`
+poetry run bumpversion \
+  --current-version "${version}" \
+  "${increment}"

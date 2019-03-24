@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/fonsecapeter/api-buddy.svg?branch=master)](https://travis-ci.org/fonsecapeter/api-buddy.svg)
 [![PyPI version](https://badge.fury.io/py/api-buddy.svg)](https://badge.fury.io/py/api-buddy)
 
-Explore APIs from your console with API Buddy
+![Demo](/media/demo.gif 'demo.gif')
 
 > Right now, only OAuth2 authentication is supported. It's the most common, and current gold standard for security best practices. Also most APIs use it. That said, I have no beef with all the APIs out there using something else, so feel free to open a ticket if you want something else supported. 🎟
 >
@@ -18,7 +18,13 @@ pip install api-buddy
 
 ## Usage
 
-It's as easy as:
+First, specify the API you're exploring in your preferences
+```yaml
+# ~/.api-buddy.yaml
+api_url: https://some.api.com
+```
+
+Then it's as easy as:
 ```bash
 api get some-endpoint
 ```
@@ -60,7 +66,7 @@ api post \
   }'
 ```
 
-### [Preferences 👉](/docs/preferences.md)
+### [Preferences 👉](https://github.com/fonsecapeter/api-buddy/blob/master/docs/preferences.md)
 
 ### Arguments
 - `http_method`: (optional, default=`get`) The HTTP method to use in your request.

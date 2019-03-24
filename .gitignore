@@ -8,4 +8,4 @@ pip-wheel-metadata
 .coverage
 .mypy*
 
-tests/fixtures/temp.yml
+tests/fixtures/temp.yaml

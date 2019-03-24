@@ -47,6 +47,7 @@ mypy = "^0.670"
 pytest = "^4.2.0"
 pytest-cov = "^2.6.1"
 pytest-pspec = "^0.0.3"
+bumpversion = "^0.5.3"
 
 [tool.poetry.scripts]
 api = "api_buddy.cli:run"

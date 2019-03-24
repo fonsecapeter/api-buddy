@@ -47,7 +47,7 @@ oauth2:
   access_token: some_token_value
   token_path: token
   authorize_path: authorize
-  redirect_uri: https://localhost:5000/
+  redirect_uri: https://localhost:8080/
   authorize_params:
     - select_profile=true
     - some_other_param=a_value

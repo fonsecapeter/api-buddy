@@ -2,33 +2,7 @@ import random
 from colorama import Fore, Style
 from typing import NoReturn
 from api_buddy.utils import PREFS_FILE
-
-EXAMPLE_PREFS = """
-api_url: https://api.url.com
-auth_type: oauth2
-oauth2:
-  client_id: your_client_id
-  client_secret: your_client_secret
-  scopes:
-    - one_scope
-    - another_scope
-auth_test_status: 401
-api_version: 2
-verify_ssl: false
-timeout: 100
-headers:
-  Cookie: flavor=chocolate-chip; milk=please;
-  Origin: your-face
-verboseness:
-  request: true
-  response: true
-indent:
-  4
-theme: paraiso-dark
-variables:
-  user_id: ab12c3d
-  email: me@email.com
-"""
+from api_buddy.config.help import EXAMPLE_PREFS
 
 
 class APIBuddyException(Exception):

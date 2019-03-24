@@ -4,14 +4,13 @@ from os import path
 from api_buddy.config.themes import SHELLECTRIC
 from api_buddy.utils.exceptions import APIBuddyException
 from api_buddy.utils.typing import Preferences
-from api_buddy.utils.auth import OAUTH2, AUTH_TYPES
+from api_buddy.utils.auth import OAUTH2
 from api_buddy.validation.preferences import (
     DEFAULT_PREFS,
     DEFAULT_OAUTH2_PREFS,
 )
 from api_buddy.config.preferences import (
     EXAMPLE_PREFS,
-    EXAMPLE_OAUTH2_PREFS,
     load_prefs,
     save_prefs,
 )
@@ -61,7 +60,7 @@ def _fixture_path(file_name):
 
 class TestLoadPreferences(TempYAMLTestCase):
     def test_can_load_from_a_yaml_file(self):
-        prefs = load_prefs(_fixture_path('test.yml'))
+        prefs = load_prefs(_fixture_path('test.yaml'))
         assert prefs['api_url'] == 'https://api.doggos.com'
         assert prefs['oauth2']['client_id'] == 'my_favorite_client_id'
         assert prefs['oauth2']['client_secret'] == 'my_favorite_client_secret'
@@ -70,7 +69,7 @@ class TestLoadPreferences(TempYAMLTestCase):
         assert prefs['auth_test_status'] == 403
 
     def test_merges_yaml_with_defaults(self):
-        prefs = load_prefs(_fixture_path('test.yml'))
+        prefs = load_prefs(_fixture_path('test.yaml'))
         # retains non-default
         assert prefs['oauth2']['client_id'] == 'my_favorite_client_id'
         # not specified
@@ -88,15 +87,11 @@ class TestLoadPreferences(TempYAMLTestCase):
         prefs = load_prefs(TEMP_FILE)
         assert path.isfile(TEMP_FILE)
         for key, example_val in EXAMPLE_PREFS.items():
-            if key in AUTH_TYPES:
-                continue
             assert prefs[key] == example_val
-        for key, example_val in EXAMPLE_OAUTH2_PREFS.items():
-            assert prefs['oauth2'][key] == example_val
 
     def test_file_must_contain_valid_yaml(self):
         try:
-            prefs = load_prefs(_fixture_path('bad.yml'))
+            prefs = load_prefs(_fixture_path('bad.yaml'))
         except APIBuddyException as err:
             assert 'problem reading' in err.title
             assert 'valid yaml' in err.message
@@ -105,11 +100,11 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     def test_file_cant_be_empty(self):
         try:
-            prefs = load_prefs(_fixture_path('empty.yml'))
+            prefs = load_prefs(_fixture_path('empty.yaml'))
         except APIBuddyException as err:
             assert 'empty' in err.title
             assert (
-                f'client_id: {EXAMPLE_PREFS["oauth2"]["client_id"]}'
+                f'{EXAMPLE_PREFS["api_url"]}'
                 in err.message
             )
         else:
@@ -117,7 +112,7 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     def test_validates_field_types(self):
         try:
-            prefs = load_prefs(_fixture_path('bad_types.yml'))
+            prefs = load_prefs(_fixture_path('bad_types.yaml'))
         except APIBuddyException as err:
             assert 'schema' in err.title
             assert 'client_id' in err.message
@@ -126,7 +121,7 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     def test_validates_required_fields(self):
         try:
-            prefs = load_prefs(_fixture_path('missing_fields.yml'))
+            prefs = load_prefs(_fixture_path('missing_fields.yaml'))
         except APIBuddyException as err:
             assert 'schema' in err.title
             assert 'api_url' in err.message
@@ -134,12 +129,12 @@ class TestLoadPreferences(TempYAMLTestCase):
             assert False, f'{LOADED_MSG}{prefs}'
 
     def test_adds_default_api_url_scheme_if_missing(self):
-        prefs = load_prefs(_fixture_path('api_url_without_scheme.yml'))
+        prefs = load_prefs(_fixture_path('api_url_without_scheme.yaml'))
         assert prefs['api_url'] == CAT_FACTS_API_URL
 
     def test_doesnt_allow_query_string_in_api_url(self):
         try:
-            prefs = load_prefs(_fixture_path('api_url_with_query_string.yml'))
+            prefs = load_prefs(_fixture_path('api_url_with_query_string.yaml'))
         except APIBuddyException as err:
             assert 'query parameters' in err.title
             # helpful suggestion
@@ -149,7 +144,9 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     def test_doesnt_allow_hash_fragments_in_api_url(self):
         try:
-            prefs = load_prefs(_fixture_path('api_url_with_hash_fragment.yml'))
+            prefs = load_prefs(_fixture_path(
+                'api_url_with_hash_fragment.yaml'
+            ))
         except APIBuddyException as err:
             assert 'hash fragments' in err.title
             # helpful suggestion
@@ -158,16 +155,16 @@ class TestLoadPreferences(TempYAMLTestCase):
             assert False, f'{LOADED_MSG}{prefs}'
 
     def test_supports_string_api_versions(self):
-        prefs = load_prefs(_fixture_path('api_version_as_str.yml'))
+        prefs = load_prefs(_fixture_path('api_version_as_str.yaml'))
         assert prefs['api_version'] == 'three'
 
     def test_when_api_version_is_not_none_it_coerces_to_str(self):
-        prefs = load_prefs(_fixture_path('api_version_as_int.yml'))
+        prefs = load_prefs(_fixture_path('api_version_as_int.yaml'))
         assert prefs['api_version'] == '3'
 
     @patch('api_buddy.validation.preferences.flat_str_dict')
     def test_loads_headers_as_flat_str_dict(self, mock_flat_str_dict):
-        load_prefs(_fixture_path('happy_headers.yml'))
+        load_prefs(_fixture_path('happy_headers.yaml'))
         mock_flat_str_dict.assert_any_call('header', {
             'Accept': 'text/html',
             'Authorization': 'Basic ab1c23d4',
@@ -175,7 +172,7 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     @patch('api_buddy.validation.preferences.flat_str_dict')
     def test_loads_variables_as_flat_str_dict(self, mock_flat_str_dict):
-        load_prefs(_fixture_path('happy_variables.yml'))
+        load_prefs(_fixture_path('happy_variables.yaml'))
         mock_flat_str_dict.assert_any_call('variable', {
               'simle_str': 'is probably most common',
               'ints': 2,
@@ -185,7 +182,7 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     @patch('api_buddy.validation.preferences.pack_query_params')
     def test_packs_authorize_params(self, mock_pack_params):
-        load_prefs(_fixture_path('happy_authorize_params.yml'))
+        load_prefs(_fixture_path('happy_authorize_params.yaml'))
         mock_pack_params.assert_any_call([
             'a=b',
             'c=d',
@@ -195,7 +192,7 @@ class TestLoadPreferences(TempYAMLTestCase):
     def test_doesnt_allow_variable_names_with_special_characters(self):
         try:
             prefs = load_prefs(_fixture_path(
-                'special_chars_variable_name.yml'
+                'special_chars_variable_name.yaml'
             ))
         except APIBuddyException as err:
             assert 'my_#{bad}_variable' in err.title
@@ -206,7 +203,7 @@ class TestLoadPreferences(TempYAMLTestCase):
     def test_requires_known_oauth_type(self):
         try:
             prefs = load_prefs(_fixture_path(
-                'oauth3.yml'
+                'oauth3.yaml'
             ))
         except APIBuddyException as err:
             assert 'auth_type' in err.title
@@ -216,32 +213,32 @@ class TestLoadPreferences(TempYAMLTestCase):
 
     def test_auth_type_can_be_none(self):
         prefs = load_prefs(_fixture_path(
-            'no_auth.yml'
+            'no_auth.yaml'
         ))
         assert prefs['auth_type'] is None
 
     def test_allows_no_theme(self):
         prefs = load_prefs(_fixture_path(
-            'no_theme.yml'
+            'no_theme.yaml'
         ))
         assert prefs['theme'] is None
 
     def test_allows_shellectric_theme(self):
         prefs = load_prefs(_fixture_path(
-            'shellectric_theme.yml'
+            'shellectric_theme.yaml'
         ))
         assert prefs['theme'] == SHELLECTRIC
 
     def test_allows_pygment_themes(self):
         prefs = load_prefs(_fixture_path(
-            'pygment_theme.yml'
+            'pygment_theme.yaml'
         ))
         assert prefs['theme'] == 'paraiso-dark'
 
     def test_wont_allow_unrecognized_theme(self):
         try:
             prefs = load_prefs(_fixture_path(
-                'bad_theme.yml'
+                'bad_theme.yaml'
             ))
         except APIBuddyException as err:
             assert 'theme' in err.title

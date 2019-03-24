@@ -11,7 +11,6 @@ from ..validation.preferences import (
     NESTED_DEFAULT_PREFS,
     validate_preferences,
 )
-from ..utils.auth import OAUTH2
 
 EXAMPLE_OAUTH2_PREFS = {
     'client_id': 'your_client_id',
@@ -19,9 +18,7 @@ EXAMPLE_OAUTH2_PREFS = {
     'scopes': ['one_scope', 'another_scope'],
 }
 EXAMPLE_PREFS = {
-    'api_url': 'https://jsonplaceholder.typicode.com',
-    'auth_type': OAUTH2,
-    'oauth2': EXAMPLE_OAUTH2_PREFS,
+    'api_url': 'https://ron-swanson-quotes.herokuapp.com',
 }
 
 
