@@ -5,3 +5,4 @@ set -eu -o pipefail
 poetry check
 poetry build
 poetry publish
+git push --tags
