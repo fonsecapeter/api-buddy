@@ -3,5 +3,5 @@
 set -eu -o pipefail
 
 version=`poetry run api --version`
-git tag -a "${version}" -m "Version ${version}" $@ \
-  && git push origin "${version}"
+git tag -a "v${version}" -m "Version ${version}" $@ \
+  && git push origin "v${version}"
