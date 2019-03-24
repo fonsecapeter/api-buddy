@@ -10,11 +10,11 @@ There you'll sign into your test account (note this doesn't necessarily have to 
 
 After that, the API Provider will redirect you to your `redirect_uri`, which should look like an error since it won't actually be a real website. 😮
 
-![Redirect URI](/media/redirect_uri.png 'redirect_uri.png')
+![Redirect URI](https://raw.githubusercontent.com/fonsecapeter/api-buddy/master/media/redirect_uri.png 'redirect_uri.png')
 
 But fear not! This is what it should be doing. You'll just copy that whole url and go back to your terminal where API Buddy will be waiting for you to paste it.
 
-![Receive Code](/media/receive_code.png 'receive_code.png')
+![Receive Code](https://raw.githubusercontent.com/fonsecapeter/api-buddy/master/media/receive_code.png 'receive_code.png')
 
 From there, API Buddy will re-do the request and give you the new response. 🎉
 

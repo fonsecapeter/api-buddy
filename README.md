@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/fonsecapeter/api-buddy.svg?branch=master)](https://travis-ci.org/fonsecapeter/api-buddy.svg)
 [![PyPI version](https://badge.fury.io/py/api-buddy.svg)](https://badge.fury.io/py/api-buddy)
 
-![Demo](/media/demo.gif 'demo.gif')
+![Demo](https://raw.githubusercontent.com/fonsecapeter/api-buddy/master/media/demo.gif 'demo.gif')
 
 > Right now, only OAuth2 authentication is supported. It's the most common, and current gold standard for security best practices. Also most APIs use it. That said, I have no beef with all the APIs out there using something else, so feel free to open a ticket if you want something else supported. 🎟
 >
