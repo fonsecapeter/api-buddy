@@ -279,3 +279,18 @@ class TestSendOAuth2Request(TempYAMLTestCase):
         send_request(self.sesh, self.prefs, self.opts, TEMP_FILE)
         prefs = load_prefs(TEMP_FILE)
         assert prefs['oauth2']['access_token'] == NEW_ACCESS_TOKEN
+
+    @mock_get(status_code=401)  # expired token check
+    @mock_post(content=f'{{"access_token": "{NEW_ACCESS_TOKEN}"}}')
+    @patch('requests.get')
+    @patch('webbrowser.open')
+    @patch('api_buddy.network.auth.oauth2._get_authorization_response_url')
+    def test_re_authentication_allows_webbrowser_to_fail(
+                self, mock_auth_resp_url, mock_open, mock_get
+            ):
+        mock_open.side_effect = explode(NotADirectoryError)
+        mock_auth_resp_url.return_value = (
+            f'{FAKE_API_URL}/?code=banana&state={FAKE_STATE}'
+        )
+        send_request(self.sesh, self.prefs, self.opts, TEMP_FILE)
+        assert self.sesh.token['access_token'] == NEW_ACCESS_TOKEN

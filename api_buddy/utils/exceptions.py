@@ -11,7 +11,7 @@ class APIBuddyException(Exception):
         self.message = message
 
 
-def exit_with_exception(err: APIBuddyException) -> NoReturn:
+def print_exception(title: str, message: str) -> None:
     emoji = random.choice((
         '⚠️',
         '😭',
@@ -31,9 +31,13 @@ def exit_with_exception(err: APIBuddyException) -> NoReturn:
     ))
     print(
         f'{Fore.YELLOW}{Style.BRIGHT}{pleasantry}! {emoji}\n'
-        f'{Style.NORMAL}{err.title}{Style.RESET_ALL}\n\n'
-        f'{err.message}\n'
+        f'{Style.NORMAL}{title}{Style.RESET_ALL}\n\n'
+        f'{message}\n'
     )
+
+
+def exit_with_exception(err: APIBuddyException) -> NoReturn:
+    print_exception(err.title, err.message)
     exit(1)
 
 
