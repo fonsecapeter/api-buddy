@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Tag current commit with current API Buddy version
+# Tag current commit with current API Buddy version (Use bin/bump instead)
 set -eu -o pipefail
 
 version=`poetry run api --version`
