@@ -2,13 +2,16 @@ import webbrowser
 from colorama import Fore, Style
 from os import environ
 from typing import Optional
+from time import sleep
 from urllib.parse import urljoin
 from requests_oauthlib import OAuth2Session
 
+from api_buddy.utils.exceptions import print_exception
 from api_buddy.utils.typing import Options, Preferences, QueryParams
 from api_buddy.config.preferences import save_prefs
 
 APPLICATION_JSON = 'application/json'
+DRAMATIC_PAUSE = 3  # seconds
 HEADERS = {
     'Accept': APPLICATION_JSON,
     'Content-Type': APPLICATION_JSON,
@@ -43,11 +46,22 @@ def _authenticate(
         kwargs=authorize_params,
     )
     print(
-        f'Opening browser to visit:\n\n'
+        'Opening browser to visit:\n\n'
         f'{Fore.BLUE}{Style.BRIGHT}{authorization_url}{Style.RESET_ALL}\n\n'
-        f'Sign in and go through the DSA, then copy the url.\n'
+        'Sign in and go through the DSA, then copy the url at the end.\n'
     )
-    webbrowser.open(authorization_url)
+    sleep(DRAMATIC_PAUSE)
+    try:
+        webbrowser.open(authorization_url)
+    except NotADirectoryError:  # If permissions error
+        print_exception(
+            title='I couldn\'t open your browser',
+            message=(
+                'Go ahead and copy/paste the url into your browser\n'
+                'Then sign in and go through the DSA.'
+            ),
+        )
+    sleep(DRAMATIC_PAUSE)
     authorization_response = _get_authorization_response_url()
     print()
     environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # allow non-http redirect_uri
