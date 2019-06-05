@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "api-buddy"
-version = "0.2.3"
+version = "0.2.4"
 description = "Explore APIs from your console with API Buddy"
 authors = ["Peter Fonseca <peter.nfonseca@gmail.com>"]
 license = "MIT"
