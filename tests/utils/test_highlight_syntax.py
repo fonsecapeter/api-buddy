@@ -23,18 +23,16 @@ JSON_THING = (
     '}'
 )
 SHELLECTRIC_JSON_THING = (
-    '\x1b[37m{\x1b[39m\n\x1b[35;01m  \x1b[39;00m\x1b[33m"name"\x1b[39m\x1b[37m'
-    ':\x1b[39m\x1b[35;01m \x1b[39;00m\x1b[31;01m"Elaine"\x1b[39;00m\x1b[37m,'
-    '\x1b[39m\n\x1b[35;01m  \x1b[39;00m\x1b[33m"alias"\x1b[39m\x1b[37m:\x1b[39'
-    'm\x1b[35;01m \x1b[39;00m\x1b[31;01m"Laney"\x1b[39;00m\x1b[37m,\x1b[39m'
-    '\n\x1b[35;01m  \x1b[39;00m\x1b[33m"occupations"\x1b[39m\x1b[37m:\x1b[39m'
-    '\x1b[35;01m \x1b[39;00m\x1b[37m[\x1b[39m\n\x1b[35;01m    \x1b[39;00m\x1b['
-    '31;01m"Writer"\x1b[39;00m\x1b[37m,\x1b[39m\n\x1b[35;01m    \x1b[39;00m'
-    '\x1b[31;01m"Assistant"\x1b[39;00m\x1b[37m,\x1b[39m\n\x1b[35;01m    \x1b[3'
-    '9;00m\x1b[31;01m"Shut Up!"\x1b[39;00m\x1b[37m,\x1b[39m\n\x1b[35;01m  \x1b'
-    '[39;00m\x1b[37m]\x1b[39m\x1b[37m,\x1b[39m\n\x1b[35;01m  \x1b[39;00m\x1b[3'
-    '3m"is_cool"\x1b[39m\x1b[37m:\x1b[39m\x1b[35;01m \x1b[39;00m\x1b[36;01mtru'
-    'e\x1b[39;00m\n\x1b[37m}\x1b[39m\n'
+    '\x1b[37m{\x1b[39m\n\x1b[95m  \x1b[39m\x1b[93m"name"\x1b[39m\x1b[37m:\x1b['
+    '39m\x1b[95m \x1b[39m\x1b[91m"Elaine"\x1b[39m\x1b[37m,\x1b[39m\n\x1b[95m  '
+    '\x1b[39m\x1b[93m"alias"\x1b[39m\x1b[37m:\x1b[39m\x1b[95m \x1b[39m\x1b[91m'
+    '"Laney"\x1b[39m\x1b[37m,\x1b[39m\n\x1b[95m  \x1b[39m\x1b[93m"occupations"'
+    '\x1b[39m\x1b[37m:\x1b[39m\x1b[95m \x1b[39m\x1b[37m[\x1b[39m\n\x1b[95m    '
+    '\x1b[39m\x1b[91m"Writer"\x1b[39m\x1b[37m,\x1b[39m\n\x1b[95m    \x1b[39m'
+    '\x1b[91m"Assistant"\x1b[39m\x1b[37m,\x1b[39m\n\x1b[95m    \x1b[39m\x1b[91'
+    'm"Shut Up!"\x1b[39m\x1b[37m,\x1b[39m\n\x1b[95m  \x1b[39m\x1b[37m]\x1b[39m'
+    '\x1b[37m,\x1b[39m\n\x1b[95m  \x1b[39m\x1b[93m"is_cool"\x1b[39m\x1b[37m:'
+    '\x1b[39m\x1b[95m \x1b[39m\x1b[96mtrue\x1b[39m\n\x1b[37m}\x1b[39m\n'
 )
 YAML_THING = (
     f'name: {NAME},\n'
