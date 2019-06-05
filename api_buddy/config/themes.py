@@ -13,28 +13,37 @@ from pygments.token import (
 )
 
 SHELLECTRIC = 'shellectric'
+BRIGHT_BLUE = 'ansibrightblue'
+BRIGHT_CYAN = 'ansibrightcyan'
+BRIGHT_GREEN = 'ansibrightgreen'
+BRIGHT_MAGENTA = 'ansibrightmagenta'
+BRIGHT_RED = 'ansibrightred'
+BRIGHT_YELLOW = 'ansibrightyellow'
+GRAY = 'ansigray'
+YELLOW = 'ansiyellow'
 
 
 class Shellectric(Style):  # type: ignore
     default_style = ""
     styles = {
-        Text: '#ansifuchsia',
-        Comment: '#ansilightgray',
-        Keyword: '#ansigreen',
-        Keyword.Constant: '#ansiturquoise',  # constant
-        Keyword.Namespace: '#ansilightgray',
-        Keyword.Pseudo: '#ansilightgray',
-        Name: '#ansibrown',
-        Name.Builtin.Pseudo: '#ansilightgray',  # self
-        Name.Function: '#ansiturquoise',
-        Name.Class: '#ansiturquoise',
-        Name.Exception: '#ansiturquoise',
-        Name.Decorator: '#ansiturquoise',
-        String: '#ansired',
-        String.Other: '#ansibrown',
-        Literal: '#ansired',
-        Number: '#ansiblue',
-        Operator: '#ansilightgray',
-        Error: '#ansiyellow',
-        Punctuation: '#ansilightgray',
+        Comment: GRAY,
+        Error: BRIGHT_YELLOW,
+        Keyword: BRIGHT_GREEN,
+        Keyword.Constant: BRIGHT_CYAN,
+        Keyword.Namespace: GRAY,
+        Keyword.Pseudo: GRAY,
+        Literal: BRIGHT_RED,
+        Name: YELLOW,
+        Name.Builtin.Pseudo: GRAY,
+        Name.Class: BRIGHT_CYAN,
+        Name.Decorator: BRIGHT_CYAN,
+        Name.Exception: BRIGHT_CYAN,
+        Name.Function: BRIGHT_CYAN,
+        Name.Tag: BRIGHT_YELLOW,
+        Number: BRIGHT_BLUE,
+        Operator: GRAY,
+        Punctuation: GRAY,
+        String: BRIGHT_RED,
+        String.Other: YELLOW,
+        Text: BRIGHT_MAGENTA,
     }

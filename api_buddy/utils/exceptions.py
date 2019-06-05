@@ -94,8 +94,8 @@ class ConnectionException(APIBuddyException):
             title=random.choice(self.TITLES),
             message=(
                 f'{msg}\n\nCheck your {Fore.MAGENTA}api_url{Style.RESET_ALL} '
-                'setting in your preferences and make sure you\'r connected to'
-                ' the internet'
+                'setting in your preferences and make sure you\'re connected '
+                'to the internet'
             ),
         )
 
