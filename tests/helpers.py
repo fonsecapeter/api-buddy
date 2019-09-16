@@ -42,6 +42,7 @@ TEST_PREFERENCES: Preferences = {
 }
 TEST_OPTIONS: Options = {
     '<method>': 'get',
+    '<api_url>': None,
     '<endpoint>': FAKE_ENDPOINT,
     '<params>': {},
     '<data>': None,

@@ -40,6 +40,7 @@ Options = TypedDict('Options', {
     '--help': bool,
     '--version': bool,
     '<method>': str,
+    '<api_url>': Optional[str],
     '<endpoint>': str,
     '<params>': QueryParams,
     '<data>': Any,

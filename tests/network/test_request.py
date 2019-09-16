@@ -158,6 +158,15 @@ class TestSendRequest(TempYAMLTestCase):
         assert mock_resp.url == f'{FAKE_API_URL}/{FAKE_ENDPOINT}'
 
     @patch('requests.get')
+    @mock_get_side_effect(_mock_url_catcher)
+    def test_it_uses_api_url_from_opts_over_prefs(self, mock_get):
+        opts_api_url = 'https://ayyyyy.from.opts'
+        self.opts['<api_url>'] = opts_api_url
+        self.prefs['api_version'] = '3'  # should be ignored
+        mock_resp = send_request(self.sesh, self.prefs, self.opts, TEMP_FILE)
+        assert mock_resp.url == f'{opts_api_url}/{FAKE_ENDPOINT}'
+
+    @patch('requests.get')
     @mock_get_side_effect(_mock_param_catcher)
     def test_uses_params(self, mock_get):
         params = {'fake_param': 'fake_value'}

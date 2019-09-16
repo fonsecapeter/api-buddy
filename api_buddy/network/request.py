@@ -108,9 +108,16 @@ def send_request(
         ) -> requests.Response:
     """Send the http request, reauthenticating if necessary"""
     timeout = prefs['timeout']
+    api_url_from_opts = opts['<api_url>']
+    if api_url_from_opts is not None:
+        api_url = api_url_from_opts
+        api_version = None
+    else:
+        api_url = prefs['api_url']
+        api_version = prefs['api_version']
     url = api_url_join(
-        prefs['api_url'],
-        prefs['api_version'],
+        api_url,
+        api_version,
         opts['<endpoint>'],
     )
     method = opts['<method>']

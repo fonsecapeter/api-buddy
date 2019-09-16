@@ -14,6 +14,7 @@ RAW_OPTIONS: RawOptions = {
     '<endpoint>': FAKE_ENDPOINT,
     '<params>': [],
     '<data>': None,
+    '<api_url>': None,
     'get': True,
     'post': False,
     'patch': False,
@@ -26,17 +27,12 @@ RAW_OPTIONS: RawOptions = {
 
 
 class TestEndpoint(TestCase):
-    def test_wont_allow_full_path_for_endpoint(self):
+    def test_if_contains_scheme_will_split_out_opts_api_url(self):
         opts = deepcopy(RAW_OPTIONS)
         opts['<endpoint>'] = 'https://thecatapi.com/cats'
-        try:
-            validate_options(opts)
-        except APIBuddyException as err:
-            assert 'endpoint' in err.title
-            # helpful suggestion
-            assert 'cats' in err.message
-        else:
-            assert False
+        valid_opts = validate_options(opts)
+        assert valid_opts['<api_url>'] == 'https://thecatapi.com'
+        assert valid_opts['<endpoint>'] == '/cats'
 
 
 class TestMethod(TestCase):

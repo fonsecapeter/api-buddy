@@ -1,7 +1,7 @@
 from json import loads, JSONDecodeError
 from copy import deepcopy
 from colorama import Fore, Style
-from typing import Any, cast, List
+from typing import Any, cast, List, Tuple, Optional
 from urllib.parse import urlparse
 from ..utils.typing import Options, RawOptions
 from ..utils.exceptions import APIBuddyException
@@ -38,21 +38,14 @@ def _validate_method(opts: RawOptions) -> RawOptions:
     return opts
 
 
-def _validate_endpoint(endpoint: str) -> str:
+def _validate_endpoint(endpoint: str) -> Tuple[str, Optional[str]]:
+    path = endpoint
+    api_url = None
     url_parts = urlparse(endpoint)
     if url_parts.scheme:
-        message = 'You don\'t need to supply the full url, just the path.'
+        api_url = f'{url_parts.scheme}://{url_parts.netloc}'
         path = url_parts.path
-        if path:
-            message += (
-                f'\nDid you mean {Fore.BLUE}{Style.BRIGHT}{url_parts.path}'
-                f'{Style.RESET_ALL}?'
-            )
-        raise APIBuddyException(
-            title='Check your endpoint, dude',
-            message=message,
-        )
-    return endpoint
+    return path, api_url
 
 
 def _validate_data(data: str) -> Any:
@@ -116,7 +109,7 @@ def _validate_help(opts: RawOptions) -> RawOptions:
 def validate_options(opts: RawOptions) -> Options:
     """Convert types and validate"""
     valid_opts = deepcopy(opts)
-    valid_opts['<endpoint>'] = _validate_endpoint(
+    valid_opts['<endpoint>'], valid_opts['<api_url>'] = _validate_endpoint(
         cast(str, valid_opts['<endpoint>'])
     )
     _validate_method(valid_opts)
