@@ -133,6 +133,8 @@ def send_request(
         raise ConnectionException()
     except requests.exceptions.ReadTimeout:
         raise TimeoutException(timeout)
+    except KeyboardInterrupt:
+        exit(130)
     if prefs['auth_type'] is not None:
         if retry and resp.status_code == prefs['auth_test_status']:
             sesh = reauthenticate(sesh, prefs, prefs_file)
