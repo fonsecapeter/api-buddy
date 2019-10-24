@@ -27,7 +27,6 @@ def run() -> None:
         print_response(resp, prefs)
     except APIBuddyException as err:
         exit_with_exception(err)
-        return
 
 
 if __name__ == '__main__':

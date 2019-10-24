@@ -121,6 +121,20 @@ class TestSendRequest(TempYAMLTestCase):
         else:
             assert False
 
+    @mock_get_side_effect(explode(KeyboardInterrupt))
+    def test_exits_gracefully_on_keyboard_interrupt(self):
+        try:
+            send_request(
+                self.sesh,
+                self.prefs,
+                self.opts,
+                TEMP_FILE,
+            )
+        except SystemExit as err:
+            assert err.code == 130
+        else:
+            assert False
+
     @mock_get()
     @patch('requests.get')
     def test_returns_a_response(self, mock_get):
