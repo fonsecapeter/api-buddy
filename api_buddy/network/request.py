@@ -1,7 +1,7 @@
 import requests
 import urllib3
 from colorama import Fore, Style
-from typing import Any, Dict, List, MutableMapping, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 from yaspin import yaspin
 
 from .session import reauthenticate
@@ -10,7 +10,11 @@ from ..utils.exceptions import (
     ConnectionException,
     TimeoutException,
 )
-from ..utils.formatting import api_url_join, format_dict_like_thing
+from ..utils.formatting import (
+    api_url_join,
+    format_dict_like_thing,
+    format_json_with_title,
+)
 from ..utils.http import (
     GET,
     POST,
@@ -43,7 +47,7 @@ def _send_request(
             return(sesh.post(
                 url,
                 params=params,
-                data=data,
+                json=data,
                 timeout=timeout,
                 verify=verify,
             ))
@@ -51,7 +55,7 @@ def _send_request(
             return(sesh.put(
                 url,
                 params=params,
-                data=data,
+                json=data,
                 timeout=timeout,
                 verify=verify,
             ))
@@ -59,7 +63,7 @@ def _send_request(
             return(sesh.patch(
                 url,
                 params=params,
-                data=data,
+                json=data,
                 timeout=timeout,
                 verify=verify,
             ))
@@ -67,7 +71,7 @@ def _send_request(
             return(sesh.delete(
                 url,
                 params=params,
-                data=data,
+                json=data,
                 timeout=timeout,
                 verify=verify,
             ))
@@ -79,23 +83,34 @@ def _send_request(
 
 
 def print_request(
+            sesh: requests.Session,
             method: str,
             url: str,
-            headers: MutableMapping[str, str],
             params: Dict[str, Union[str, List[str]]],
             data: Dict[str, Any],
+            indent: Optional[int],
             theme: Optional[str],
         ) -> None:
+    if hasattr(sesh, '_client'):  # pragma: no cover
+        # Add auth info if available
+        url, headers, data = sesh._client.add_token(  # type: ignore
+            url,
+            http_method=method,
+            body=data,
+            headers=sesh.headers,
+        )
+    else:
+        headers = sesh.headers
     print(
         f'\n{Fore.GREEN}{Style.BRIGHT}{method.upper()} '
         f'{Fore.BLUE}{url}{Style.RESET_ALL}'
     )
     if headers:
-        print(format_dict_like_thing('Headers', headers, theme))
+        print(format_dict_like_thing('Headers', headers, indent, theme))
     if params:
-        print(format_dict_like_thing('Query Params', params, theme))
+        print(format_dict_like_thing('Query Params', params, indent, theme))
     if data is not None:
-        print(format_dict_like_thing('Data', data, theme))
+        print(format_json_with_title('Data', data, indent, theme))
     print()
 
 
@@ -116,8 +131,16 @@ def send_request(
     method = opts['<method>']
     params = opts['<params>']
     data = opts['<data>']
-    if prefs['verboseness']['request'] is True and retry:
-        print_request(method, url, sesh.headers, params, data, prefs['theme'])
+    if prefs['verboseness']['request'] is True:
+        print_request(
+            sesh,
+            method,
+            url,
+            params,
+            data,
+            prefs['indent'],
+            prefs['theme'],
+        )
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     try:
         resp = _send_request(
