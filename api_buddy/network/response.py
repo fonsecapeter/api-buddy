@@ -22,12 +22,13 @@ TAGS_TO_SKIP = [
 def _print_response_details(
             headers: MutableMapping[str, str],
             cookies: RequestsCookieJar,
+            indent: Optional[int],
             theme: Optional[str],
         ) -> None:
     if headers:
-        print(format_dict_like_thing('Headers', headers, theme))
+        print(format_dict_like_thing('Headers', headers, indent, theme))
     if cookies:
-        print(format_dict_like_thing('Cookies', cookies, theme))
+        print(format_dict_like_thing('Cookies', cookies, indent, theme))
     print()
 
 
@@ -64,6 +65,7 @@ def format_response(
 def print_response(resp: Response, prefs: Preferences) -> None:
     verbose = prefs['verboseness']['response']
     theme = prefs['theme']
+    indent = prefs['indent']
     arrow = f'{Fore.BLACK}{Style.BRIGHT}=>'
     if resp.ok:
         status_color = Fore.GREEN
@@ -78,5 +80,5 @@ def print_response(resp: Response, prefs: Preferences) -> None:
         status = f'{status_color}{resp.status_code}{Style.RESET_ALL}'
     print(f'{arrow} {status}')
     if verbose:
-        _print_response_details(resp.headers, resp.cookies, theme)
-    print(format_response(resp, prefs['indent'], theme))
+        _print_response_details(resp.headers, resp.cookies, indent, theme)
+    print(format_response(resp, indent, theme))

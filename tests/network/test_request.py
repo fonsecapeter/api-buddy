@@ -64,19 +64,19 @@ def _mock_url_catcher(
 def _mock_data_catcher(
             url: str,
             params: Dict[str, Union[str, List[str]]] = {},
-            data: Any = None,
+            json: Any = None,
             timeout: int = 0,
             verify: bool = True,
         ):
     mock_resp = MagicMock()
-    type(mock_resp).data = PropertyMock(return_value=data)
+    type(mock_resp).data = PropertyMock(return_value=json)
     return mock_resp
 
 
 def _mock_verify_catcher(
             url: str,
             params: Dict[str, Union[str, List[str]]] = {},
-            data: Any = None,
+            json: Any = None,
             timeout: int = 0,
             verify: bool = True,
         ):
@@ -197,7 +197,7 @@ class TestSendRequest(TempYAMLTestCase):
     @mock_patch_side_effect(_mock_data_catcher)
     @mock_delete_side_effect(_mock_data_catcher)
     @patch('requests.get')
-    def test_adds_data_to_requests(self, mock_get):
+    def test_adds_json_to_requests(self, mock_get):
         data = '{"dis":"json"}'
         self.opts['<data>'] = data
         for method in HTTP_METHODS:

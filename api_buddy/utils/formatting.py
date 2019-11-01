@@ -1,3 +1,5 @@
+import json
+import textwrap
 from colorama import Fore, Style
 from pygments import highlight
 from pygments.formatters import Terminal256Formatter
@@ -66,6 +68,29 @@ def api_url_join(
     return urljoin(api_url, path)
 
 
+def format_json_with_title(
+            name: str,
+            thing: Any,
+            indent: Optional[int] = 2,
+            theme: Optional[str] = None,
+        ) -> str:
+    """Formats JSON indented under a title for nice printing"""
+    if indent is None:
+        indent_str = '  '
+    else:
+        indent_str = indent * ' '
+    if theme is None:
+        title = f'{name}:'
+    else:
+        title = highlight_syntax(f'{name}:', theme, lang=YAML).rstrip()
+    body = highlight_syntax(
+        json.dumps(thing, indent=indent),
+        theme,
+    )
+    indented_body = textwrap.indent(body, indent_str)
+    return f'{title}\n{indented_body}'.rstrip()
+
+
 def format_dict_like_thing(
             name: str,
             thing: Union[
@@ -73,17 +98,21 @@ def format_dict_like_thing(
                 MutableMapping[str, str],
                 RequestsCookieJar,
             ],
+            indent: Optional[int] = 2,
             theme: Optional[str] = None,
         ) -> str:
     """Format dictionaries for nice printing"""
-    delim = f'\n    - '
+    if indent is None:  # pragma: no cover
+        indent = 2
+    indent_str = ' ' * indent
+    delim = f'\n{indent_str}{indent_str}- '
     formatted = f'{name}:'
     for key, val in thing.items():
         display_val = val
         if isinstance(val, list):
             display_val = delim.join(val)
             display_val = f'{delim}{display_val}'
-        key_val_pair = f'\n  {key}: {display_val}'
+        key_val_pair = f'\n{indent_str}{key}: {display_val}'
         formatted += key_val_pair
     if theme is not None:
         formatted = highlight_syntax(formatted, theme, lang=YAML)

@@ -2,7 +2,7 @@ from unittest import TestCase
 from api_buddy.utils.formatting import format_dict_like_thing
 from api_buddy.config.themes import SHELLECTRIC
 
-NAME = 'Goerge Costanza'
+NAME = 'George Costanza'
 ALIAS = 'Art Vandalay'
 OCCUPATIONS = [
     'Industrial smoother',
@@ -18,8 +18,8 @@ class TestFormatDictLikeThing(TestCase):
             'name': NAME,
         }
         expected = (
-            f'  alias: {ALIAS}\n'
-            f'  name: {NAME}'
+            f'  alias: Art Vandalay\n'
+            f'  name: George Costanza'
         )
         assert expected in format_dict_like_thing('', thing)
 
@@ -29,24 +29,37 @@ class TestFormatDictLikeThing(TestCase):
             'occupations': OCCUPATIONS,
         }
         expected = (
-            f'  name: {NAME}\n'
-            f'  occupations: \n'
-            f'    - {OCCUPATIONS[0]}\n'
-            f'    - {OCCUPATIONS[1]}\n'
-            f'    - {OCCUPATIONS[2]}'
+            '  name: George Costanza\n'
+            '  occupations: \n'
+            '    - Industrial smoother\n'
+            '    - Architect\n'
+            '    - Marine Biologist'
         )
         assert expected in format_dict_like_thing('', thing)
 
+    def test_can_indent(self):
+        thing = {
+            'name': NAME,
+            'occupations': OCCUPATIONS,
+        }
+        expected = (
+            '    name: George Costanza\n'
+            '    occupations: \n'
+            '        - Industrial smoother\n'
+            '        - Architect\n'
+            '        - Marine Biologist'
+        )
+        assert expected in format_dict_like_thing('', thing, indent=4)
+
     def test_requires_a_name(self):
-        name = 'Thing'
-        assert f'{name}:' in format_dict_like_thing(name, {})
+        assert f'Thing:' in format_dict_like_thing('Thing', {})
 
     def test_can_colorize(self):
         thing = {
             'alias': ALIAS,
             'name': NAME,
         }
-        formatted = format_dict_like_thing('', thing, SHELLECTRIC)
+        formatted = format_dict_like_thing('', thing, theme=SHELLECTRIC)
         assert 'alias' in formatted
         assert ALIAS in formatted
         assert 'name' in formatted
