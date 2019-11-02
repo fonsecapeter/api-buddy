@@ -27,6 +27,7 @@ DEFAULT_OAUTH2_PREFS = {
 DEFAULT_VERBOSENESS_PREFS = {
     'request': False,
     'response': False,
+    'print_binaries': False,
 }
 DEFAULT_PREFS = {
     'auth_type': None,
@@ -88,6 +89,10 @@ verboseness_schema = Schema({
     Maybe(
             'response',
             default=DEFAULT_VERBOSENESS_PREFS['response'],
+        ): bool,
+    Maybe(
+            'print_binaries',
+            default=DEFAULT_VERBOSENESS_PREFS['print_binaries'],
         ): bool,
 })
 

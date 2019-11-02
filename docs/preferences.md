@@ -21,6 +21,7 @@ headers:
 verboseness:
   request: true
   response: true
+  print_binaries: false
 indent:
   4
 theme: paraiso-dark
@@ -104,9 +105,14 @@ headers:
 verboseness:
   request: false
   response: false
+  print_binaries: false
 ```
 
 If you want to see more details about what you're doing, this is the place to do it. Just specify `true` on the one you want and you're good to go.
+If true, each one will:
+  - `request`: Show method, url, query parameters, headers, request body data.
+  - `response`: Show headers, status code interpretation.
+  - `print_binaries`: Print full response content if a binary response is encountered
 
 #### Variables
 > `Dict[str, str]` (optional)

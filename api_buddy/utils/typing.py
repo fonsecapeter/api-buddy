@@ -4,6 +4,7 @@ from typing import Any, Dict, Iterable, List, Optional, Union
 VerbosenessPreferences = TypedDict('VerbosenessPreferences', {
     'request': bool,
     'response': bool,
+    'print_binaries': bool,
 })
 
 QueryParams = Dict[str, Union[str, List[str]]]
