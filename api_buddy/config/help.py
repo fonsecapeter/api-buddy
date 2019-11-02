@@ -29,6 +29,7 @@ headers:
 verboseness:
   request: true
   response: true
+  print_binaries: false
 indent: 4
 theme: paraiso-dark
 variables:

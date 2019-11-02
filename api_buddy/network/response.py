@@ -4,9 +4,19 @@ from colorama import Fore, Style
 from requests import Response
 from requests.cookies import RequestsCookieJar
 from typing import MutableMapping, Optional
-from ..utils.formatting import format_dict_like_thing, highlight_syntax
+from ..utils.formatting import (
+    format_dict_like_thing,
+    highlight_syntax,
+    JSON,
+)
 from ..utils.typing import Preferences
 
+BINARY_CONTENT_TYPES = [
+    'audio',
+    'image',
+    'video',
+    'pdf',
+]
 TAGS_TO_SKIP = [
     'a',
     'button'
@@ -49,17 +59,27 @@ def format_response(
             resp: Response,
             indent: Optional[int],
             theme: Optional[str],
+            print_binaries: bool = False,
         ) -> str:
-    try:
-        formatted = highlight_syntax(
-            json.dumps(resp.json(), indent=indent),
-            theme,
-        )
-    except (json.decoder.JSONDecodeError, TypeError):
-        formatted = resp.text
-        if '<!DOCTYPE html>' in formatted:
-            formatted = _strip_html(formatted)
-    return formatted.rstrip()
+    content_type = resp.headers.get('content-type', '')
+    if JSON in content_type:
+        try:
+            return highlight_syntax(
+                json.dumps(resp.json(), indent=indent),  # reindent
+                theme,
+            ).rstrip()
+        except (ValueError, TypeError):
+            pass
+    elif 'html' in content_type:
+        return _strip_html(resp.text).rstrip()
+    if not print_binaries:
+        is_binary = any([
+            binary_type in content_type
+            for binary_type in BINARY_CONTENT_TYPES
+        ])
+        if is_binary:
+            return f'Binary response: {content_type}'
+    return resp.text.rstrip()
 
 
 def print_response(resp: Response, prefs: Preferences) -> None:
@@ -81,4 +101,9 @@ def print_response(resp: Response, prefs: Preferences) -> None:
     print(f'{arrow} {status}')
     if verbose:
         _print_response_details(resp.headers, resp.cookies, indent, theme)
-    print(format_response(resp, indent, theme))
+    print(format_response(
+        resp,
+        indent,
+        theme,
+        prefs['verboseness']['print_binaries'],
+    ))

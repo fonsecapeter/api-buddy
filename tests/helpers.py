@@ -35,6 +35,7 @@ TEST_PREFERENCES: Preferences = {
     'verboseness': {
         'request': False,
         'response': False,
+        'print_binaries': False,
     },
     'indent': 2,
     'theme': SHELLECTRIC,
