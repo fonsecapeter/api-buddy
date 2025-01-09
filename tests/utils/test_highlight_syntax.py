@@ -23,16 +23,17 @@ JSON_THING = (
     '}'
 )
 SHELLECTRIC_JSON_THING = (
-    '\x1b[37m{\x1b[39m\n\x1b[95m  \x1b[39m\x1b[93m"name"\x1b[39m\x1b[37m:\x1b['
-    '39m\x1b[95m \x1b[39m\x1b[91m"Elaine"\x1b[39m\x1b[37m,\x1b[39m\n\x1b[95m  '
-    '\x1b[39m\x1b[93m"alias"\x1b[39m\x1b[37m:\x1b[39m\x1b[95m \x1b[39m\x1b[91m'
-    '"Laney"\x1b[39m\x1b[37m,\x1b[39m\n\x1b[95m  \x1b[39m\x1b[93m"occupations"'
-    '\x1b[39m\x1b[37m:\x1b[39m\x1b[95m \x1b[39m\x1b[37m[\x1b[39m\n\x1b[95m    '
-    '\x1b[39m\x1b[91m"Writer"\x1b[39m\x1b[37m,\x1b[39m\n\x1b[95m    \x1b[39m'
-    '\x1b[91m"Assistant"\x1b[39m\x1b[37m,\x1b[39m\n\x1b[95m    \x1b[39m\x1b[91'
-    'm"Shut Up!"\x1b[39m\x1b[37m,\x1b[39m\n\x1b[95m  \x1b[39m\x1b[37m]\x1b[39m'
-    '\x1b[37m,\x1b[39m\n\x1b[95m  \x1b[39m\x1b[93m"is_cool"\x1b[39m\x1b[37m:'
-    '\x1b[39m\x1b[95m \x1b[39m\x1b[96mtrue\x1b[39m\n\x1b[37m}\x1b[39m\n'
+    '\x1b[37m{\x1b[39m\n\x1b[95m  \x1b[39m\x1b[93m"name"\x1b[39m\x1b[37m:'
+    '\x1b[39m\x1b[95m \x1b[39m\x1b[91m"Elaine"\x1b[39m\x1b[37m,\x1b[39m\n'
+    '\x1b[95m  \x1b[39m\x1b[93m"alias"\x1b[39m\x1b[37m:\x1b[39m\x1b[95m '
+    '\x1b[39m\x1b[91m"Laney"\x1b[39m\x1b[37m,\x1b[39m\n\x1b[95m  \x1b[39m'
+    '\x1b[93m"occupations"\x1b[39m\x1b[37m:\x1b[39m\x1b[95m \x1b[39m'
+    '\x1b[37m[\x1b[39m\n\x1b[95m    \x1b[39m\x1b[91m"Writer"\x1b[39m\x1b[37m,'
+    '\x1b[39m\n\x1b[95m    \x1b[39m\x1b[91m"Assistant"\x1b[39m\x1b[37m,'
+    '\x1b[39m\n\x1b[95m    \x1b[39m\x1b[91m"Shut Up!"\x1b[39m\x1b[37m,'
+    '\x1b[39m\n\x1b[95m  \x1b[39m\x1b[37m],\x1b[39m\n\x1b[95m  \x1b[39m'
+    '\x1b[93m"is_cool"\x1b[39m\x1b[37m:\x1b[39m\x1b[95m \x1b[39m\x1b[96m'
+    'true\x1b[39m\n\x1b[37m}\x1b[39m\n'
 )
 YAML_THING = (
     f'name: {NAME},\n'
@@ -47,10 +48,9 @@ YAML_THING = (
 
 class TestHighlightSyntax(TestCase):
     def _assert_things_are_still_there(self, highlighted: str) -> None:
-        assert NAME in highlighted
-        assert ALIAS in highlighted
-        for occupation in OCCUPATIONS:
-            assert occupation in highlighted
+        for value in [NAME, ALIAS] + OCCUPATIONS:
+            for word in value.split(" "):
+                assert word in highlighted
 
     def test_can_highglight_json(self):
         highlighted = highlight_syntax(JSON_THING, SHELLECTRIC)

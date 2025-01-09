@@ -21,7 +21,7 @@ class TestGetOauthSession(TempYAMLTestCase):
             deepcopy(TEST_PREFERENCES),
             TEMP_FILE,
         )
-        assert type(sesh) == OAuth2Session
+        assert isinstance(sesh, OAuth2Session)
 
     @mock_get()
     @patch('requests.get')

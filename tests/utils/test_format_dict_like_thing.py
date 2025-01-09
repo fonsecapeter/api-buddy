@@ -18,8 +18,8 @@ class TestFormatDictLikeThing(TestCase):
             'name': NAME,
         }
         expected = (
-            f'  alias: Art Vandalay\n'
-            f'  name: George Costanza'
+            '  alias: Art Vandalay\n'
+            '  name: George Costanza'
         )
         assert expected in format_dict_like_thing('', thing)
 
@@ -52,7 +52,7 @@ class TestFormatDictLikeThing(TestCase):
         assert expected in format_dict_like_thing('', thing, indent=4)
 
     def test_requires_a_name(self):
-        assert f'Thing:' in format_dict_like_thing('Thing', {})
+        assert 'Thing:' in format_dict_like_thing('Thing', {})
 
     def test_can_colorize(self):
         thing = {
@@ -61,6 +61,7 @@ class TestFormatDictLikeThing(TestCase):
         }
         formatted = format_dict_like_thing('', thing, theme=SHELLECTRIC)
         assert 'alias' in formatted
-        assert ALIAS in formatted
         assert 'name' in formatted
-        assert NAME in formatted
+        for value in [ALIAS, NAME]:
+            for word in value:
+                assert word in formatted

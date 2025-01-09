@@ -24,30 +24,30 @@ classifiers = [
   "Operating System :: OS Independent",
   "Topic :: Internet :: WWW/HTTP",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.13",
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.13"
 beautifulsoup4 = "^4.7.1"
-docopt = "^0.6.2"
-requests-oauthlib = "^1.2.0"
+requests-oauthlib = "^2.0.0"
 schema = "^0.6.8"
-PyYAML = "=4.2b1"
+PyYAML = "6.0.2"
 yaspin = "^0.14.1"
-colorama = "^0.4.1"
-Pygments = "^2.4.1"
+colorama = "^0.4.6"
+Pygments = "^2.19.1"
 
-[tool.poetry.dev-dependencies]
-colorama = "^0.4.1"
-flake8 = "^3.7.5"
+[tool.poetry.group.dev.dependencies]
+types-requests = "^2.32.0.20241016"
+types-PyYAML = "^6.0.12.20241230"
+flake8 = "^7.1.1"
 ipython = "^7.2.0"
-mock = "^2.0.0"
-mypy = "^0.670"
-pytest = "^4.2.0"
-pytest-cov = "^2.6.1"
-pytest-pspec = "^0.0.3"
-bumpversion = "^0.5.3"
+mock = "^5.1.0"
+mypy = "^1.14.1"
+pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
+pytest-pspec = "^0.0.4"
+bumpversion = "^0.6.0"
 
 [tool.poetry.scripts]
 api = "api_buddy.cli:run"

@@ -261,13 +261,14 @@ class TestSavePreferences(TempYAMLTestCase):
 
     def test_doesnt_save_defaults_if_unchanged(self):
         with open(TEMP_FILE, 'r') as prefs_file:
-            written_prefs = yaml.load(prefs_file)
+            written_prefs = yaml.load(prefs_file, Loader=yaml.Loader)
         assert 'auth_test_status' not in written_prefs
         assert 'state' not in written_prefs['oauth2']
+        assert 'verboseness' not in written_prefs['oauth2']
 
     def test_unpacks_query_params(self):
         with open(TEMP_FILE, 'r') as prefs_file:
-            written_prefs = yaml.load(prefs_file)
+            written_prefs = yaml.load(prefs_file, Loader=yaml.Loader)
         assert written_prefs['oauth2']['authorize_params'] == [
             'give_treat=yes'
         ]

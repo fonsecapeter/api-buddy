@@ -32,9 +32,11 @@ def _remove_defaults(prefs: Preferences) -> Preferences:
             del filtered_prefs[key]                            # type: ignore
     for nested_name, nested_defaults in NESTED_DEFAULT_PREFS.items():
         nested_prefs = filtered_prefs[nested_name]             # type: ignore
-        for nested_key, default_nested_val in nested_defaults.items():
+        for nested_key, default_nested_val in nested_defaults.items():  # type: ignore # noqa
             if nested_prefs[nested_key] == default_nested_val:
                 del filtered_prefs[nested_name][nested_key]    # type: ignore
+        if filtered_prefs[nested_name] == {}:  # type: ignore[literal-required]
+            del filtered_prefs[nested_name]    # type: ignore[misc]
     return filtered_prefs
 
 
@@ -45,8 +47,8 @@ def _convert_types(prefs: Preferences) -> Preferences:
     if auth_prefs:
         auth_params = auth_prefs.get('authorize_params')
         if auth_params:
-            converted_prefs['oauth2']['authorize_params'] = (  # type: ignore
-                unpack_query_params(auth_params)
+            converted_prefs['oauth2']['authorize_params'] = (
+                unpack_query_params(auth_params)  # type: ignore
             )
     return converted_prefs
 
@@ -67,21 +69,22 @@ def _extract_yaml_from_file(file_name: str) -> Any:
         return None
     with open(file_name, 'r') as prefs_file:
         try:
-            user_prefs = yaml.load(prefs_file)
+            user_prefs = yaml.load(prefs_file, Loader=yaml.Loader)
         except yaml.YAMLError:
             raise PrefsException(
-                title=f'There was a problem reading the file',
+                title='There was a problem reading the file',
                 message=(
                     'Please make sure it\'s valid yaml: '
                     'http://www.yaml.org/start.html'
                 ),
             )
     if user_prefs is None:
+        example_yaml = yaml.dump(EXAMPLE_PREFS, Dumper=yaml.Dumper)
         raise PrefsException(
             title='It looks like your file is empty',
             message=(
-                f'Make sure you have something in there\n'
-                f'For example:\n\n{yaml.dump(EXAMPLE_PREFS)}'
+                'Make sure you have something in there\n'
+                f'For example:\n\n{example_yaml}'
             )
         )
     return user_prefs
@@ -121,4 +124,4 @@ def save_prefs(
     minimal_prefs = _remove_defaults(preferences)
     converted_prefs = _convert_types(minimal_prefs)
     with open(expanded_file_name, 'w') as prefs_file:
-        yaml.dump(converted_prefs, prefs_file)
+        yaml.dump(converted_prefs, prefs_file, Dumper=yaml.Dumper)

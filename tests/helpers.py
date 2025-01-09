@@ -74,18 +74,22 @@ def _mock_api_method(method: str = 'get') -> Callable[..., Any]:
                         **kwargs: Optional[Any]
                     ) -> Any:
                 with mock.patch(
-                            f'requests.Session.{method}'
-                        ) as mock_api_call:
-                    resp = Response()
-                    mock_req = mock.MagicMock()
-                    type(mock_req).params = mock.PropertyMock(
-                        return_value=kwargs.get('params')
-                    )
-                    resp.request = mock_req
-                    resp.status_code = status_code
-                    resp._content = str.encode(content)  # type: ignore
-                    mock_api_call.return_value = resp
-                    return func(*args, **kwargs)
+                    f"api_buddy.network.session.requests.Session.{method}"
+                ) as mock_api_call:
+                    with mock.patch(
+                        f"api_buddy.network.auth.oauth2.OAuth2Session.{method}"
+                    ) as mock_oauth_api_call:
+                        resp = Response()
+                        mock_req = mock.MagicMock()
+                        type(mock_req).params = mock.PropertyMock(
+                            return_value=kwargs.get('params')
+                        )
+                        resp.request = mock_req
+                        resp.status_code = status_code
+                        resp._content = str.encode(content)  # type: ignore
+                        mock_api_call.return_value = resp
+                        mock_oauth_api_call.return_value = resp
+                        return func(*args, **kwargs)
             return wrapper
         return real_decorator
     return decorator_with_args
