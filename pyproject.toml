@@ -28,16 +28,18 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = "^3.13.1"
 beautifulsoup4 = "^4.7.1"
+docopt = "^0.6.2"
 requests-oauthlib = "^2.0.0"
 schema = "^0.6.8"
 PyYAML = "6.0.2"
 yaspin = "^0.14.1"
 colorama = "^0.4.6"
 Pygments = "^2.19.1"
+poetry = "1.6.0"
 
-[tool.poetry.group.dev.dependencies]
+[tool.poetry.dev-dependencies]
 types-requests = "^2.32.0.20241016"
 types-PyYAML = "^6.0.12.20241230"
 flake8 = "^7.1.1"

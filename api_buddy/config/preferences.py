@@ -18,7 +18,7 @@ EXAMPLE_OAUTH2_PREFS = {
     'scopes': ['one_scope', 'another_scope'],
 }
 EXAMPLE_PREFS = {
-    'api_url': 'https://ron-swanson-quotes.herokuapp.com',
+    "api_url": "https://www.freetestapi.com/",
 }
 
 
