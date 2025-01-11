@@ -1,6 +1,5 @@
 # API Buddy
-
-[![Build Status](https://travis-ci.org/fonsecapeter/api-buddy.svg?branch=master)](https://travis-ci.org/fonsecapeter/api-buddy.svg)
+[![Build Status](https://circleci.com/gh/fonsecapeter/api-buddy.svg?style=svg)](https://circleci.com/gh/fonsecapeter/api-buddy)
 [![PyPI version](https://badge.fury.io/py/api-buddy.svg)](https://badge.fury.io/py/api-buddy)
 
 ![Demo](https://raw.githubusercontent.com/fonsecapeter/api-buddy/master/media/demo.gif 'demo.gif')
