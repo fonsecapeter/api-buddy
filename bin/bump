@@ -17,6 +17,5 @@ case "${increment}" in
 esac
 
 version=`poetry run api --version`
-poetry run bumpversion \
-  --current-version "${version}" \
-  "${increment}"
+poetry version \
+  --next-phase "${increment}"
