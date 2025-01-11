@@ -36,8 +36,8 @@ class TestGetSession(TempYAMLTestCase):
                     clear=True
                 ):
             get_session(self.opts, self.prefs, TEMP_FILE)
-            assert mock_requests_session.called_once()
-            assert mock_get_oauth2_sesh.not_called()
+            mock_requests_session.assert_called_once()
+            mock_get_oauth2_sesh.assert_not_called()
 
     @patch('requests.Session')
     def test_when_using_an_auth_type_it_checks_preferences(
@@ -50,8 +50,8 @@ class TestGetSession(TempYAMLTestCase):
                     clear=True
                 ):
             get_session(self.opts, self.prefs, TEMP_FILE)
-            assert mock_get_oauth2_sesh.called_once()
-            assert mock_requests_session.not_called()
+            mock_get_oauth2_sesh.assert_called_once()
+            mock_requests_session.assert_not_called()
 
 
 class TestReauthenticate(TempYAMLTestCase):
@@ -70,7 +70,7 @@ class TestReauthenticate(TempYAMLTestCase):
                     clear=True
                 ):
             reauthenticate(self.session, self.prefs, TEMP_FILE)
-            assert mock_reauth.not_called()
+            mock_reauth.assert_not_called()
 
     def test_when_using_an_auth_type_it_checks_preferences(self):
         with patch.dict(
@@ -79,4 +79,4 @@ class TestReauthenticate(TempYAMLTestCase):
                     clear=True
                 ):
             reauthenticate(self.session, self.prefs, TEMP_FILE)
-            assert mock_reauth2.called_once()
+            mock_reauth2.assert_called_once()

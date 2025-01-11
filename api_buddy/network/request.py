@@ -37,14 +37,14 @@ def _send_request(
         ) -> requests.Response:
     with yaspin(spin):
         if method == GET:
-            return(sesh.get(
+            return (sesh.get(
                 url,
                 params=params,
                 timeout=timeout,
                 verify=verify,
             ))
         elif method == POST:
-            return(sesh.post(
+            return (sesh.post(
                 url,
                 params=params,
                 json=data,
@@ -52,7 +52,7 @@ def _send_request(
                 verify=verify,
             ))
         elif method == PUT:
-            return(sesh.put(
+            return (sesh.put(
                 url,
                 params=params,
                 json=data,
@@ -60,7 +60,7 @@ def _send_request(
                 verify=verify,
             ))
         elif method == PATCH:
-            return(sesh.patch(
+            return (sesh.patch(
                 url,
                 params=params,
                 json=data,
@@ -68,7 +68,7 @@ def _send_request(
                 verify=verify,
             ))
         elif method == DELETE:
-            return(sesh.delete(
+            return (sesh.delete(
                 url,
                 params=params,
                 json=data,
@@ -93,7 +93,7 @@ def print_request(
         ) -> None:
     if hasattr(sesh, '_client'):  # pragma: no cover
         # Add auth info if available
-        url, headers, data = sesh._client.add_token(  # type: ignore
+        url, headers, data = sesh._client.add_token(
             url,
             http_method=method,
             body=data,

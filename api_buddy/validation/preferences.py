@@ -16,13 +16,13 @@ from ..utils.typing import Preferences, RawPreferences
 from ..config.themes import SHELLECTRIC
 
 DEFAULT_URL_SCHEME = 'https'
-DEFAULT_OAUTH2_PREFS = {
-    'redirect_uri': 'http://localhost:8080/',
-    'state': None,
-    'access_token': 'can_haz_token',
-    'token_path': 'token',
-    'authorize_path': 'authorize',
-    'authorize_params': {},
+DEFAULT_OAUTH2_PREFS = {  # type: ignore
+    "redirect_uri": "http://localhost:8080/",
+    "state": None,
+    "access_token": "can_haz_token",
+    "token_path": "token",
+    "authorize_path": "authorize",
+    "authorize_params": {},
 }
 DEFAULT_VERBOSENESS_PREFS = {
     'request': False,
@@ -46,7 +46,7 @@ DEFAULT_AUTH_PREFS = {
     OAUTH2: DEFAULT_OAUTH2_PREFS,
 }
 NESTED_DEFAULT_PREFS = {
-    **DEFAULT_AUTH_PREFS,  # type: ignore
+    **DEFAULT_AUTH_PREFS,
     'verboseness': DEFAULT_VERBOSENESS_PREFS,
 }
 
@@ -155,7 +155,7 @@ def _validate_auth_type(auth_type: Optional[str]) -> Optional[str]:
             delim.join(AUTH_TYPES)
         )
         raise PrefsException(
-            title=f'I can\'t recognize your auth_type',
+            title='I can\'t recognize your auth_type',
             message=(
                 f'It should be one of these:'
                 f'{delim}null{delim}'
@@ -172,7 +172,7 @@ def _validate_api_url(api_url: str) -> str:
         valid_url = f'{DEFAULT_URL_SCHEME}://{api_url}'
     if '?' in api_url:
         raise PrefsException(
-            title=f'Your api_url can\'t have query parameters',
+            title='Your api_url can\'t have query parameters',
             message=(
                 'Maybe try '
                 f'{Fore.BLUE}{Style.BRIGHT}{valid_url.split("?", 1)[0]}'
@@ -181,7 +181,7 @@ def _validate_api_url(api_url: str) -> str:
         )
     if '#' in api_url:
         raise PrefsException(
-            title=f'Your api_url can\'t have hash fragments',
+            title='Your api_url can\'t have hash fragments',
             message=(
                 'Maybe try '
                 f'{Fore.BLUE}{Style.BRIGHT}{valid_url.split("#", 1)[0]}'

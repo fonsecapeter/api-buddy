@@ -1,0 +1,22 @@
+version: 2.1
+
+jobs:
+  build-and-test:
+    docker:
+      - image: cimg/python:3.13
+    steps:
+      - checkout
+      - run:
+          name: install
+          command: poetry install
+      - run:
+          name: build
+          command: poetry build
+      - run:
+          name: test
+          command: bin/test
+
+workflows:
+  main:
+    jobs:
+      - build-and-test

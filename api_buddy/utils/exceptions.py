@@ -50,9 +50,9 @@ class PrefsException(APIBuddyException):
         'It looks like your preferences are messed up',
     )
     MESSAGE_FOOTERS_1 = (
-        f'Open up',
-        f'Crack open',
-        f'Check out',
+        'Open up',
+        'Crack open',
+        'Check out',
     )
     MESSAGE_FOOTERS_2 = (
         'and have a look',

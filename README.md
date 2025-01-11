@@ -90,7 +90,7 @@ api post \
 ## Development
 Requires:
 - [poetry](https://poetry.eustace.io/)
-- Python 3.7
+- Python 3.13
   - Suggest using: [pyenv](https://github.com/pyenv/pyenv)
 
 Steps to start working:

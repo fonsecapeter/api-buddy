@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-# Runs within Travis CI
-
-poetry build
-bin/test
