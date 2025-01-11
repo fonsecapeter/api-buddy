@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: install
-          command: poetry install
+          command: poetry self update  2.0.0 && poetry install
       - run:
           name: build
           command: poetry build
