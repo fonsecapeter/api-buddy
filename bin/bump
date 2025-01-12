@@ -16,6 +16,8 @@ case "${increment}" in
   ;;
 esac
 
-version=`poetry run api --version`
+old_version=`poetry run api --version`
 poetry version \
   --next-phase "${increment}"
+new_version=`poetry version --short`
+sed -i "" "s/${old_version}/${new_version}/" "api_buddy/utils/__init__.py"

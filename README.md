@@ -102,3 +102,9 @@ Steps to start working:
 - Make sure everything works with `bin/test`
 - Try the local cli with `poetry run api --help`
 - Find other management commands with `bin/list`
+
+Note to self, publish flow is:
+- `bin/bump`
+- `git commit -m 'Major/Minor/Patch bump x.x.x -> y.y.y'`
+- `bin/publish`
+- `bin/tag`
