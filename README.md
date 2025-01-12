@@ -107,4 +107,5 @@ Note to self, publish flow is:
 - `bin/bump`
 - `git commit -m 'Major/Minor/Patch bump x.x.x -> y.y.y'`
 - `bin/publish`
+- `git push`
 - `bin/tag`
