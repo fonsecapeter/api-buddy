@@ -27,9 +27,10 @@ def get_session(
         ) -> requests.Session:
     auth_type = prefs['auth_type']
     if auth_type is None:
-        return requests.Session()
-    session_initializer = SESSIONS[auth_type]
-    sesh = session_initializer(opts, prefs, prefs_file_name)
+        sesh = requests.Session()
+    else:
+        session_initializer = SESSIONS[auth_type]
+        sesh = session_initializer(opts, prefs, prefs_file_name)
     sesh.headers.update(prefs['headers'])
     return sesh
 

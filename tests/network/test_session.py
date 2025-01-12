@@ -14,6 +14,7 @@ from ..helpers import (
     TempYAMLTestCase,
 )
 
+
 mock_get_oauth2_sesh = Mock(name='mock_get_oauth2_sesh')
 mock_reauth2 = Mock(name='mock_reauth2')
 
@@ -21,23 +22,20 @@ mock_reauth2 = Mock(name='mock_reauth2')
 class TestGetSession(TempYAMLTestCase):
     def setUp(self):
         self.prefs = deepcopy(TEST_PREFERENCES)
+        self.prefs['headers']['Test'] = 'header'
         self.opts = deepcopy(TEST_OPTIONS)
         super().setUp()
 
-    @patch('requests.Session')
-    def test_can_instantiate_with_no_auth(
-                self,
-                mock_requests_session,
-            ):
+    def test_can_instantiate_with_no_auth(self):
         self.prefs['auth_type'] = None
         with patch.dict(
                     SESSIONS,
                     {OAUTH2: mock_get_oauth2_sesh},
                     clear=True
                 ):
-            get_session(self.opts, self.prefs, TEMP_FILE)
-            mock_requests_session.assert_called_once()
-            mock_get_oauth2_sesh.assert_not_called()
+            sesh = get_session(self.opts, self.prefs, TEMP_FILE)
+        mock_get_oauth2_sesh.assert_not_called()
+        assert sesh.headers['Test'] == 'header'
 
     @patch('requests.Session')
     def test_when_using_an_auth_type_it_checks_preferences(
@@ -50,8 +48,8 @@ class TestGetSession(TempYAMLTestCase):
                     clear=True
                 ):
             get_session(self.opts, self.prefs, TEMP_FILE)
-            mock_get_oauth2_sesh.assert_called_once()
-            mock_requests_session.assert_not_called()
+        mock_get_oauth2_sesh.assert_called_once()
+        mock_requests_session.assert_not_called()
 
 
 class TestReauthenticate(TempYAMLTestCase):
@@ -70,7 +68,7 @@ class TestReauthenticate(TempYAMLTestCase):
                     clear=True
                 ):
             reauthenticate(self.session, self.prefs, TEMP_FILE)
-            mock_reauth.assert_not_called()
+        mock_reauth.assert_not_called()
 
     def test_when_using_an_auth_type_it_checks_preferences(self):
         with patch.dict(
@@ -79,4 +77,4 @@ class TestReauthenticate(TempYAMLTestCase):
                     clear=True
                 ):
             reauthenticate(self.session, self.prefs, TEMP_FILE)
-            mock_reauth2.assert_called_once()
+        mock_reauth2.assert_called_once()
