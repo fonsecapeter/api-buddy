@@ -76,7 +76,7 @@ preferences:
   {BRIGHT_NORMAL}users/#{{user_id}} {BACKSLASH}
   {BRIGHT_NORMAL}name=#{{name}} {BACKSLASH}
   {Fore.RED}'{{
-    "occupation"="#{{occupation}}"
+    "occupation": "#{{occupation}}"
   }}'{Style.RESET_ALL}
 
 All of your preferences live in {Fore.MAGENTA}~/.api-buddy.yaml{Style.RESET_ALL}

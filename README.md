@@ -4,9 +4,11 @@
 
 <img src="https://raw.githubusercontent.com/fonsecapeter/api-buddy/main/media/demo.gif" alt="demo">
 
-> Right now, only OAuth2 authentication is supported. Happy to support more if anyone is interested, just up a ticket. 🎟
->
-> You can also always manually set headers.
+The most pleasant HTTP API CLI tool
+- Quick to set up
+- Easy to use
+- Automated OAuth2 sign-in
+- Copy/paste-able results
 
 ## Installation
 
@@ -66,7 +68,20 @@ api post \
   }'
 ```
 
-### [Preferences 👉](https://github.com/fonsecapeter/api-buddy/blob/master/docs/preferences.md)
+Variables can be interpolated within your endpoint, as part
+of values in your query params, or anywhere in your request
+body data, as long as they're defined by name in your
+preferences:
+``` bash
+api post \
+  'users/#{{user_id}}' \
+  'name=#{{name}}' \
+  '{
+    "occupation": "#{{occupation}}"
+  }'
+```
+
+### [👉 See all the helpful preferences here](https://github.com/fonsecapeter/api-buddy/blob/master/docs/preferences.md)
 
 ### Arguments
 - `use`: (optional) Set the base `api_url` you're exploring in your preferences file.
