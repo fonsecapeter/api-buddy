@@ -37,6 +37,7 @@ dependencies = [
   "yaspin ~=0.14.1",
   "colorama ~=0.4.6",
   "Pygments ~=2.19.1",
+  "mypy-extensions (>=1.0.0,<2.0.0)",
 ]
 
 [project.urls]

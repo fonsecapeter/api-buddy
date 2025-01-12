@@ -13,7 +13,7 @@ oauth2:
   scopes:
     - one_scope
     - another_scope
-  redirec_uri: http://loclahost:8080
+  redirect_uri: http://loclahost:8080
   state: something
   token_path: /token
   authorize_path: /authorize
@@ -94,12 +94,12 @@ Usage:
   api help
   api (-h | --help)
   api (-v | --version)
+  api use <api_url>
   api get <endpoint> [<params> ...]
   api post <endpoint> [<params> ...] [<data>]
   api patch <endpoint> [<params> ...] [<data>]
   api put <endpoint> [<params> ...] [<data>]
   api delete <endpoint> [<params> ...] [<data>]
-  api <endpoint> [<params> ...]
 
 Options:
   -h, --help     Show this help message

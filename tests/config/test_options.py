@@ -4,7 +4,6 @@ from unittest import TestCase
 from api_buddy.utils.typing import RawOptions
 from api_buddy.utils.exceptions import APIBuddyException
 from api_buddy.validation.options import validate_options
-from api_buddy.utils.http import GET
 from ..helpers import FAKE_ENDPOINT
 
 FIRST_NAME = 'Cosmo'
@@ -14,6 +13,8 @@ RAW_OPTIONS: RawOptions = {
     '<endpoint>': FAKE_ENDPOINT,
     '<params>': [],
     '<data>': None,
+    '<api_url>': None,
+    'use': False,
     'get': True,
     'post': False,
     'patch': False,
@@ -24,11 +25,13 @@ RAW_OPTIONS: RawOptions = {
     '--version': False,
 }
 
+API_URL = 'https://thecatapi.com'
+
 
 class TestEndpoint(TestCase):
-    def test_wont_allow_full_path_for_endpoint(self):
+    def test_wont_allow_full_url_for_endpoint(self):
         opts = deepcopy(RAW_OPTIONS)
-        opts['<endpoint>'] = 'https://thecatapi.com/cats'
+        opts['<endpoint>'] = f"{API_URL}/cats"
         try:
             validate_options(opts)
         except APIBuddyException as err:
@@ -40,12 +43,6 @@ class TestEndpoint(TestCase):
 
 
 class TestMethod(TestCase):
-    def test_when_not_specified_it_uses_get(self):
-        opts = deepcopy(RAW_OPTIONS)
-        opts['get'] = False
-        valid_opts = validate_options(opts)
-        assert valid_opts['<method>'] == GET
-
     def test_when_specified_it_saves_as_enum(self):
         opts = deepcopy(RAW_OPTIONS)
         opts['get'] = False
@@ -61,9 +58,48 @@ class TestMethod(TestCase):
             validate_options(opts)
         except APIBuddyException as err:
             assert 'methods' in err.title
-            assert 'more than one method' in err.message
+            assert 'more than one HTTP method' in err.message
         else:
             assert False
+
+
+class TestNonHTTPCommands(TestCase):
+    def test_use_triggers_a_non_http_command(self):
+        opts = deepcopy(RAW_OPTIONS)
+        opts['get'] = False
+        opts['<endpoint>'] = None
+        opts['use'] = True
+        opts['<api_url>'] = API_URL
+        valid_opts = validate_options(opts)
+        assert valid_opts['<method>'] is None
+        assert valid_opts['<cmd>'] == 'use'
+
+    def test_use_requires_url(self):
+        opts = deepcopy(RAW_OPTIONS)
+        opts['get'] = False
+        opts['<endpoint>'] = None
+        opts['use'] = True
+        try:
+            validate_options(opts)
+        except APIBuddyException as err:
+            assert 'use' in err.title
+            assert 'url' in err.message
+        else:
+            assert False
+
+    def test_use_requires_valid_url(self):
+        opts = deepcopy(RAW_OPTIONS)
+        opts['get'] = False
+        opts['<endpoint>'] = None
+        opts['use'] = True
+        opts['<api_url>'] = "/cats"
+        try:
+            validate_options(opts)
+        except APIBuddyException as err:
+            assert 'url' in err.title
+            assert 'cats' in err.message
+        else:
+            return False
 
 
 class TestParams(TestCase):

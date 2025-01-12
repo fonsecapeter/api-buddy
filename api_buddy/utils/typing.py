@@ -40,24 +40,28 @@ Preferences = TypedDict('Preferences', {
 Options = TypedDict('Options', {
     '--help': bool,
     '--version': bool,
-    '<method>': str,
-    '<endpoint>': str,
+    '<cmd>': Optional[str],
+    '<api_url>': Optional[str],
+    '<method>': Optional[str],
+    '<endpoint>': Optional[str],
     '<params>': QueryParams,
     '<data>': Any,
 })
 
-RawOptions = Dict[str, Optional[Union[str, bool]]]
+RawOptions = Dict[str, Union[bool, Optional[str]]]
 # TypedDict currently requires string literal key indexing
 # RawOptions = TypedDict('RawOptions', {
 #     '--help': bool,
 #     '--version': bool,
 #     'help': bool,
+#     'use': bool,
 #     'get': bool,
 #     'post': bool,
 #     'patch': bool,
 #     'put': bool,
 #     'delete': bool,
-#     '<endpoint>': str,
-#     '<params>': List[str],
+#     '<api_url>': Optional[str],
+#     '<endpoint>': Optional[str],
+#     '<params>': Optional[List[str]],
 #     '<data>': Optional[str],
 # })
