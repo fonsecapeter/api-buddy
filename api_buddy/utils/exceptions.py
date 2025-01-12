@@ -24,9 +24,7 @@ def print_exception(title: str, message: str) -> None:
         'Oh no',
         'Whoops',
         'Oops',
-        'Crikey',
         'Dang',
-        'Bruh',
         'Woah',
     ))
     print(
