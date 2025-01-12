@@ -39,7 +39,7 @@ class Shellectric(Style):  # type: ignore
         Name.Decorator: BRIGHT_CYAN,
         Name.Exception: BRIGHT_CYAN,
         Name.Function: BRIGHT_CYAN,
-        Name.Tag: BRIGHT_YELLOW,
+        Name.Tag: YELLOW,
         Number: BRIGHT_BLUE,
         Operator: GRAY,
         Punctuation: GRAY,
