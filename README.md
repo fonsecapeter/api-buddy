@@ -2,22 +2,27 @@
 [![Build Status](https://circleci.com/gh/fonsecapeter/api-buddy.svg?style=svg)](https://circleci.com/gh/fonsecapeter/api-buddy)
 [![PyPI version](https://badge.fury.io/py/api-buddy.svg)](https://badge.fury.io/py/api-buddy)
 
-![Demo](https://raw.githubusercontent.com/fonsecapeter/api-buddy/master/media/demo.gif 'demo.gif')
+<img src="https://raw.githubusercontent.com/fonsecapeter/api-buddy/main/media/demo.gif" alt="demo">
 
-> Right now, only OAuth2 authentication is supported. It's the most common, and current gold standard for security best practices. Also most APIs use it. That said, I have no beef with all the APIs out there using something else, so feel free to open a ticket if you want something else supported. 🎟
+> Right now, only OAuth2 authentication is supported. Happy to support more if anyone is interested, just up a ticket. 🎟
 >
 > You can also always manually set headers.
 
 ## Installation
 
-As long as you have python 3.7 or higher (I recommend using [pyenv](https://github.com/pyenv/pyenv)), just:
+As long as you have python 3.13 or higher (I recommend using [pyenv](https://github.com/pyenv/pyenv)), just:
 ```bash
 pip install api-buddy
 ```
 
 ## Usage
 
-First, specify the API you're exploring in your preferences
+First, specify the API you're exploring
+```bash
+api use https://some.api.com
+```
+
+Which will set the `api_url` value in your preferences file
 ```yaml
 # ~/.api-buddy.yaml
 api_url: https://some.api.com
@@ -35,11 +40,6 @@ api get some-endpoint
 }
 ```
 
-HTTP Method defaults to `get`:
-```bash
-api this-endpoint  # same as first example
-```
-
 You can add query params in key=val format:
 ```bash
 api get \
@@ -55,7 +55,8 @@ api post \
   '{"id": 1, "field": "value"}'
 ```
 
-🤔 Note the single-quotes. You can expand this accross multiple lines:
+🤔 Note the single-quotes, which keeps your json as a sing continuous string.
+This means you can expand across multiple lines too:
 ```bash
 api post \
   some-endpoint \
@@ -68,7 +69,11 @@ api post \
 ### [Preferences 👉](https://github.com/fonsecapeter/api-buddy/blob/master/docs/preferences.md)
 
 ### Arguments
-- `http_method`: (optional, default=`get`) The HTTP method to use in your request.
+- `use`: (optional) Set the base `api_url` you're exploring in your preferences file.
+  - It come with  the actual `api_url` value
+
+If you're actually sending an HTTP request:
+- `http_method`: (optional) The HTTP method to use in your request.
   - It should be one of:
     - `get`
     - `post`

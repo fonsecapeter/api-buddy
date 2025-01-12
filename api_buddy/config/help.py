@@ -39,11 +39,14 @@ variables:
 
 HELP = f"""\nExplore OAuth2 APIs from your console with API Buddy
 
-It's as easy as:
-{API_CLI} get some-endpoint{Style.RESET_ALL}
+First, specify the API you're exploring
+{API_CLI} use https://some.api.com{Style.RESET_ALL}
 
-HTTP Method defaults to get:
-{API_CLI} this-endpoint{Style.RESET_ALL}
+Which will set {BRIGHT_NORMAL}api_url{Style.RESET_ALL} in your preferences file
+{Fore.MAGENTA}~/.api-buddy.yaml{Style.RESET_ALL}
+
+Then it's as easy as:
+{API_CLI} get some-endpoint{Style.RESET_ALL}
 
 You can add query params in key=val format:
 {API_CLI} get {BACKSLASH}
@@ -56,8 +59,8 @@ You can also add request body data in JSON format:
   {BRIGHT_NORMAL}some-endpoint {BACKSLASH}
   {Fore.RED}'{{"id": 1, "field": "value"}}'{Style.RESET_ALL}
 
-Note the single-quotes, you can also expand this accross
-multiple lines:
+Note the single-quotes, which keeps your json as a sing continuous string.
+This means you can expand across multiple lines too:
 {API_CLI} post {BACKSLASH}
   {BRIGHT_NORMAL}some-endpoint {BACKSLASH}
   {Fore.RED}'{{
@@ -76,7 +79,7 @@ preferences:
     "occupation"="#{{occupation}}"
   }}'{Style.RESET_ALL}
 
-Your preferences live in {Fore.MAGENTA}~/.api-buddy.yaml{Style.RESET_ALL}
+All of your preferences live in {Fore.MAGENTA}~/.api-buddy.yaml{Style.RESET_ALL}
 They can look something like this:
 {Style.BRIGHT}{EXAMPLE_PREFS}{Style.RESET_ALL}
 Check out GitHub for more info
