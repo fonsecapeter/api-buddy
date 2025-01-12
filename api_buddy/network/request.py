@@ -1,7 +1,7 @@
 import requests
 import urllib3
 from colorama import Fore, Style
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 from yaspin import yaspin
 
 from .session import reauthenticate
@@ -126,7 +126,7 @@ def send_request(
     url = api_url_join(
         prefs['api_url'],
         prefs['api_version'],
-        opts['<endpoint>'],
+        cast(str, opts['<endpoint>']),
     )
     method = opts['<method>']
     params = opts['<params>']
@@ -134,7 +134,7 @@ def send_request(
     if prefs['verboseness']['request'] is True:
         print_request(
             sesh,
-            method,
+            cast(str, method),
             url,
             params,
             data,
@@ -145,7 +145,7 @@ def send_request(
     try:
         resp = _send_request(
             sesh,
-            method,
+            cast(str, method),
             url,
             params,
             data,

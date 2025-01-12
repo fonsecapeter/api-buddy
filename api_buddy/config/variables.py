@@ -1,6 +1,6 @@
 import json
 from copy import deepcopy
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Union, cast
 from ..utils.typing import Options, Preferences
 
 
@@ -54,7 +54,7 @@ def interpolate_variables(
     interpolated_opts = deepcopy(opts)
     for name, val in prefs['variables'].items():
         interpolated_opts['<endpoint>'] = _interpolate(
-            interpolated_opts['<endpoint>'],
+            cast(str, interpolated_opts['<endpoint>']),
             name,
             val,
         )

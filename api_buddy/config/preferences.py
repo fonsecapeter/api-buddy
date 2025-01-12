@@ -90,6 +90,11 @@ def _extract_yaml_from_file(file_name: str) -> Any:
     return user_prefs
 
 
+def save_api_url(url: str, prefs: Preferences, file_name: str) -> None:
+    prefs['api_url'] = url
+    save_prefs(prefs, file_name)
+
+
 def load_prefs(
             file_name: str,
         ) -> Preferences:

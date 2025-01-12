@@ -7,6 +7,9 @@ from ..utils.typing import Options, RawOptions
 from ..utils.exceptions import APIBuddyException
 from ..utils.http import HTTP_METHODS, GET, pack_query_params
 
+USE = "use"
+NON_HTTP_CMDS = {USE}
+
 
 def _more_than_one_method_selected(opts: RawOptions) -> bool:
     return sum(
@@ -24,17 +27,52 @@ def _validate_method(opts: RawOptions) -> RawOptions:
         raise APIBuddyException(
             title='These HTTP methods are borked',
             message=(
-                'It appears you selected more than one method...\n'
+                'It appears you selected more than one HTTP method...\n'
                 'How did you even do this?'
             )
         )
-    selected_method = GET
+    opts['<method>'] = None
     for method in HTTP_METHODS:
         using_this_method = opts[method]
         del opts[method]
         if using_this_method is True:
-            selected_method = method
-    opts['<method>'] = selected_method
+            opts['<method>'] = method
+    return opts
+
+
+def _validate_use(opts: RawOptions) -> None:
+    url = opts['<api_url>']
+    if url is None:
+        raise APIBuddyException(
+            title='What API do you want to use?',
+            message=(
+                'You just need to tell me the url '
+                'and I\'ll save it in '
+                '{Fore.MAGENTA}{PREFS_FILE}{Style.RESET_ALL}'
+            )
+        )
+    url_parts = urlparse(cast(str, url))
+    if not url_parts.scheme:
+        raise APIBuddyException(
+            title='Something\'s off about that url',
+            message=(
+                f'{Fore.MAGENTA}{url}{Style.RESET_ALL} is not a valid url, '
+                'try something more like '
+                f'{Fore.BLUE}{Style.BRIGHT}'
+                'https://www.freetestapi.com{Style.RESET_ALL}'
+            )
+        )
+
+
+def _validate_non_http_cmd(opts: RawOptions) -> RawOptions:
+    opts['<cmd>'] = None
+    for cmd in NON_HTTP_CMDS:
+        using_this_cmd = opts[cmd]
+        del opts[cmd]
+        if using_this_cmd is True:
+            opts['<cmd>'] = cmd
+    if opts['<cmd>'] == USE:
+        _validate_use(opts)
     return opts
 
 
@@ -116,6 +154,7 @@ def _validate_help(opts: RawOptions) -> RawOptions:
 def validate_options(opts: RawOptions) -> Options:
     """Convert types and validate"""
     valid_opts = deepcopy(opts)
+    valid_opts = _validate_non_http_cmd(valid_opts)
     valid_opts['<endpoint>'] = _validate_endpoint(
         cast(str, valid_opts['<endpoint>'])
     )

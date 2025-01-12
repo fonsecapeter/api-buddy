@@ -13,6 +13,7 @@ from api_buddy.config.preferences import (
     EXAMPLE_PREFS,
     load_prefs,
     save_prefs,
+    save_api_url,
 )
 from ..helpers import (
     FIXTURES_DIR,
@@ -20,11 +21,12 @@ from ..helpers import (
     TempYAMLTestCase,
 )
 
-
+API_URL = 'https://thecatapi.com'
+NEW_API_URL = 'https://kramericaindustries.com/api'
 LOADED_MSG = 'Preferences loaded just fine:\n'
 CAT_FACTS_API_URL = 'https://cat-facts.com'
 NEW_PREFS: Preferences = {
-    'api_url': 'https://thecatapi.com',
+    'api_url': API_URL,
     'auth_type': OAUTH2,
     'oauth2': {
         'client_id': 'mittens',
@@ -272,3 +274,29 @@ class TestSavePreferences(TempYAMLTestCase):
         assert written_prefs['oauth2']['authorize_params'] == [
             'give_treat=yes'
         ]
+
+
+class TestSaveAPIURL(TempYAMLTestCase):
+    def test_can_run_as_first_command_ever(self):
+        assert not path.isfile(TEMP_FILE)
+        save_api_url(NEW_API_URL, NEW_PREFS, TEMP_FILE)
+        with open(TEMP_FILE, 'r') as prefs_file:
+            written_prefs = yaml.load(prefs_file, Loader=yaml.Loader)
+        assert written_prefs['api_url'] == NEW_API_URL
+
+    def test_can_changing_existing_api_url(self):
+        save_prefs(NEW_PREFS, TEMP_FILE)
+        with open(TEMP_FILE, 'r') as prefs_file:
+            written_prefs = yaml.load(prefs_file, Loader=yaml.Loader)
+        assert written_prefs['api_url'] == API_URL
+        save_api_url(NEW_API_URL, NEW_PREFS, TEMP_FILE)
+        with open(TEMP_FILE, 'r') as prefs_file:
+            written_prefs = yaml.load(prefs_file, Loader=yaml.Loader)
+        assert written_prefs['api_url'] == NEW_API_URL
+
+    def test_can_equal_existing_api_url(self):
+        save_prefs(NEW_PREFS, TEMP_FILE)
+        save_api_url(API_URL, NEW_PREFS, TEMP_FILE)
+        with open(TEMP_FILE, 'r') as prefs_file:
+            written_prefs = yaml.load(prefs_file, Loader=yaml.Loader)
+        assert written_prefs['api_url'] == API_URL
