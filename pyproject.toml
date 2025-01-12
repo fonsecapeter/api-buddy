@@ -1,6 +1,6 @@
 [project]
 name = "api-buddy"
-version = "0.5.0"
+version = "0.6.0"
 description = "Explore APIs from your console with API Buddy"
 readme = "README.md"
 license = { text = "MIT" }
@@ -27,7 +27,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
 ]
 scripts = { api = "api_buddy.cli:run" }
-requires-python = "^3.13.1"
+requires-python = "~= 3.13.1"
 dependencies = [
   "beautifulsoup4 ~= 4.7.1",
   "docopt ~= 0.6.2",
