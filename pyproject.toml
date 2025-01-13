@@ -1,7 +1,7 @@
 [project]
 name = "api-buddy"
-version = "1.0.0"
-description = "Explore APIs from your console with API Buddy"
+version = "1.0.1"
+description = "The most pleasant HTTP API CLI tool"
 readme = "README.md"
 license = { text = "MIT" }
 authors = [
@@ -13,11 +13,16 @@ keywords = [
   "api",
   "apibuddy",
   "cli",
+  "cool",
+  "http",
+  "json",
   "oauth2",
+  "requests",
   "terminal",
+  "tool",
 ]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
