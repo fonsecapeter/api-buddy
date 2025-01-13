@@ -146,7 +146,7 @@ def flat_str_dict(
                 ),
                 message=(
                     'You\'re going to have to throw some quotes around that '
-                    'bad boy so I know how to capitalize it. Something like:\n'
+                    'thing so I know how to capitalize it. Something like:\n'
                     f'  {format_yaml_line(name, display_val)}'
                 ),
             )
@@ -157,7 +157,7 @@ def flat_str_dict(
                     f'Yo, you have a boolean for a {thing_name} name "{name}"'
                 ),
                 message=(
-                    'Rename it or throw some quotes around that bad boy so I '
+                    'Rename it or throw some quotes around that thing so I '
                     'know how to capitalize it. Something like:\n'
                     f'  {format_yaml_line(display_name, val)}'
                 ),

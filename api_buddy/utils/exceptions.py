@@ -12,14 +12,6 @@ class APIBuddyException(Exception):
 
 
 def print_exception(title: str, message: str) -> None:
-    emoji = random.choice((
-        '⚠️',
-        '😭',
-        '😮',
-        '🙊',
-        '🐛',
-        '🔥',
-    ))
     pleasantry = random.choice((
         'Oh no',
         'Whoops',
@@ -28,7 +20,7 @@ def print_exception(title: str, message: str) -> None:
         'Woah',
     ))
     print(
-        f'{Fore.YELLOW}{Style.BRIGHT}{pleasantry}! {emoji}\n'
+        f'{Fore.YELLOW}{Style.BRIGHT}{pleasantry}!\n'
         f'{Style.NORMAL}{title}{Style.RESET_ALL}\n\n'
         f'{message}\n'
     )
@@ -42,10 +34,9 @@ def exit_with_exception(err: APIBuddyException) -> NoReturn:
 class PrefsException(APIBuddyException):
     TITLE_HEADERS = (
         'There\'s a problem with your preferences',
-        'Your preferences appear to be borked',
+        'Your preferences appear to be messed up',
         'Your preferences aren\'t quite right',
         'Your preferences are a bit off',
-        'It looks like your preferences are messed up',
     )
     MESSAGE_FOOTERS_1 = (
         'Open up',
@@ -76,14 +67,14 @@ class ConnectionException(APIBuddyException):
     TITLES = (
         'There was a problem connecting that url',
         'I can\'t reach that url',
-        'I can\'t find that url in the interwebs',
+        'I can\'t find that url',
     )
     MESSAGES = (
+        'Is that the right one?',
         'Are you on WiFi?',
-        'Is that even a real API?',
         'Maybe try again?',
-        'Do you have a hotspot or something?',
-        'I think your WiFi is busted',
+        'Maybe your WiFi be busted?',
+        'Is the site is down?',
     )
 
     def __init__(self) -> None:

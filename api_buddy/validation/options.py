@@ -25,7 +25,7 @@ def _validate_method(opts: RawOptions) -> RawOptions:
     """
     if _more_than_one_method_selected(opts):
         raise APIBuddyException(
-            title='These HTTP methods are borked',
+            title='These HTTP methods are busted',
             message=(
                 'It appears you selected more than one HTTP method...\n'
                 'How did you even do this?'
@@ -87,7 +87,7 @@ def _validate_endpoint(endpoint: str) -> str:
                 f'{Style.RESET_ALL}?'
             )
         raise APIBuddyException(
-            title='Check your endpoint, dude',
+            title='Check your endpoint',
             message=message,
         )
     return endpoint

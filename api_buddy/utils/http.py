@@ -31,7 +31,7 @@ def pack_query_params(
             key, val = param.split('=')
         except ValueError:
             raise APIBuddyException(
-                title='One of your query params is borked',
+                title='One of your query params is busted',
                 message=(
                     f'{Fore.MAGENTA}{param}{Style.RESET_ALL} should contain '
                     f'one and only one {Fore.MAGENTA}"="{Style.RESET_ALL}'
