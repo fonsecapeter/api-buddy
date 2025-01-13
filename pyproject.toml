@@ -1,6 +1,6 @@
 [project]
 name = "api-buddy"
-version = "0.7.0"
+version = "1.0.0"
 description = "Explore APIs from your console with API Buddy"
 readme = "README.md"
 license = { text = "MIT" }
