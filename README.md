@@ -2,6 +2,9 @@
 [![Build Status](https://circleci.com/gh/fonsecapeter/api-buddy.svg?style=svg)](https://circleci.com/gh/fonsecapeter/api-buddy)
 [![PyPI version](https://badge.fury.io/py/api-buddy.svg)](https://badge.fury.io/py/api-buddy)
 
+<img src="https://raw.githubusercontent.com/fonsecapeter/api-buddy/main/media/icon.png" alt="demo">
+
+## Demo
 <img src="https://raw.githubusercontent.com/fonsecapeter/api-buddy/main/media/demo.gif" alt="demo">
 
 The most pleasant HTTP API CLI tool
