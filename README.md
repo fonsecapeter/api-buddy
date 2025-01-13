@@ -37,7 +37,7 @@ Then it's as easy as:
 ```bash
 api get some-endpoint
 ```
-```json
+```javascript
 => 200
 {
   "look": "I haz data",
