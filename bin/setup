@@ -4,3 +4,4 @@ set -eu -o pipefail
 
 poetry install
 poetry build
+poetry run pre-commit install

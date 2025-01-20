@@ -1,25 +1,20 @@
+from os import path
+
 import yaml
 from mock import patch
-from os import path
-from api_buddy.config.themes import SHELLECTRIC
-from api_buddy.utils.exceptions import APIBuddyException
-from api_buddy.utils.typing import Preferences
-from api_buddy.utils.auth import OAUTH2
-from api_buddy.validation.preferences import (
-    DEFAULT_PREFS,
-    DEFAULT_OAUTH2_PREFS,
-)
+
 from api_buddy.config.preferences import (
     EXAMPLE_PREFS,
     load_prefs,
-    save_prefs,
     save_api_url,
+    save_prefs,
 )
-from ..helpers import (
-    FIXTURES_DIR,
-    TEMP_FILE,
-    TempYAMLTestCase,
-)
+from api_buddy.config.themes import SHELLECTRIC
+from api_buddy.utils.auth import OAUTH2
+from api_buddy.utils.exceptions import APIBuddyException
+from api_buddy.utils.typing import Preferences
+from api_buddy.validation.preferences import DEFAULT_OAUTH2_PREFS, DEFAULT_PREFS
+from tests.helpers import FIXTURES_DIR, TEMP_FILE, TempYAMLTestCase
 
 API_URL = "https://thecatapi.com"
 NEW_API_URL = "https://kramericaindustries.com/api"

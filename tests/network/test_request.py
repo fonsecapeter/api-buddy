@@ -1,37 +1,38 @@
 from copy import deepcopy
-from mock import MagicMock, PropertyMock, patch
-from requests.exceptions import ConnectionError, ReadTimeout
 from typing import Any, Dict, List, Union
 
+from mock import MagicMock, PropertyMock, patch
+from requests.exceptions import ConnectionError, ReadTimeout
+
 from api_buddy.config.preferences import load_prefs
+from api_buddy.network.request import send_request
+from api_buddy.network.session import get_session
 from api_buddy.utils.exceptions import (
     APIBuddyException,
     ConnectionException,
     TimeoutException,
 )
-from api_buddy.network.session import get_session
-from api_buddy.network.request import send_request
-from api_buddy.utils.http import HTTP_METHODS, GET
-from ..helpers import (
+from api_buddy.utils.http import GET, HTTP_METHODS
+from tests.helpers import (
     FAKE_API_URL,
     FAKE_API_VERSION,
     FAKE_ENDPOINT,
     FAKE_STATE,
-    TEST_PREFERENCES,
-    TEST_OPTIONS,
     TEMP_FILE,
-    explode,
-    mock_get,
-    mock_post,
-    mock_patch,
-    mock_put,
-    mock_delete,
-    mock_get_side_effect,
-    mock_post_side_effect,
-    mock_patch_side_effect,
-    mock_put_side_effect,
-    mock_delete_side_effect,
+    TEST_OPTIONS,
+    TEST_PREFERENCES,
     TempYAMLTestCase,
+    explode,
+    mock_delete,
+    mock_delete_side_effect,
+    mock_get,
+    mock_get_side_effect,
+    mock_patch,
+    mock_patch_side_effect,
+    mock_post,
+    mock_post_side_effect,
+    mock_put,
+    mock_put_side_effect,
 )
 
 NEW_ACCESS_TOKEN = "mint-chip"

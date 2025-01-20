@@ -1,15 +1,17 @@
 import json
 import textwrap
+from typing import Any, Dict, List, MutableMapping, Optional, Union, cast
+from urllib.parse import urljoin
+
 from colorama import Fore, Style
 from pygments import highlight
 from pygments.formatters import Terminal256Formatter
 from pygments.lexers.data import JsonLexer, YamlLexer
 from pygments.styles import get_style_by_name
 from requests.cookies import RequestsCookieJar
-from typing import Any, cast, Dict, List, MutableMapping, Optional, Union
-from urllib.parse import urljoin
-from .exceptions import APIBuddyException
-from ..config.themes import SHELLECTRIC, Shellectric
+
+from api_buddy.config.themes import SHELLECTRIC, Shellectric
+from api_buddy.utils.exceptions import APIBuddyException
 
 VARIABLE_CHARS = "#{}"
 JSON = "json"

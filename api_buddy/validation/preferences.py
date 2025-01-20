@@ -1,14 +1,17 @@
-from colorama import Fore, Style
-from schema import Schema, SchemaError, Optional as Maybe, Or
-from pygments.styles import get_all_styles, get_style_by_name, ClassNotFound
-from typing import Any, cast, List, Optional
+from typing import Any, List, Optional, cast
 from urllib.parse import urlparse
-from ..utils.formatting import flat_str_dict, format_yaml_list
-from ..utils.auth import AUTH_TYPES, OAUTH2
-from ..utils.exceptions import PrefsException
-from ..utils.http import pack_query_params
-from ..utils.typing import Preferences, RawPreferences
-from ..config.themes import SHELLECTRIC
+
+from colorama import Fore, Style
+from pygments.styles import ClassNotFound, get_all_styles, get_style_by_name
+from schema import Optional as Maybe
+from schema import Or, Schema, SchemaError
+
+from api_buddy.config.themes import SHELLECTRIC
+from api_buddy.utils.auth import AUTH_TYPES, OAUTH2
+from api_buddy.utils.exceptions import PrefsException
+from api_buddy.utils.formatting import flat_str_dict, format_yaml_list
+from api_buddy.utils.http import pack_query_params
+from api_buddy.utils.typing import Preferences, RawPreferences
 
 DEFAULT_URL_SCHEME = "https"
 DEFAULT_OAUTH2_PREFS = {  # type: ignore

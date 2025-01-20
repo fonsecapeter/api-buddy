@@ -2,8 +2,7 @@ from copy import deepcopy
 from unittest import TestCase
 
 from api_buddy.config.variables import interpolate_variables
-from ..helpers import TEST_OPTIONS, TEST_PREFERENCES
-
+from tests.helpers import TEST_OPTIONS, TEST_PREFERENCES
 
 NAME = "art_vandalay"
 OCCUPATION = "marine_biologist"

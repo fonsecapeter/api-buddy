@@ -1,29 +1,24 @@
+from typing import Any, Dict, List, Optional, Union, cast
+
 import requests
 import urllib3
 from colorama import Fore, Style
-from typing import Any, Dict, List, Optional, Union, cast
 from yaspin import yaspin
 
-from .session import reauthenticate
-from ..utils.exceptions import (
+from api_buddy.network.session import reauthenticate
+from api_buddy.utils.exceptions import (
     APIBuddyException,
     ConnectionException,
     TimeoutException,
 )
-from ..utils.formatting import (
+from api_buddy.utils.formatting import (
     api_url_join,
     format_dict_like_thing,
     format_json_with_title,
 )
-from ..utils.http import (
-    GET,
-    POST,
-    PUT,
-    PATCH,
-    DELETE,
-)
-from ..utils.spin import spin
-from ..utils.typing import Preferences, Options
+from api_buddy.utils.http import DELETE, GET, PATCH, POST, PUT
+from api_buddy.utils.spin import spin
+from api_buddy.utils.typing import Options, Preferences
 
 
 def _send_request(

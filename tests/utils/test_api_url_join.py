@@ -1,6 +1,7 @@
 from unittest import TestCase
+
 from api_buddy.utils.formatting import api_url_join
-from ..helpers import FAKE_API_URL, FAKE_API_VERSION, FAKE_ENDPOINT
+from tests.helpers import FAKE_API_URL, FAKE_API_VERSION, FAKE_ENDPOINT
 
 
 class TestApiURLJoin(TestCase):

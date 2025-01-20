@@ -1,15 +1,13 @@
 import json
+from typing import MutableMapping, Optional
+
 from bs4 import BeautifulSoup
 from colorama import Fore, Style
 from requests import Response
 from requests.cookies import RequestsCookieJar
-from typing import MutableMapping, Optional
-from ..utils.formatting import (
-    format_dict_like_thing,
-    highlight_syntax,
-    JSON,
-)
-from ..utils.typing import Preferences
+
+from api_buddy.utils.formatting import JSON, format_dict_like_thing, highlight_syntax
+from api_buddy.utils.typing import Preferences
 
 BINARY_CONTENT_TYPES = [
     "audio",

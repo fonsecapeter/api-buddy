@@ -1,14 +1,16 @@
 from typing import cast
+
 from colorama import init as init_colorama
-from .config.help import HELP
-from .config.options import load_options
-from .config.preferences import load_prefs, save_api_url
-from .config.variables import interpolate_variables
-from .network.request import send_request
-from .network.response import print_response
-from .network.session import get_session
-from .utils import VERSION, PREFS_FILE
-from .utils.exceptions import APIBuddyException, exit_with_exception
+
+from api_buddy.config.help import HELP
+from api_buddy.config.options import load_options
+from api_buddy.config.preferences import load_prefs, save_api_url
+from api_buddy.config.variables import interpolate_variables
+from api_buddy.network.request import send_request
+from api_buddy.network.response import print_response
+from api_buddy.network.session import get_session
+from api_buddy.utils import PREFS_FILE, VERSION
+from api_buddy.utils.exceptions import APIBuddyException, exit_with_exception
 
 
 def run() -> None:

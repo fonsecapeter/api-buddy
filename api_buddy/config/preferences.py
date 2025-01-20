@@ -1,12 +1,13 @@
-import yaml
-from os import path
 from copy import deepcopy
+from os import path
 from typing import Any
 
-from ..utils.exceptions import PrefsException
-from ..utils.http import unpack_query_params
-from ..utils.typing import Preferences
-from ..validation.preferences import (
+import yaml
+
+from api_buddy.utils.exceptions import PrefsException
+from api_buddy.utils.http import unpack_query_params
+from api_buddy.utils.typing import Preferences
+from api_buddy.validation.preferences import (
     DEFAULT_PREFS,
     NESTED_DEFAULT_PREFS,
     validate_preferences,

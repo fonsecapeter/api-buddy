@@ -1,11 +1,13 @@
-from json import loads, JSONDecodeError
 from copy import deepcopy
-from colorama import Fore, Style
-from typing import Any, cast, List
+from json import JSONDecodeError, loads
+from typing import Any, List, cast
 from urllib.parse import urlparse
-from ..utils.typing import Options, RawOptions
-from ..utils.exceptions import APIBuddyException
-from ..utils.http import HTTP_METHODS, GET, pack_query_params
+
+from colorama import Fore, Style
+
+from api_buddy.utils.exceptions import APIBuddyException
+from api_buddy.utils.http import GET, HTTP_METHODS, pack_query_params
+from api_buddy.utils.typing import Options, RawOptions
 
 USE = "use"
 NON_HTTP_CMDS = {USE}
@@ -134,7 +136,7 @@ def _validate_params_and_data(opts: RawOptions) -> RawOptions:
             ),
             message=("Did you mean to use " f"{Fore.MAGENTA}POST{Style.RESET_ALL}?"),
         )
-    opts["<params>"] = pack_query_params(params)  # type: ignore
+    opts["<params>"] = pack_query_params(params)  # type: ignore[assignment]
     opts["<data>"] = data
     return opts
 

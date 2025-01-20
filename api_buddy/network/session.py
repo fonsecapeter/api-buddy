@@ -1,8 +1,10 @@
-import requests
 from typing import Callable, Dict
-from .auth.oauth2 import get_oauth2_session, reauthenticate_oauth2
-from ..utils.typing import Options, Preferences
-from ..utils.auth import OAUTH2
+
+import requests
+
+from api_buddy.network.auth.oauth2 import get_oauth2_session, reauthenticate_oauth2
+from api_buddy.utils.auth import OAUTH2
+from api_buddy.utils.typing import Options, Preferences
 
 SessionInitializer = Callable[
     [Options, Preferences, str],

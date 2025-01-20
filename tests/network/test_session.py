@@ -1,5 +1,7 @@
 from copy import deepcopy
-from mock import patch, Mock
+
+from mock import Mock, patch
+
 from api_buddy.network.session import (
     REAUTHENTICATIONS,
     SESSIONS,
@@ -7,13 +9,7 @@ from api_buddy.network.session import (
     reauthenticate,
 )
 from api_buddy.utils.auth import OAUTH2
-from ..helpers import (
-    TEST_PREFERENCES,
-    TEST_OPTIONS,
-    TEMP_FILE,
-    TempYAMLTestCase,
-)
-
+from tests.helpers import TEMP_FILE, TEST_OPTIONS, TEST_PREFERENCES, TempYAMLTestCase
 
 mock_get_oauth2_sesh = Mock(name="mock_get_oauth2_sesh")
 mock_reauth2 = Mock(name="mock_reauth2")

@@ -1,7 +1,9 @@
-from colorama import Fore, Style
 from typing import Dict, List, Union
-from .typing import QueryParams
-from .exceptions import APIBuddyException
+
+from colorama import Fore, Style
+
+from api_buddy.utils.exceptions import APIBuddyException
+from api_buddy.utils.typing import QueryParams
 
 GET = "get"
 POST = "post"

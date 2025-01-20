@@ -1,6 +1,7 @@
 from docopt import docopt
-from ..utils.typing import Options
-from ..validation.options import validate_options
+
+from api_buddy.utils.typing import Options
+from api_buddy.validation.options import validate_options
 
 
 def load_options(doc: str) -> Options:

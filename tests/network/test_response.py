@@ -1,9 +1,11 @@
 from copy import deepcopy
-from mock import MagicMock, PropertyMock
 from unittest import TestCase
-from api_buddy.network.response import format_response, print_response
+
+from mock import MagicMock, PropertyMock
+
 from api_buddy.config.themes import SHELLECTRIC
-from ..helpers import TEST_PREFERENCES, explode
+from api_buddy.network.response import format_response, print_response
+from tests.helpers import TEST_PREFERENCES, explode
 
 TEXT_TO_KEEP = "This text should stay"
 
