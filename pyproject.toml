@@ -61,6 +61,8 @@ pytest-cov = "^6.0.0"
 pytest-pspec = "^0.0.4"
 bumpversion = "^0.6.0"
 black = "^24.10.0"
+pre-commit = "^4.0.1"
+isort = "^5.13.2"
 
 
 [build-system]

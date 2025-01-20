@@ -1,0 +1,18 @@
+fail_fast: true
+repos:
+- repo: local
+  hooks:
+    - id: isort
+      name: isort
+      entry: poetry run isort
+      language: system
+      types: [file, python]
+      files: '^(api_buddy|test)/'
+- repo: local
+  hooks:
+    - id: black
+      name: black
+      entry: poetry run black
+      language: system
+      types: [file, python]
+      files: '^(api_buddy|test)/'
