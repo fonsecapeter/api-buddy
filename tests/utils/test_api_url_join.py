@@ -10,7 +10,7 @@ class TestApiURLJoin(TestCase):
             None,
             FAKE_ENDPOINT,
         )
-        assert url == f'{FAKE_API_URL}/{FAKE_ENDPOINT}'
+        assert url == f"{FAKE_API_URL}/{FAKE_ENDPOINT}"
 
     def test_it_includes_api_version(self):
         url = api_url_join(
@@ -18,20 +18,20 @@ class TestApiURLJoin(TestCase):
             FAKE_API_VERSION,
             FAKE_ENDPOINT,
         )
-        assert url == f'{FAKE_API_URL}/{FAKE_API_VERSION}/{FAKE_ENDPOINT}'
+        assert url == f"{FAKE_API_URL}/{FAKE_API_VERSION}/{FAKE_ENDPOINT}"
 
     def test_when_api_version_is_none_its_cool_about_slashes(self):
         url = api_url_join(
-            f'{FAKE_API_URL}/',
+            f"{FAKE_API_URL}/",
             None,
-            f'{FAKE_ENDPOINT}/',
+            f"{FAKE_ENDPOINT}/",
         )
-        assert url == f'{FAKE_API_URL}/{FAKE_ENDPOINT}/'
+        assert url == f"{FAKE_API_URL}/{FAKE_ENDPOINT}/"
 
     def test_when_api_version_is_included_its_still_cool_about_slashes(self):
         url = api_url_join(
-            f'{FAKE_API_URL}/',
-            f'{FAKE_API_VERSION}/',
-            f'{FAKE_ENDPOINT}/',
+            f"{FAKE_API_URL}/",
+            f"{FAKE_API_VERSION}/",
+            f"{FAKE_ENDPOINT}/",
         )
-        assert url == f'{FAKE_API_URL}/{FAKE_API_VERSION}/{FAKE_ENDPOINT}/'
+        assert url == f"{FAKE_API_URL}/{FAKE_API_VERSION}/{FAKE_ENDPOINT}/"

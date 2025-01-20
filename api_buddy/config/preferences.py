@@ -13,9 +13,9 @@ from ..validation.preferences import (
 )
 
 EXAMPLE_OAUTH2_PREFS = {
-    'client_id': 'your_client_id',
-    'client_secret': 'your_client_secret',
-    'scopes': ['one_scope', 'another_scope'],
+    "client_id": "your_client_id",
+    "client_secret": "your_client_secret",
+    "scopes": ["one_scope", "another_scope"],
 }
 EXAMPLE_PREFS = {
     "api_url": "https://www.freetestapi.com/",
@@ -28,28 +28,28 @@ def _remove_defaults(prefs: Preferences) -> Preferences:
     for key, default_val in DEFAULT_PREFS.items():
         if key in NESTED_DEFAULT_PREFS:
             continue
-        if filtered_prefs[key] == default_val:                 # type: ignore
-            del filtered_prefs[key]                            # type: ignore
+        if filtered_prefs[key] == default_val:  # type: ignore
+            del filtered_prefs[key]  # type: ignore
     for nested_name, nested_defaults in NESTED_DEFAULT_PREFS.items():
-        nested_prefs = filtered_prefs[nested_name]             # type: ignore
+        nested_prefs = filtered_prefs[nested_name]  # type: ignore
         for nested_key, default_nested_val in nested_defaults.items():  # type: ignore # noqa
             if nested_prefs[nested_key] == default_nested_val:
-                del filtered_prefs[nested_name][nested_key]    # type: ignore
+                del filtered_prefs[nested_name][nested_key]  # type: ignore
         if filtered_prefs[nested_name] == {}:  # type: ignore[literal-required]
-            del filtered_prefs[nested_name]    # type: ignore[misc]
+            del filtered_prefs[nested_name]  # type: ignore[misc]
     return filtered_prefs
 
 
 def _convert_types(prefs: Preferences) -> Preferences:
     """Convert any types that are changed in validation for saving"""
     converted_prefs = deepcopy(prefs)
-    auth_prefs = converted_prefs.get('oauth2')
+    auth_prefs = converted_prefs.get("oauth2")
     if auth_prefs:
-        auth_params = auth_prefs.get('authorize_params')
+        auth_params = auth_prefs.get("authorize_params")
         if auth_params:
-            converted_prefs['oauth2']['authorize_params'] = (
-                unpack_query_params(auth_params)  # type: ignore
-            )
+            converted_prefs["oauth2"]["authorize_params"] = unpack_query_params(
+                auth_params
+            )  # type: ignore
     return converted_prefs
 
 
@@ -67,37 +67,37 @@ def _extract_yaml_from_file(file_name: str) -> Any:
     """
     if not path.isfile(file_name):
         return None
-    with open(file_name, 'r') as prefs_file:
+    with open(file_name, "r") as prefs_file:
         try:
             user_prefs = yaml.load(prefs_file, Loader=yaml.Loader)
         except yaml.YAMLError:
             raise PrefsException(
-                title='There was a problem reading the file',
+                title="There was a problem reading the file",
                 message=(
-                    'Please make sure it\'s valid yaml: '
-                    'http://www.yaml.org/start.html'
+                    "Please make sure it's valid yaml: "
+                    "http://www.yaml.org/start.html"
                 ),
             )
     if user_prefs is None:
         example_yaml = yaml.dump(EXAMPLE_PREFS, Dumper=yaml.Dumper)
         raise PrefsException(
-            title='It looks like your file is empty',
+            title="It looks like your file is empty",
             message=(
-                'Make sure you have something in there\n'
-                f'For example:\n\n{example_yaml}'
-            )
+                "Make sure you have something in there\n"
+                f"For example:\n\n{example_yaml}"
+            ),
         )
     return user_prefs
 
 
 def save_api_url(url: str, prefs: Preferences, file_name: str) -> None:
-    prefs['api_url'] = url
+    prefs["api_url"] = url
     save_prefs(prefs, file_name)
 
 
 def load_prefs(
-            file_name: str,
-        ) -> Preferences:
+    file_name: str,
+) -> Preferences:
     """Load preferences from a yaml file
 
     Notes:
@@ -116,9 +116,9 @@ def load_prefs(
 
 
 def save_prefs(
-            preferences: Preferences,
-            file_name: str,
-        ) -> None:
+    preferences: Preferences,
+    file_name: str,
+) -> None:
     """Save preferences as a yaml file
 
     Notes:
@@ -128,5 +128,5 @@ def save_prefs(
     expanded_file_name = path.expanduser(file_name)
     minimal_prefs = _remove_defaults(preferences)
     converted_prefs = _convert_types(minimal_prefs)
-    with open(expanded_file_name, 'w') as prefs_file:
+    with open(expanded_file_name, "w") as prefs_file:
         yaml.dump(converted_prefs, prefs_file, Dumper=yaml.Dumper)

@@ -15,15 +15,15 @@ def run() -> None:
     init_colorama()
     try:
         opts = load_options(HELP)
-        if opts['--version']:
+        if opts["--version"]:
             print(VERSION)
             return
-        if opts['--help']:
+        if opts["--help"]:
             print(HELP)
             return
         prefs = load_prefs(PREFS_FILE)
-        if opts['<cmd>'] == 'use':
-            save_api_url(cast(str, opts['<api_url>']), prefs, PREFS_FILE)
+        if opts["<cmd>"] == "use":
+            save_api_url(cast(str, opts["<api_url>"]), prefs, PREFS_FILE)
             return
         interpolated_opts = interpolate_variables(opts, prefs)
         sesh = get_session(interpolated_opts, prefs, PREFS_FILE)
@@ -33,5 +33,5 @@ def run() -> None:
         exit_with_exception(err)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()

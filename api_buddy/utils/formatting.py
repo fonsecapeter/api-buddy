@@ -11,29 +11,25 @@ from urllib.parse import urljoin
 from .exceptions import APIBuddyException
 from ..config.themes import SHELLECTRIC, Shellectric
 
-VARIABLE_CHARS = '#{}'
-JSON = 'json'
-YAML = 'yaml'
+VARIABLE_CHARS = "#{}"
+JSON = "json"
+YAML = "yaml"
 
 
 def format_yaml_line(name: str, val: str) -> str:
     return (
-        f'  {Fore.YELLOW}{name}{Fore.BLACK}{Style.BRIGHT}:'
-        f' {Fore.RED}{val}{Style.RESET_ALL}'
+        f"  {Fore.YELLOW}{name}{Fore.BLACK}{Style.BRIGHT}:"
+        f" {Fore.RED}{val}{Style.RESET_ALL}"
     )
 
 
 def format_yaml_list(things: List[str]) -> str:
-    delim = f'\n  {Fore.BLACK}{Style.BRIGHT}- {Fore.RED}'
+    delim = f"\n  {Fore.BLACK}{Style.BRIGHT}- {Fore.RED}"
     formatted_things = delim.join(sorted(things))
-    return f'{delim}{formatted_things}{Style.RESET_ALL}'
+    return f"{delim}{formatted_things}{Style.RESET_ALL}"
 
 
-def highlight_syntax(
-            stuff: str,
-            theme: Optional[str],
-            lang: str = JSON
-        ) -> str:
+def highlight_syntax(stuff: str, theme: Optional[str], lang: str = JSON) -> str:
     """Colorize stuff with syntax highlighting"""
     if lang == JSON:
         lexer = JsonLexer()
@@ -45,74 +41,77 @@ def highlight_syntax(
         pygment_theme = Shellectric
     else:  # theme already validated in preferences loading
         pygment_theme = get_style_by_name(theme)
-    return cast(str, highlight(
-        stuff,
-        lexer,
-        Terminal256Formatter(style=pygment_theme),
-    ))
+    return cast(
+        str,
+        highlight(
+            stuff,
+            lexer,
+            Terminal256Formatter(style=pygment_theme),
+        ),
+    )
 
 
 def api_url_join(
-            api_url: str,
-            api_version: Optional[str],
-            endpoint: str,
-        ) -> str:
+    api_url: str,
+    api_version: Optional[str],
+    endpoint: str,
+) -> str:
     """Joins base api url with api version and endpoint
 
-        - a, None, c => a/c
-        - a, b, c => a/b/c
+    - a, None, c => a/c
+    - a, b, c => a/b/c
     """
-    path = endpoint.lstrip('/')
+    path = endpoint.lstrip("/")
     if api_version is not None:
-        path = f'{api_version}/{path}'
+        path = f"{api_version}/{path}"
     return urljoin(api_url, path)
 
 
 def format_json_with_title(
-            name: str,
-            thing: Any,
-            indent: Optional[int] = 2,
-            theme: Optional[str] = None,
-        ) -> str:
+    name: str,
+    thing: Any,
+    indent: Optional[int] = 2,
+    theme: Optional[str] = None,
+) -> str:
     """Formats JSON indented under a title for nice printing"""
     if indent is None:
-        indent_str = '  '
+        indent_str = "  "
     else:
-        indent_str = indent * ' '
+        indent_str = indent * " "
     if theme is None:
-        title = f'{name}:'
+        title = f"{name}:"
     else:
-        title = highlight_syntax(f'{name}:', theme, lang=YAML).rstrip()
+        title = highlight_syntax(f"{name}:", theme, lang=YAML).rstrip()
     body = highlight_syntax(
         json.dumps(thing, indent=indent),
         theme,
     )
     indented_body = textwrap.indent(body, indent_str)
-    return f'{title}\n{indented_body}'.rstrip()
+    return f"{title}\n{indented_body}".rstrip()
 
 
 def format_dict_like_thing(
-            name: str,
-            thing: Union[
-                Dict[str, Any],
-                MutableMapping[str, str],
-                RequestsCookieJar,
-            ],
-            indent: Optional[int] = 2,
-            theme: Optional[str] = None,
-        ) -> str:
+    name: str,
+    thing: Union[
+        Dict[str, Any],
+        MutableMapping[str, str],
+        RequestsCookieJar,
+    ],
+    indent: Optional[int] = 2,
+    theme: Optional[str] = None,
+) -> str:
     """Format dictionaries for nice printing"""
     if indent is None:  # pragma: no cover
         indent = 2
-    indent_str = ' ' * indent
-    delim = f'\n{indent_str}{indent_str}- '
-    formatted = f'{name}:'
+    indent_str = " " * indent
+    delim = f"\n{indent_str}{indent_str}- "
+    formatted = f"{name}:"
     for key, val in thing.items():
         display_val = val
         if isinstance(val, list):
             display_val = delim.join(val)
-            display_val = f'{delim}{display_val}'
-        key_val_pair = f'\n{indent_str}{key}: {display_val}'
+            display_val = f"{delim}{display_val}"
+        key_val_pair = f"\n{indent_str}{key}: {display_val}"
         formatted += key_val_pair
     if theme is not None:
         formatted = highlight_syntax(formatted, theme, lang=YAML)
@@ -120,10 +119,10 @@ def format_dict_like_thing(
 
 
 def flat_str_dict(
-            thing_name: str,
-            thing: Dict[Any, Any],
-            check_special_chars: bool = False,
-        ) -> Dict[str, str]:
+    thing_name: str,
+    thing: Dict[Any, Any],
+    check_special_chars: bool = False,
+) -> Dict[str, str]:
     """Convert dictionary like thing into strict, flat Dict[str, str]"""
     processed_vars = {}
     for name, val in thing.items():
@@ -131,44 +130,42 @@ def flat_str_dict(
             raise APIBuddyException(
                 title=(
                     f'Your {Fore.MAGENTA}{Style.BRIGHT}"{name}" '
-                    f'{Style.NORMAL}{thing_name}{Style.RESET_ALL} '
-                    'is not gonna fly'
+                    f"{Style.NORMAL}{thing_name}{Style.RESET_ALL} "
+                    "is not gonna fly"
                 ),
-                message='It can\'t be nested, try something simpler',
+                message="It can't be nested, try something simpler",
             )
         # bool capitalization is unpredictable
         if isinstance(val, bool):
-            display_val = f'\'{str(val).lower()}\''
+            display_val = f"'{str(val).lower()}'"
             raise APIBuddyException(
                 title=(
                     f'Your {Fore.MAGENTA}{Style.BRIGHT}"{name}" '
-                    f'{Style.NORMAL}{thing_name}{Style.RESET_ALL} is a boolean'
+                    f"{Style.NORMAL}{thing_name}{Style.RESET_ALL} is a boolean"
                 ),
                 message=(
-                    'You\'re going to have to throw some quotes around that '
-                    'thing so I know how to capitalize it. Something like:\n'
-                    f'  {format_yaml_line(name, display_val)}'
+                    "You're going to have to throw some quotes around that "
+                    "thing so I know how to capitalize it. Something like:\n"
+                    f"  {format_yaml_line(name, display_val)}"
                 ),
             )
         if isinstance(name, bool):
-            display_name = f'\'{str(name).lower()}\''
+            display_name = f"'{str(name).lower()}'"
             raise APIBuddyException(
-                title=(
-                    f'Yo, you have a boolean for a {thing_name} name "{name}"'
-                ),
+                title=(f'Yo, you have a boolean for a {thing_name} name "{name}"'),
                 message=(
-                    'Rename it or throw some quotes around that thing so I '
-                    'know how to capitalize it. Something like:\n'
-                    f'  {format_yaml_line(display_name, val)}'
+                    "Rename it or throw some quotes around that thing so I "
+                    "know how to capitalize it. Something like:\n"
+                    f"  {format_yaml_line(display_name, val)}"
                 ),
             )
         if name is None:
             raise APIBuddyException(
-                title='You must use a string name',
+                title="You must use a string name",
                 message=(
-                    f'Using {Fore.MAGENTA}{Style.BRIGHT}null{Style.RESET_ALL} '
-                    f'or {Fore.MAGENTA}{Style.BRIGHT}None{Style.RESET_ALL} as '
-                    'a name is not a thing.'
+                    f"Using {Fore.MAGENTA}{Style.BRIGHT}null{Style.RESET_ALL} "
+                    f"or {Fore.MAGENTA}{Style.BRIGHT}None{Style.RESET_ALL} as "
+                    "a name is not a thing."
                 ),
             )
         if check_special_chars:
@@ -176,15 +173,15 @@ def flat_str_dict(
                 special_char in str(name) for special_char in VARIABLE_CHARS
             )
             if any_name_has_special_chars:
-                display_special_chars = (
-                    ' '.join([f'"{c}"' for c in tuple(VARIABLE_CHARS)])
+                display_special_chars = " ".join(
+                    [f'"{c}"' for c in tuple(VARIABLE_CHARS)]
                 )
                 raise APIBuddyException(
                     title=f'Your {thing_name} name "{name}" is too funky',
                     message=(
-                        f'You can\'t use any of these special characters:\n  '
-                        f'{Fore.MAGENTA}{Style.BRIGHT}{display_special_chars}'
-                        f'{Style.RESET_ALL}'
+                        f"You can't use any of these special characters:\n  "
+                        f"{Fore.MAGENTA}{Style.BRIGHT}{display_special_chars}"
+                        f"{Style.RESET_ALL}"
                     ),
                 )
         processed_vars[str(name)] = str(val)

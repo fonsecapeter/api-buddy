@@ -12,15 +12,15 @@ from pygments.token import (
     Text,
 )
 
-SHELLECTRIC = 'shellectric'
-BRIGHT_BLUE = 'ansibrightblue'
-BRIGHT_CYAN = 'ansibrightcyan'
-BRIGHT_GREEN = 'ansibrightgreen'
-BRIGHT_MAGENTA = 'ansibrightmagenta'
-BRIGHT_RED = 'ansibrightred'
-BRIGHT_YELLOW = 'ansibrightyellow'
-GRAY = 'ansigray'
-YELLOW = 'ansiyellow'
+SHELLECTRIC = "shellectric"
+BRIGHT_BLUE = "ansibrightblue"
+BRIGHT_CYAN = "ansibrightcyan"
+BRIGHT_GREEN = "ansibrightgreen"
+BRIGHT_MAGENTA = "ansibrightmagenta"
+BRIGHT_RED = "ansibrightred"
+BRIGHT_YELLOW = "ansibrightyellow"
+GRAY = "ansigray"
+YELLOW = "ansiyellow"
 
 
 class Shellectric(Style):  # type: ignore

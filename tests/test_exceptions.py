@@ -2,8 +2,8 @@ from unittest import TestCase
 from pytest import raises
 from api_buddy.utils.exceptions import APIBuddyException, exit_with_exception
 
-TEST_ERR_TITLE = 'test'
-TEST_ERR_MESSAGE = 'exception'
+TEST_ERR_TITLE = "test"
+TEST_ERR_MESSAGE = "exception"
 
 
 class TestExitWithException(TestCase):

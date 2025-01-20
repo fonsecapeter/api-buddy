@@ -14,7 +14,7 @@ from tests.helpers import (
 
 class TestGetOauthSession(TempYAMLTestCase):
     @mock_get()
-    @patch('requests.get')
+    @patch("requests.get")
     def test_returns_a_session(self, mock_get):
         sesh = get_oauth2_session(
             TEST_OPTIONS,
@@ -24,7 +24,7 @@ class TestGetOauthSession(TempYAMLTestCase):
         assert isinstance(sesh, OAuth2Session)
 
     @mock_get()
-    @patch('requests.get')
+    @patch("requests.get")
     def test_adds_headers(self, mock_get):
         sesh = get_oauth2_session(
             TEST_OPTIONS,
@@ -32,5 +32,5 @@ class TestGetOauthSession(TempYAMLTestCase):
             TEMP_FILE,
         )
         headers = sesh.headers
-        assert headers['Accept'] == APPLICATION_JSON
-        assert headers['Content-Type'] == APPLICATION_JSON
+        assert headers["Accept"] == APPLICATION_JSON
+        assert headers["Content-Type"] == APPLICATION_JSON

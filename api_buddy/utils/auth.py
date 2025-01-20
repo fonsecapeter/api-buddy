@@ -1,4 +1,2 @@
-OAUTH2 = 'oauth2'
-AUTH_TYPES = (
-    OAUTH2,
-)
+OAUTH2 = "oauth2"
+AUTH_TYPES = (OAUTH2,)

@@ -1,9 +1,9 @@
 from colorama import Fore, Style
 
-BRIGHT_GREEN = f'{Style.BRIGHT}{Fore.GREEN}'
-BRIGHT_NORMAL = f'{Style.RESET_ALL}{Style.BRIGHT}'
-API_CLI = f'{BRIGHT_GREEN}api{BRIGHT_NORMAL}'
-BACKSLASH = f'{Fore.MAGENTA}\\'
+BRIGHT_GREEN = f"{Style.BRIGHT}{Fore.GREEN}"
+BRIGHT_NORMAL = f"{Style.RESET_ALL}{Style.BRIGHT}"
+API_CLI = f"{BRIGHT_GREEN}api{BRIGHT_NORMAL}"
+BACKSLASH = f"{Fore.MAGENTA}\\"
 EXAMPLE_PREFS = """
 api_url: https://api.url.com
 auth_type: oauth2
