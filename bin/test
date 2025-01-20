@@ -2,5 +2,4 @@
 # Run all tests
 set -e -o pipefail
 
-bin/lint
 poetry run pytest --cov --cov-report term-missing --pspec tests

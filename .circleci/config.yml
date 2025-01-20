@@ -13,6 +13,9 @@ jobs:
           name: build
           command: poetry build
       - run:
+          name: lint
+          command: bin/lint
+      - run:
           name: test
           command: bin/test
 
