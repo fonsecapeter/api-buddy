@@ -84,6 +84,11 @@ api post \
   }'
 ```
 
+It works with graphql too
+```bash
+api post graphql '{"query": "{something{withFields,{andNestedFeilds}}}"}'
+```
+
 ### [👉 See all the helpful preferences here](https://github.com/fonsecapeter/api-buddy/blob/master/docs/preferences.md)
 
 ### Arguments
